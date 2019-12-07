@@ -33,18 +33,3 @@ func getImgWH(srcImageID string) (js.Value, float64, float64) {
 	srch := img.Get("naturalHeight").Float()
 	return img, srcw, srch
 }
-
-func getCnv2dCtx(dstCanvasID string) (js.Value, js.Value) {
-	dstcnv := js.Global().Get("document").Call("getElementById", dstCanvasID)
-	if !dstcnv.Truthy() {
-		fmt.Printf("fail to get canvas\n")
-		return js.Null(), js.Null()
-	}
-	dstctx := dstcnv.Call("getContext", "2d")
-	if !dstctx.Truthy() {
-		fmt.Printf("fail to get context\n")
-		return js.Null(), js.Null()
-	}
-	dstctx.Set("imageSmoothingEnabled", false)
-	return dstcnv, dstctx
-}

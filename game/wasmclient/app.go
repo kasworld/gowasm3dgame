@@ -50,6 +50,11 @@ func InitApp() {
 	}
 	app.DispInterDur = intervalduration.New("Display")
 	app.vp = viewport3d.New("canvas3d")
+
+	app.ResizeCanvas()
+	win := js.Global().Get("window")
+	win.Call("addEventListener", "resize", js.FuncOf(app.handleResizeCanvas))
+
 	go app.run()
 }
 
@@ -122,4 +127,12 @@ func (app *WasmClient) updataClientInfoHTML() {
 	fmt.Fprintf(&buf, "%v<br/>", msgCopyright)
 	div := js.Global().Get("document").Call("getElementById", "serviceinfo")
 	div.Set("innerHTML", buf.String())
+}
+
+func (app *WasmClient) handleResizeCanvas(this js.Value, args []js.Value) interface{} {
+	app.ResizeCanvas()
+	return nil
+}
+func (app *WasmClient) ResizeCanvas() {
+	app.vp.Resize()
 }
