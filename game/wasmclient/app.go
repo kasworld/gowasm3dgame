@@ -20,6 +20,7 @@ import (
 
 	"github.com/kasworld/actjitter"
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
+	"github.com/kasworld/gowasm3dgame/game/viewport3d"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connwasm"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_pid2rspfn"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_version"
@@ -36,7 +37,7 @@ type WasmClient struct {
 	ServerClientTictDiff int64
 	DispInterDur         *intervalduration.IntervalDuration
 
-	vp *Viewport3d
+	vp *viewport3d.Viewport3d
 }
 
 func InitApp() {
@@ -48,7 +49,7 @@ func InitApp() {
 		ClientJitter: actjitter.New("Client"),
 	}
 	app.DispInterDur = intervalduration.New("Display")
-	app.vp = NewViewport3d()
+	app.vp = viewport3d.New("canvas3d")
 	go app.run()
 }
 
@@ -101,7 +102,7 @@ func (app *WasmClient) drawCanvas(this js.Value, args []js.Value) interface{} {
 	defer act.End()
 
 	now := app.GetEstServerTick()
-	app.vp.draw(now)
+	app.vp.Draw(now)
 
 	return nil
 }

@@ -39,21 +39,15 @@ type RspHeartbeat_data struct {
 	Tick int64
 }
 
-type ReqNearInfo_data struct {
-	Dummy uint8
-}
-type RspNearInfo_data struct {
-	Dummy uint8
-}
-
-type ReqWorldInfo_data struct {
-	Dummy uint8
-}
-type RspWorldInfo_data struct {
-	Dummy uint8
-}
-
 type NotiInvalid_data struct {
+	Dummy uint8
+}
+
+type NotiWorldInfo_data struct {
+	Dummy uint8
+}
+
+type NotiNearInfo_data struct {
 	Dummy uint8
 }
 

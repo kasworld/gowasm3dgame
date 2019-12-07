@@ -86,8 +86,6 @@ func New(config serverconfig.Config) *Server {
 		w3d_idcmd.MakeTeam:  svr.bytesAPIFn_ReqMakeTeam,
 		w3d_idcmd.Act:       svr.bytesAPIFn_ReqAct,
 		w3d_idcmd.Heartbeat: svr.bytesAPIFn_ReqHeartbeat,
-		w3d_idcmd.NearInfo:  svr.bytesAPIFn_ReqNearInfo,
-		w3d_idcmd.WorldInfo: svr.bytesAPIFn_ReqWorldInfo,
 	}
 	svr.world = world.New(svr.log)
 	return svr

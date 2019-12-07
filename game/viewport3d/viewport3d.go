@@ -15,7 +15,6 @@ import (
 	"syscall/js"
 
 	"github.com/kasworld/direction"
-	"github.com/kasworld/goguelike2/game/clienttile"
 )
 
 type Viewport3d struct {
@@ -41,7 +40,7 @@ type Viewport3d struct {
 	cube js.Value
 }
 
-func New(cnvid string, ct *clienttile.ClientTile) *Viewport3d {
+func New(cnvid string) *Viewport3d {
 	vp := &Viewport3d{}
 	vp.threejs = js.Global().Get("THREE")
 	vp.scene = vp.threejs.Get("Scene").New()
@@ -111,7 +110,7 @@ func (vp *Viewport3d) calcViewCellValue() {
 	vp.camera.Call("updateProjectionMatrix")
 }
 
-func (vp *Viewport3d) Draw3DVP(dispCount int) {
+func (vp *Viewport3d) Draw(tick int64) {
 	vp.calcViewCellValue()
 
 	rot := vp.cube.Get("rotation")
