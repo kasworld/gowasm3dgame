@@ -12,43 +12,54 @@
 package viewport3d
 
 import (
-	"fmt"
 	"syscall/js"
-
-	"github.com/kasworld/direction"
 )
 
 type Viewport3d struct {
 	canvas js.Value
-	ctx3d  js.Value
+	// ctx3d  js.Value
 
-	zoomState  int
 	neecRecalc bool
 
 	ViewWidth  int
 	ViewHeight int
 
-	MoveType int
-	Grid     bool
-
-	MouseX   int
-	MouseY   int
-	MouseDir direction.Direction_Type
-
-	cube js.Value
+	threejs  js.Value
+	scene    js.Value
+	camera   js.Value
+	renderer js.Value
+	cube     js.Value
 }
 
 func New(cnvid string) *Viewport3d {
 	vp := &Viewport3d{}
 
-	vp.canvas = js.Global().Get("document").Call("getElementById", cnvid)
-	if !vp.canvas.Truthy() {
-		fmt.Printf("fail to get canvas\n")
-	}
-	vp.ctx3d = vp.canvas.Call("getContext", "webgl")
-	if !vp.ctx3d.Truthy() {
-		fmt.Printf("fail to get context\n")
-	}
+	// vp.canvas = js.Global().Get("document").Call("getElementById", cnvid)
+	// if !vp.canvas.Truthy() {
+	// 	fmt.Printf("fail to get canvas\n")
+	// }
+	// vp.ctx3d = vp.canvas.Call("getContext", "webgl")
+	// if !vp.ctx3d.Truthy() {
+	// 	fmt.Printf("fail to get context\n")
+	// }
+
+	vp.threejs = js.Global().Get("THREE")
+	vp.scene = vp.threejs.Get("Scene").New()
+	// cnvval := js.ValueOf(map[string]interface{}{"canvas": vp.canvas})
+	// vp.renderer = vp.threejs.Get("WebGLRenderer").New(cnvval)
+	vp.renderer = vp.threejs.Get("WebGLRenderer").New()
+	vp.canvas = vp.renderer.Get("domElement")
+	js.Global().Get("document").Get("body").Call("appendChild", vp.canvas)
+	geometry := vp.threejs.Get("BoxGeometry").New(1, 1, 1)
+	material := vp.threejs.Get("MeshBasicMaterial").New()
+	vp.cube = vp.threejs.Get("Mesh").New(geometry, material)
+	vp.scene.Call("add", vp.cube)
+	vp.camera = vp.threejs.Get("PerspectiveCamera").New(75, 1, 0.1, 2000)
+
+	js.Global().Get("console").Call("debug", vp.threejs)
+	js.Global().Get("console").Call("debug", vp.scene)
+	js.Global().Get("console").Call("debug", vp.renderer)
+	js.Global().Get("console").Call("debug", vp.camera)
 	return vp
 }
 
@@ -69,7 +80,6 @@ func (vp *Viewport3d) Focus() {
 }
 
 func (vp *Viewport3d) Zoom(state int) {
-	vp.zoomState = state
 	vp.neecRecalc = true
 }
 
@@ -96,13 +106,23 @@ func (vp *Viewport3d) calcViewCellValue() {
 
 	vp.canvas.Call("setAttribute", "width", vp.ViewWidth)
 	vp.canvas.Call("setAttribute", "height", vp.ViewHeight)
+
+	vp.renderer.Call("setSize", vp.ViewWidth, vp.ViewHeight)
+	vp.camera.Get("position").Set("x", 0)
+	vp.camera.Get("position").Set("y", 0)
+	vp.camera.Get("position").Set("z", 10)
+	vp.camera.Call("updateProjectionMatrix")
+
 }
 
 func (vp *Viewport3d) Draw(tick int64) {
 	vp.calcViewCellValue()
 
-	// rot := vp.cube.Get("rotation")
-	// rot.Set("x", rot.Get("x").Float()+0.01)
-	// rot.Set("y", rot.Get("y").Float()+0.01)
-	// vp.renderer.Call("render", vp.scene, vp.camera)
+	// vp.ctx3d.Call("clearColor", 0, 0, 0, 1)
+	// vp.ctx3d.Call("clear", vp.ctx3d.Get("COLOR_BUFFER_BIT"))
+
+	rot := vp.cube.Get("rotation")
+	rot.Set("x", rot.Get("x").Float()+0.01)
+	rot.Set("y", rot.Get("y").Float()+0.01)
+	vp.renderer.Call("render", vp.scene, vp.camera)
 }
