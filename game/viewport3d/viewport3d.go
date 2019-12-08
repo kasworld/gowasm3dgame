@@ -16,14 +16,11 @@ import (
 )
 
 type Viewport3d struct {
-	canvas js.Value
-	// ctx3d  js.Value
-
 	neecRecalc bool
-
 	ViewWidth  int
 	ViewHeight int
 
+	canvas   js.Value
 	threejs  js.Value
 	scene    js.Value
 	camera   js.Value
@@ -33,33 +30,21 @@ type Viewport3d struct {
 
 func New(cnvid string) *Viewport3d {
 	vp := &Viewport3d{}
-
-	// vp.canvas = js.Global().Get("document").Call("getElementById", cnvid)
-	// if !vp.canvas.Truthy() {
-	// 	fmt.Printf("fail to get canvas\n")
-	// }
-	// vp.ctx3d = vp.canvas.Call("getContext", "webgl")
-	// if !vp.ctx3d.Truthy() {
-	// 	fmt.Printf("fail to get context\n")
-	// }
-
 	vp.threejs = js.Global().Get("THREE")
 	vp.scene = vp.threejs.Get("Scene").New()
-	// cnvval := js.ValueOf(map[string]interface{}{"canvas": vp.canvas})
-	// vp.renderer = vp.threejs.Get("WebGLRenderer").New(cnvval)
 	vp.renderer = vp.threejs.Get("WebGLRenderer").New()
 	vp.canvas = vp.renderer.Get("domElement")
-	js.Global().Get("document").Get("body").Call("appendChild", vp.canvas)
+	js.Global().Get("document").Call("getElementById", "canvas3d").Call("appendChild", vp.canvas)
 	geometry := vp.threejs.Get("BoxGeometry").New(1, 1, 1)
 	material := vp.threejs.Get("MeshBasicMaterial").New()
 	vp.cube = vp.threejs.Get("Mesh").New(geometry, material)
 	vp.scene.Call("add", vp.cube)
 	vp.camera = vp.threejs.Get("PerspectiveCamera").New(75, 1, 0.1, 2000)
 
-	js.Global().Get("console").Call("debug", vp.threejs)
-	js.Global().Get("console").Call("debug", vp.scene)
-	js.Global().Get("console").Call("debug", vp.renderer)
-	js.Global().Get("console").Call("debug", vp.camera)
+	// js.Global().Get("console").Call("debug", vp.threejs)
+	// js.Global().Get("console").Call("debug", vp.scene)
+	// js.Global().Get("console").Call("debug", vp.renderer)
+	// js.Global().Get("console").Call("debug", vp.camera)
 	return vp
 }
 
@@ -117,9 +102,6 @@ func (vp *Viewport3d) calcViewCellValue() {
 
 func (vp *Viewport3d) Draw(tick int64) {
 	vp.calcViewCellValue()
-
-	// vp.ctx3d.Call("clearColor", 0, 0, 0, 1)
-	// vp.ctx3d.Call("clear", vp.ctx3d.Get("COLOR_BUFFER_BIT"))
 
 	rot := vp.cube.Get("rotation")
 	rot.Set("x", rot.Get("x").Float()+0.01)
