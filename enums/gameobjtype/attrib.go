@@ -26,7 +26,7 @@ var Attrib = [GameObjType_Count]struct {
 	Food:          {0, 3},
 }
 
-var collisionRule = [GameObjType_Count][GameObjType_Count]bool{
+var interactRule = [GameObjType_Count][GameObjType_Count]bool{
 	Main: {
 		Main:          true,
 		Shield:        true,
@@ -75,6 +75,11 @@ var collisionRule = [GameObjType_Count][GameObjType_Count]bool{
 	},
 }
 
-func CollisionTo(srcType, dstType GameObjType) bool {
-	return collisionRule[srcType][dstType]
+func InteractTo(srcType, dstType GameObjType) bool {
+	return interactRule[srcType][dstType]
+}
+
+func CollisionTo(srcType, dstType GameObjType, sqd float64) bool {
+	l := Attrib[srcType].Radius + Attrib[dstType].Radius
+	return interactRule[srcType][dstType] && sqd <= l*l
 }

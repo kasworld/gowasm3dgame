@@ -11,6 +11,13 @@
 
 package w3d_obj
 
+import (
+	"github.com/kasworld/gowasm2dgame/enums/acttype"
+	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/lib/vector3f"
+	"github.com/kasworld/htmlcolors"
+)
+
 type ReqInvalid_data struct {
 	Dummy uint8
 }
@@ -53,4 +60,39 @@ type NotiNearInfo_data struct {
 
 type NotiStatsInfo_data struct {
 	Dummy uint8
+}
+
+/////////////////////////////
+
+type World struct {
+	ID           string
+	BorderBounce vector3f.HyperRect
+	BorderOctree vector3f.HyperRect
+	Teams        []*Team
+}
+
+type Team struct {
+	ID      string
+	Color24 htmlcolors.Color24
+	Objs    []*GameObj
+}
+
+type GameObj struct {
+	ObjType gameobjtype.GameObjType
+	ID      string
+	PosVt   vector3f.Vector3f
+}
+
+func (o *GameObj) IsCollision(dst *GameObj) bool {
+	return gameobjtype.CollisionTo(
+		o.ObjType, dst.ObjType,
+		dst.PosVt.Sqd(o.PosVt),
+	)
+}
+
+type Act struct {
+	Act   acttype.ActType
+	Vt    vector3f.Vector3f
+	Count int
+	DstID string
 }
