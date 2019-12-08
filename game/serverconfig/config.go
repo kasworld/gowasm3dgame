@@ -25,7 +25,8 @@ type Config struct {
 	ServicePort           string         `default:":34101"  argname:""`
 	AdminPort             string         `default:":34201"  argname:""`
 	ConcurrentConnections int            `default:"1000" argname:""`
-	ActTurnPerSec         float64        `default:"30.0" argname:""`
+
+	ActTurnPerSec float64 `default:"30.0" argname:""`
 }
 
 func (config Config) MakeLogDir() string {

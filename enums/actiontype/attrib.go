@@ -9,13 +9,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package gameconst
+package actiontype
 
-const (
-	// WorldSize w,h,d
-	WorldSize     = 1000.0
-	APIncPerFrame = 10
-	ShieldCount   = 8
-	AIPerWorld    = 1000
-	ScorePerKill  = 1
-)
+var Attrib = [ActionType_Count]struct {
+	AP int
+}{
+	Accel:         {1},
+	Bullet:        {10},
+	SuperBullet:   {80},
+	HommingBullet: {100},
+	BurstBullet:   {10},
+}
