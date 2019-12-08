@@ -81,6 +81,7 @@ type GameObj struct {
 	ObjType gameobjtype.GameObjType
 	ID      string
 	PosVt   vector3f.Vector3f
+	MvVt    vector3f.Vector3f
 }
 
 func (o *GameObj) IsCollision(dst *GameObj) bool {

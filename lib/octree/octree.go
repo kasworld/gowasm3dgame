@@ -9,7 +9,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package octtree
+package octree
 
 import (
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
@@ -26,13 +26,13 @@ type OctreeObjI interface {
 type OctreeObjList []OctreeObjI
 
 type Octree struct {
-	BoundCube *vector3f.HyperRect
+	BoundCube vector3f.HyperRect
 	Center    vector3f.Vector3f
 	DataList  OctreeObjList
 	Children  [8]*Octree
 }
 
-func NewOctree(cube *vector3f.HyperRect) *Octree {
+func New(cube vector3f.HyperRect) *Octree {
 	rtn := Octree{
 		BoundCube: cube,
 		DataList:  make(OctreeObjList, 0, MaxOctreeData),
@@ -50,7 +50,7 @@ func (ot *Octree) Split() {
 	//log.Printf("split octree %v %v", ot.BoundCube, ot.Center)
 	for i, _ := range ot.Children {
 		newbound := ot.BoundCube.MakeCubeBy8Driect(ot.Center, i)
-		ot.Children[i] = NewOctree(newbound)
+		ot.Children[i] = New(newbound)
 	}
 }
 
@@ -71,7 +71,8 @@ func (ot *Octree) Insert(o OctreeObjI) bool {
 	}
 }
 
-func (ot *Octree) QueryByHyperRect(fn func(OctreeObjI) bool, hr *vector3f.HyperRect) bool {
+func (ot *Octree) QueryByHyperRect(
+	fn func(OctreeObjI) bool, hr vector3f.HyperRect) bool {
 	if !ot.BoundCube.IsOverlap(hr) {
 		return false
 	}

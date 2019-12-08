@@ -75,14 +75,14 @@ func (p Vector3f) LenTo(other Vector3f) float64 {
 	return math.Sqrt(p.Sqd(other))
 }
 
-func (p *Vector3f) Normalize() {
-	d := p.Abs()
-	if d > 0 {
-		p[0] /= d
-		p[1] /= d
-		p[2] /= d
-	}
-}
+// func (p *Vector3f) Normalize() {
+// 	d := p.Abs()
+// 	if d > 0 {
+// 		p[0] /= d
+// 		p[1] /= d
+// 		p[2] /= d
+// 	}
+// }
 func (p Vector3f) Normalized() Vector3f {
 	d := p.Abs()
 	if d > 0 {
@@ -144,7 +144,8 @@ func (p Vector3f) Project(other Vector3f) Vector3f {
 
 // for aim ahead target with projectile
 // return time dur
-func (srcpos Vector3f) CalcAimAheadDur(dstpos Vector3f, dstmv Vector3f, bulletspeed float64) float64 {
+func (srcpos Vector3f) CalcAimAheadDur(
+	dstpos Vector3f, dstmv Vector3f, bulletspeed float64) float64 {
 	totargetvt := dstpos.Sub(srcpos)
 	a := dstmv.Dot(dstmv) - bulletspeed*bulletspeed
 	b := 2 * dstmv.Dot(totargetvt)
@@ -183,13 +184,13 @@ func RandVector3D(st, end float64) Vector3f {
 	}
 }
 
-func RandVector(st, end Vector3f) Vector3f {
-	return Vector3f{
-		rand.Float64()*(end[0]-st[0]) + st[0],
-		rand.Float64()*(end[1]-st[1]) + st[1],
-		rand.Float64()*(end[2]-st[2]) + st[2],
-	}
-}
+// func RandVector(st, end Vector3f) Vector3f {
+// 	return Vector3f{
+// 		rand.Float64()*(end[0]-st[0]) + st[0],
+// 		rand.Float64()*(end[1]-st[1]) + st[1],
+// 		rand.Float64()*(end[2]-st[2]) + st[2],
+// 	}
+// }
 
 func (center Vector3f) To8Direct(v2 Vector3f) int {
 	rtn := 0
@@ -201,7 +202,7 @@ func (center Vector3f) To8Direct(v2 Vector3f) int {
 	return rtn
 }
 
-func (h *HyperRect) MakeCubeBy8Driect(center Vector3f, direct8 int) *HyperRect {
+func (h HyperRect) MakeCubeBy8Driect(center Vector3f, direct8 int) HyperRect {
 	rtn := Vector3f{}
 	for i := 0; i < 3; i++ {
 		if direct8&(1<<uint(i)) != 0 {
@@ -217,32 +218,32 @@ type HyperRect struct {
 	Min, Max Vector3f
 }
 
-func (h *HyperRect) Center() Vector3f {
+func (h HyperRect) Center() Vector3f {
 	return h.Min.Add(h.Max).Idiv(2)
 }
 
-func (h *HyperRect) DiagLen() float64 {
+func (h HyperRect) DiagLen() float64 {
 	return h.Min.LenTo(h.Max)
 }
 
-func (h *HyperRect) SizeVector() Vector3f {
+func (h HyperRect) SizeVector() Vector3f {
 	return h.Max.Sub(h.Min)
 }
 
-func (h *HyperRect) IsContact(c Vector3f, r float64) bool {
+func (h HyperRect) IsContact(c Vector3f, r float64) bool {
 	hc := h.Center()
 	hl := h.DiagLen()
 	return hl/2+r >= hc.LenTo(c)
 }
 
-func NewHyperRectByCR(c Vector3f, r float64) *HyperRect {
-	return &HyperRect{
+func NewHyperRectByCR(c Vector3f, r float64) HyperRect {
+	return HyperRect{
 		Vector3f{c[0] - r, c[1] - r, c[2] - r},
 		Vector3f{c[0] + r, c[1] + r, c[2] + r},
 	}
 }
 
-func (h *HyperRect) RandVector() Vector3f {
+func (h HyperRect) RandVector() Vector3f {
 	return Vector3f{
 		rand.Float64()*(h.Max[0]-h.Min[0]) + h.Min[0],
 		rand.Float64()*(h.Max[1]-h.Min[1]) + h.Min[1],
@@ -250,24 +251,24 @@ func (h *HyperRect) RandVector() Vector3f {
 	}
 }
 
-func (h *HyperRect) Move(v Vector3f) *HyperRect {
-	return &HyperRect{
+func (h HyperRect) Move(v Vector3f) HyperRect {
+	return HyperRect{
 		Min: h.Min.Add(v),
 		Max: h.Max.Add(v),
 	}
 }
 
-func (h *HyperRect) IMul(i float64) *HyperRect {
+func (h HyperRect) IMul(i float64) HyperRect {
 	hs := h.SizeVector().Imul(i / 2)
 	hc := h.Center()
-	return &HyperRect{
+	return HyperRect{
 		Min: hc.Sub(hs),
 		Max: hc.Add(hs),
 	}
 }
 
 // make normalized hyperrect , if not need use HyperRect{Min: , Max:}
-func NewHyperRect(v1 Vector3f, v2 Vector3f) *HyperRect {
+func NewHyperRect(v1 Vector3f, v2 Vector3f) HyperRect {
 	rtn := HyperRect{
 		Min: Vector3f{},
 		Max: Vector3f{},
@@ -281,23 +282,16 @@ func NewHyperRect(v1 Vector3f, v2 Vector3f) *HyperRect {
 			rtn.Min[i] = v1[i]
 		}
 	}
-	return &rtn
+	return rtn
 }
 
-func (h1 *HyperRect) IsOverlap(h2 *HyperRect) bool {
+func (h1 HyperRect) IsOverlap(h2 HyperRect) bool {
 	return !((h1.Min[0] > h2.Max[0] || h1.Max[0] < h2.Min[0]) ||
 		(h1.Min[1] > h2.Max[1] || h1.Max[1] < h2.Min[1]) ||
 		(h1.Min[2] > h2.Max[2] || h1.Max[2] < h2.Min[2]))
-
-	// for i := 0; i < 3; i++ {
-	// 	if !between(h1.Min[i], h1.Max[i], h2.Min[i]) && !between(h1.Min[i], h1.Max[i], h2.Max[i]) {
-	// 		return false
-	// 	}
-	// }
-	// return true
 }
 
-func (h1 *HyperRect) IsIn(h2 *HyperRect) bool {
+func (h1 HyperRect) IsIn(h2 HyperRect) bool {
 	for i := 0; i < 3; i++ {
 		if h1.Min[i] < h2.Min[i] || h1.Max[i] > h2.Max[i] {
 			return false
@@ -306,19 +300,13 @@ func (h1 *HyperRect) IsIn(h2 *HyperRect) bool {
 	return true
 }
 
-func (p Vector3f) IsIn(hr *HyperRect) bool {
+func (p Vector3f) IsIn(hr HyperRect) bool {
 	return hr.Min[0] <= p[0] && p[0] <= hr.Max[0] &&
 		hr.Min[1] <= p[1] && p[1] <= hr.Max[1] &&
 		hr.Min[2] <= p[2] && p[2] <= hr.Max[2]
-	// for i := 0; i < 3; i++ {
-	// 	if hr.Min[i] > p[i] || hr.Max[i] < p[i] {
-	// 		return false
-	// 	}
-	// }
-	// return true
 }
 
-func (p *Vector3f) MakeIn(hr *HyperRect) int {
+func (p Vector3f) MakeIn(hr HyperRect) (Vector3f, int) {
 	changed := 0
 	var i uint
 	for i = 0; i < 3; i++ {
@@ -331,5 +319,5 @@ func (p *Vector3f) MakeIn(hr *HyperRect) int {
 			changed += 1 << (i * 2)
 		}
 	}
-	return changed
+	return p, changed
 }

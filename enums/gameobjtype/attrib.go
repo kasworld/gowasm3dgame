@@ -14,17 +14,23 @@ package gameobjtype
 var Attrib = [GameObjType_Count]struct {
 	SpeedLimit float64
 	Radius     float64
+	AddOctree  bool
 }{
-	Main:          {300, 10},
-	Shield:        {200, 5},
-	Bullet:        {300, 5},
-	HommingBullet: {200, 7},
-	SuperBullet:   {600, 15},
-	Deco:          {600, 3},
-	Mark:          {100, 3},
-	Hard:          {0, 3},
-	Food:          {0, 3},
+	Main:          {300, 10, true},
+	Shield:        {200, 5, true},
+	Bullet:        {300, 5, true},
+	HommingBullet: {200, 7, true},
+	SuperBullet:   {600, 15, true},
+	Deco:          {600, 3, false},
+	Mark:          {100, 3, false},
+	Hard:          {0, 3, false},
+	Food:          {0, 3, true},
 }
+
+const (
+	// MaxRadius need oct tree boundary
+	MaxRadius = 15
+)
 
 var interactRule = [GameObjType_Count][GameObjType_Count]bool{
 	Main: {

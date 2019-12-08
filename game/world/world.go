@@ -11,11 +11,70 @@
 
 package world
 
-import "github.com/kasworld/gowasm3dgame/lib/w3dlog"
+import (
+	"math/rand"
+	"time"
+
+	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/game/gameconst"
+	"github.com/kasworld/gowasm3dgame/lib/octree"
+	"github.com/kasworld/gowasm3dgame/lib/vector3f"
+	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
+	"github.com/kasworld/uuidstr"
+)
 
 type World struct {
+	rnd *rand.Rand      `prettystring:"hide"`
+	log *w3dlog.LogBase `prettystring:"hide"`
+
+	UUID         string
+	BorderBounce vector3f.HyperRect
+	BorderOctree vector3f.HyperRect
+	Teams        []*Team
+	octree       *octree.Octree
 }
 
 func New(l *w3dlog.LogBase) *World {
-	return &World{}
+	wd := &World{
+		log:  l,
+		rnd:  rand.New(rand.NewSource(time.Now().UnixNano())),
+		UUID: uuidstr.New(),
+	}
+	wd.BorderBounce = vector3f.HyperRect{
+		Min: vector3f.Vector3f{
+			-gameconst.WorldSize / 2,
+			-gameconst.WorldSize / 2,
+			-gameconst.WorldSize / 2,
+		},
+		Max: vector3f.Vector3f{
+			gameconst.WorldSize / 2,
+			gameconst.WorldSize / 2,
+			gameconst.WorldSize / 2,
+		},
+	}
+	wd.BorderOctree = vector3f.HyperRect{
+		Min: vector3f.Vector3f{
+			-gameconst.WorldSize/2 - gameobjtype.MaxRadius,
+			-gameconst.WorldSize/2 - gameobjtype.MaxRadius,
+			-gameconst.WorldSize/2 - gameobjtype.MaxRadius,
+		},
+		Max: vector3f.Vector3f{
+			gameconst.WorldSize/2 + gameobjtype.MaxRadius,
+			gameconst.WorldSize/2 + gameobjtype.MaxRadius,
+			gameconst.WorldSize/2 + gameobjtype.MaxRadius,
+		},
+	}
+	return wd
+}
+
+func (wd *World) MakeOctree() *octree.Octree {
+	rtn := octree.New(wd.BorderOctree)
+	for _, v := range wd.Teams {
+		for _, o := range v.Objs {
+			if o != nil && gameobjtype.Attrib[o.ObjType].AddOctree {
+				rtn.Insert(o)
+			}
+		}
+	}
+	return rtn
 }
