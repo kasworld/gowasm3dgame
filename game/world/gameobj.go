@@ -43,7 +43,9 @@ func (o *GameObj) IsCollision(dst *GameObj) bool {
 }
 
 type Team struct {
-	UUID    string
-	Color24 htmlcolors.Color24
-	Objs    []*GameObj
+	UUID        string
+	Objs        []*GameObj
+	Color24     htmlcolors.Color24
+	ActionPoint int
+	Score       int
 }
