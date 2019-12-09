@@ -11,20 +11,25 @@
 
 package gameobjtype
 
+import "time"
+
+const LongLife = 3600 * 24 * 365
+
 var Attrib = [GameObjType_Count]struct {
 	SpeedLimit float64
 	Radius     float64
 	AddOctree  bool
+	LiftTick   int64
 }{
-	Main:          {300, 10, true},
-	Shield:        {200, 5, true},
-	Bullet:        {300, 5, true},
-	HommingBullet: {200, 7, true},
-	SuperBullet:   {600, 15, true},
-	Deco:          {600, 3, false},
-	Mark:          {100, 3, false},
-	Hard:          {0, 3, false},
-	Food:          {0, 3, true},
+	Main:          {300, 10, true, int64(time.Second) * LongLife},
+	Shield:        {200, 5, true, int64(time.Second) * LongLife},
+	Bullet:        {300, 5, true, int64(time.Second) * 10},
+	HommingBullet: {200, 7, true, int64(time.Second) * 60},
+	SuperBullet:   {600, 15, true, int64(time.Second) * 10},
+	Deco:          {600, 3, false, int64(time.Second) * LongLife},
+	Mark:          {100, 3, false, int64(time.Second) * LongLife},
+	Hard:          {0, 3, false, int64(time.Second) * LongLife},
+	Food:          {0, 3, true, int64(time.Second) * LongLife},
 }
 
 const (
