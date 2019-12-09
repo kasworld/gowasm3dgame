@@ -38,10 +38,10 @@ func (v Vector3f) String() string {
 	return fmt.Sprintf("[%5.2f,%5.2f,%5.2f]", v[0], v[1], v[2])
 }
 
-var V3DZero = Vector3f{0, 0, 0}
-var V3DUnitX = Vector3f{1, 0, 0}
-var V3DUnitY = Vector3f{0, 1, 0}
-var V3DUnitZ = Vector3f{0, 0, 1}
+var VtZero = Vector3f{0, 0, 0}
+var VtUnitX = Vector3f{1, 0, 0}
+var VtUnitY = Vector3f{0, 1, 0}
+var VtUnitZ = Vector3f{0, 0, 1}
 
 func (p Vector3f) Eq(other Vector3f) bool {
 	return p == other
@@ -51,7 +51,7 @@ func (p Vector3f) Ne(other Vector3f) bool {
 	return !p.Eq(other)
 }
 func (p Vector3f) IsZero() bool {
-	return p.Eq(V3DZero)
+	return p.Eq(VtZero)
 }
 func (p Vector3f) Add(other Vector3f) Vector3f {
 	return Vector3f{p[0] + other[0], p[1] + other[1], p[2] + other[2]}
