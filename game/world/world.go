@@ -28,8 +28,8 @@ type World struct {
 	log *w3dlog.LogBase `prettystring:"hide"`
 
 	UUID         string
-	BorderBounce vector3f.HyperRect
-	BorderOctree vector3f.HyperRect
+	BorderBounce vector3f.Cube
+	BorderOctree vector3f.Cube
 	Teams        []*Team
 	octree       *octree.Octree
 }
@@ -40,7 +40,7 @@ func New(l *w3dlog.LogBase) *World {
 		rnd:  rand.New(rand.NewSource(time.Now().UnixNano())),
 		UUID: uuidstr.New(),
 	}
-	wd.BorderBounce = vector3f.HyperRect{
+	wd.BorderBounce = vector3f.Cube{
 		Min: vector3f.Vector3f{
 			-gameconst.WorldSize / 2,
 			-gameconst.WorldSize / 2,
@@ -52,7 +52,7 @@ func New(l *w3dlog.LogBase) *World {
 			gameconst.WorldSize / 2,
 		},
 	}
-	wd.BorderOctree = vector3f.HyperRect{
+	wd.BorderOctree = vector3f.Cube{
 		Min: vector3f.Vector3f{
 			-gameconst.WorldSize/2 - gameobjtype.MaxRadius,
 			-gameconst.WorldSize/2 - gameobjtype.MaxRadius,

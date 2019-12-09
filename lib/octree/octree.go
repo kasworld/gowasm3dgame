@@ -26,13 +26,13 @@ type OctreeObjI interface {
 type OctreeObjList []OctreeObjI
 
 type Octree struct {
-	BoundCube vector3f.HyperRect
+	BoundCube vector3f.Cube
 	Center    vector3f.Vector3f
 	DataList  OctreeObjList
 	Children  [8]*Octree
 }
 
-func New(cube vector3f.HyperRect) *Octree {
+func New(cube vector3f.Cube) *Octree {
 	rtn := Octree{
 		BoundCube: cube,
 		DataList:  make(OctreeObjList, 0, MaxOctreeData),
@@ -71,8 +71,8 @@ func (ot *Octree) Insert(o OctreeObjI) bool {
 	}
 }
 
-func (ot *Octree) QueryByHyperRect(
-	fn func(OctreeObjI) bool, hr vector3f.HyperRect) bool {
+func (ot *Octree) QueryByCube(
+	fn func(OctreeObjI) bool, hr vector3f.Cube) bool {
 	if !ot.BoundCube.IsOverlap(hr) {
 		return false
 	}
@@ -88,7 +88,7 @@ func (ot *Octree) QueryByHyperRect(
 		return false
 	}
 	for _, o := range ot.Children {
-		quit := o.QueryByHyperRect(fn, hr)
+		quit := o.QueryByCube(fn, hr)
 		if quit {
 			return true
 		}

@@ -66,8 +66,8 @@ type NotiStatsInfo_data struct {
 
 type World struct {
 	ID           string
-	BorderBounce vector3f.HyperRect
-	BorderOctree vector3f.HyperRect
+	BorderBounce vector3f.Cube
+	BorderOctree vector3f.Cube
 	Teams        []*Team
 }
 
