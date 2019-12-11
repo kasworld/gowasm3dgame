@@ -12,42 +12,91 @@
 package w3d_obj
 
 import (
-	"github.com/kasworld/gowasm3dgame/enums/acttype"
+	"time"
+
 	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/htmlcolors"
 )
 
-type Stage struct {
-	ID           string
-	BorderBounce vector3f.Cube
-	BorderOctree vector3f.Cube
-	Teams        []*Team
-}
-
 type Team struct {
-	ID      string
-	Color24 htmlcolors.Color24
-	Objs    []*GameObj
+	ID       string
+	Color24  htmlcolors.Color24
+	Ball     *GameObj
+	HomeMark *GameObj
+	Objs     []*GameObj
 }
 
 type GameObj struct {
-	ObjType gameobjtype.GameObjType
-	ID      string
-	PosVt   vector3f.Vector3f
-	MvVt    vector3f.Vector3f
+	GOType       gameobjtype.GameObjType
+	UUID         string
+	BirthTick    int64
+	LastMoveTick int64 // time.unixnano
+	PosVt        vector3f.Vector3f
+	MvVt         vector3f.Vector3f
+	AccVt        vector3f.Vector3f
+	DstUUID      string // move to dest
 }
 
 func (o *GameObj) IsCollision(dst *GameObj) bool {
 	return gameobjtype.CollisionTo(
-		o.ObjType, dst.ObjType,
+		o.GOType, dst.GOType,
 		dst.PosVt.Sqd(o.PosVt),
 	)
 }
 
-type Act struct {
-	Act   acttype.ActType
-	Vt    vector3f.Vector3f
-	Count int
-	DstID string
+func (o *GameObj) MoveStraight(now int64) {
+	diff := float64(now-o.LastMoveTick) / float64(time.Second)
+	o.LastMoveTick = now
+	o.PosVt = o.PosVt.Add(o.MvVt.MulF(diff))
+}
+
+func (o *GameObj) MoveHomming(now int64, dstPosVt vector3f.Vector3f) {
+	diff := float64(now-o.LastMoveTick) / float64(time.Second)
+	o.LastMoveTick = now
+	o.PosVt = o.PosVt.Add(o.MvVt.MulF(diff))
+
+	maxv := gameobjtype.Attrib[o.GOType].SpeedLimit
+	dxyVt := dstPosVt.Sub(o.PosVt)
+	o.MvVt = o.MvVt.Add(dxyVt.Normalize().MulF(maxv))
+}
+
+////////////////////
+
+func (o *GameObj) Move_accel(now int64) bool {
+	dur := float64(now-o.LastMoveTick) / float64(time.Second)
+	o.LastMoveTick = now
+	o.MvVt = o.MvVt.Add(o.AccVt.MulF(dur))
+	if o.MvVt.Abs() > gameobjtype.Attrib[o.GOType].SpeedLimit {
+		o.MvVt = o.MvVt.NormalizedTo(gameobjtype.Attrib[o.GOType].SpeedLimit)
+	}
+	o.PosVt = o.PosVt.Add(o.MvVt.MulF(dur))
+	return true
+}
+
+func (o *GameObj) Move_rand(now int64, rndAccVt vector3f.Vector3f) bool {
+	dur := float64(now-o.LastMoveTick) / float64(time.Second)
+	o.LastMoveTick = now
+
+	o.AccVt = rndAccVt
+	o.MvVt = o.MvVt.Add(o.AccVt.MulF(dur))
+	if o.MvVt.Abs() > gameobjtype.Attrib[o.GOType].SpeedLimit {
+		o.MvVt = o.MvVt.NormalizedTo(gameobjtype.Attrib[o.GOType].SpeedLimit)
+	}
+	o.PosVt = o.PosVt.Add(o.MvVt.MulF(dur))
+	return true
+}
+
+func (o *GameObj) Move_shield(now int64, dstObj *GameObj) bool {
+	dur := float64(now-o.LastMoveTick) / float64(time.Second)
+	axis := dstObj.MvVt
+	p := dstObj.MvVt.Cross(o.MvVt).NormalizedTo(20)
+	o.PosVt = dstObj.PosVt.Add(p.RotateAround(axis, dur+o.AccVt.Abs()))
+	return true
+}
+
+func (o *GameObj) Move_homming(now int64, dstObj *GameObj) bool {
+	// how to other team obj pos? without panic
+	o.AccVt = dstObj.PosVt.Sub(o.PosVt).NormalizedTo(gameobjtype.Attrib[o.GOType].SpeedLimit)
+	return o.Move_accel(now)
 }

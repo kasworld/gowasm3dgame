@@ -11,6 +11,12 @@
 
 package w3d_obj
 
+import (
+	"github.com/kasworld/gowasm3dgame/enums/acttype"
+	"github.com/kasworld/gowasm3dgame/enums/acttype_stats"
+	"github.com/kasworld/gowasm3dgame/lib/vector3f"
+)
+
 type ReqInvalid_data struct {
 	Dummy uint8
 }
@@ -44,11 +50,22 @@ type NotiInvalid_data struct {
 }
 
 type NotiStageInfo_data struct {
-	Dummy uint8
+	Tick         int64
+	ID           string
+	BorderBounce vector3f.Cube
+	BorderOctree vector3f.Cube
+	Teams        []*Team
 }
 
 type NotiStatsInfo_data struct {
-	Dummy uint8
+	ActStats []acttype_stats.ActTypeStat
 }
 
 /////////////////////////////
+
+type Act struct {
+	Act      acttype.ActType
+	Vt       vector3f.Vector3f
+	Count    int
+	DstObjID string
+}

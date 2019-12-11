@@ -19,9 +19,9 @@ var Attrib = [GameObjType_Count]struct {
 	SpeedLimit float64
 	Radius     float64
 	AddOctree  bool
-	LiftTick   int64
+	LifeTick   int64
 }{
-	Main:          {300, 10, true, int64(time.Second) * LongLife},
+	Ball:          {300, 10, true, int64(time.Second) * LongLife},
 	Shield:        {200, 5, true, int64(time.Second) * LongLife},
 	Bullet:        {300, 5, true, int64(time.Second) * 10},
 	HommingBullet: {200, 7, true, int64(time.Second) * 60},
@@ -38,8 +38,8 @@ const (
 )
 
 var interactRule = [GameObjType_Count][GameObjType_Count]bool{
-	Main: {
-		Main:          true,
+	Ball: {
+		Ball:          true,
 		Shield:        true,
 		Bullet:        true,
 		HommingBullet: true,
@@ -47,7 +47,7 @@ var interactRule = [GameObjType_Count][GameObjType_Count]bool{
 		Hard:          true,
 	},
 	Shield: {
-		Main:          true,
+		Ball:          true,
 		Shield:        true,
 		Bullet:        true,
 		HommingBullet: true,
@@ -55,7 +55,7 @@ var interactRule = [GameObjType_Count][GameObjType_Count]bool{
 		Hard:          true,
 	},
 	Bullet: {
-		Main:          true,
+		Ball:          true,
 		Shield:        true,
 		Bullet:        true,
 		HommingBullet: true,
@@ -63,7 +63,7 @@ var interactRule = [GameObjType_Count][GameObjType_Count]bool{
 		Hard:          true,
 	},
 	HommingBullet: {
-		Main:          true,
+		Ball:          true,
 		Shield:        true,
 		Bullet:        true,
 		HommingBullet: true,
@@ -71,7 +71,7 @@ var interactRule = [GameObjType_Count][GameObjType_Count]bool{
 		Hard:          true,
 	},
 	SuperBullet: {
-		Main:          true,
+		Ball:          true,
 		Shield:        true,
 		Bullet:        true,
 		HommingBullet: true,
@@ -82,7 +82,7 @@ var interactRule = [GameObjType_Count][GameObjType_Count]bool{
 	Mark: {},
 	Hard: {},
 	Food: {
-		Main: true,
+		Ball: true,
 	},
 }
 

@@ -12,6 +12,7 @@
 package stage
 
 import (
+	"context"
 	"math/rand"
 	"time"
 
@@ -22,6 +23,8 @@ import (
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connmanager"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idnoti"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/uuidstr"
 )
 
@@ -53,26 +56,26 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 
 	wd.BorderBounce = vector3f.Cube{
 		Min: vector3f.Vector3f{
-			-gameconst.WorldSize / 2,
-			-gameconst.WorldSize / 2,
-			-gameconst.WorldSize / 2,
+			-gameconst.StageSize / 2,
+			-gameconst.StageSize / 2,
+			-gameconst.StageSize / 2,
 		},
 		Max: vector3f.Vector3f{
-			gameconst.WorldSize / 2,
-			gameconst.WorldSize / 2,
-			gameconst.WorldSize / 2,
+			gameconst.StageSize / 2,
+			gameconst.StageSize / 2,
+			gameconst.StageSize / 2,
 		},
 	}
 	wd.BorderOctree = vector3f.Cube{
 		Min: vector3f.Vector3f{
-			-gameconst.WorldSize/2 - gameobjtype.MaxRadius,
-			-gameconst.WorldSize/2 - gameobjtype.MaxRadius,
-			-gameconst.WorldSize/2 - gameobjtype.MaxRadius,
+			-gameconst.StageSize/2 - gameobjtype.MaxRadius,
+			-gameconst.StageSize/2 - gameobjtype.MaxRadius,
+			-gameconst.StageSize/2 - gameobjtype.MaxRadius,
 		},
 		Max: vector3f.Vector3f{
-			gameconst.WorldSize/2 + gameobjtype.MaxRadius,
-			gameconst.WorldSize/2 + gameobjtype.MaxRadius,
-			gameconst.WorldSize/2 + gameobjtype.MaxRadius,
+			gameconst.StageSize/2 + gameobjtype.MaxRadius,
+			gameconst.StageSize/2 + gameobjtype.MaxRadius,
+			gameconst.StageSize/2 + gameobjtype.MaxRadius,
 		},
 	}
 	return wd
@@ -82,10 +85,181 @@ func (wd *Stage) MakeOctree() *octree.Octree {
 	rtn := octree.New(wd.BorderOctree)
 	for _, v := range wd.Teams {
 		for _, o := range v.Objs {
-			if o != nil && gameobjtype.Attrib[o.ObjType].AddOctree {
+			if o != nil && gameobjtype.Attrib[o.GOType].AddOctree {
 				rtn.Insert(o)
 			}
 		}
+	}
+	return rtn
+}
+
+func (stg *Stage) Run(ctx context.Context) {
+
+	timerInfoTk := time.NewTicker(1 * time.Second)
+	defer timerInfoTk.Stop()
+
+	turnDur := time.Duration(float64(time.Second) / stg.config.ActTurnPerSec)
+	timerTurnTk := time.NewTicker(turnDur)
+	defer timerTurnTk.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-timerInfoTk.C:
+			si := stg.ToStatsInfo()
+			conlist := stg.Conns.GetList()
+			for _, v := range conlist {
+				v.SendNotiPacket(w3d_idnoti.StatsInfo,
+					si,
+				)
+			}
+		case <-timerTurnTk.C:
+			stg.Turn()
+			si := stg.ToStageInfo()
+			conlist := stg.Conns.GetList()
+			for _, v := range conlist {
+				v.SendNotiPacket(w3d_idnoti.StageInfo,
+					si,
+				)
+			}
+		}
+	}
+}
+
+func (stg *Stage) Turn() {
+	now := time.Now().UnixNano()
+
+	// respawn dead team
+	for _, bt := range stg.Teams {
+		if !bt.IsAlive && bt.RespawnTick < now {
+			bt.RespawnBall(now)
+		}
+	}
+
+	// aienv := stg.move(now)
+	// for _, bt := range stg.Teams {
+	// 	if !bt.IsAlive {
+	// 		continue
+	// 	}
+	// 	actObj := stg.AI(bt, now, aienv)
+	// 	if bt.GetRemainAct(now, actObj.Act) > 0 {
+	// 		bt.ApplyAct(actObj)
+	// 	} else {
+	// 		stg.log.Fatal("OverAct %v %v", bt, actObj)
+	// 	}
+	// }
+}
+
+func (stg *Stage) move(now int64) *octree.Octree {
+
+	for _, bt := range stg.Teams {
+		if !bt.IsAlive {
+			continue
+		}
+		toDelList := stg.MoveTeam(bt, now)
+		_ = toDelList
+	}
+	aienv := stg.MakeOctree()
+	// toDelList, aienv := stg.checkCollision()
+	// for _, v := range toDelList {
+	// 	stg.AddEffectByGameObj(v)
+	// 	if v.GOType == gameobjtype.Ball {
+	// 		stg.handleBallKilled(now, v)
+	// 	}
+	// }
+
+	return aienv
+}
+
+func (stg *Stage) handleBallKilled(now int64, gobj *GameObj) {
+	for _, bt := range stg.Teams {
+		// find ballteam
+		if bt.Ball.UUID == gobj.UUID {
+			bt.IsAlive = false
+			// regist respawn
+			bt.RespawnTick = now + int64(time.Second)*gameconst.BallRespawnDurSec
+
+			// add effect
+			for _, v := range bt.Objs {
+				if v.toDelete {
+					continue
+				}
+				v.toDelete = true
+			}
+			return
+		}
+	}
+	stg.log.Fatal("ball not in ballteam? %v", gobj)
+}
+
+func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
+	toDeleteList := make([]*GameObj, 0)
+	bt.Ball.Move_accel(now)
+	bt.Ball.BounceNormalize(gameconst.StageSize)
+	for _, v := range bt.Objs {
+		if v.toDelete {
+			continue
+		}
+		switch v.GOType {
+		default:
+		case gameobjtype.Bullet, gameobjtype.SuperBullet:
+			v.Move_accel(now)
+			if !v.PosVt.IsIn(stg.BorderBounce) {
+				v.toDelete = true
+				toDeleteList = append(toDeleteList, v)
+			}
+		case gameobjtype.Shield:
+			v.Move_circular(now, bt.Ball)
+		case gameobjtype.HommingBullet:
+			findDst := false
+			for _, dstbt := range stg.Teams {
+				if !dstbt.IsAlive {
+					continue
+				}
+				if dstbt.Ball.UUID == v.DstUUID {
+					findDst = true
+					v.Move_homming(now, dstbt.Ball)
+					break
+				}
+			}
+			if !findDst {
+				v.Move_accel(now)
+				if !v.PosVt.IsIn(stg.BorderBounce) {
+					v.toDelete = true
+					toDeleteList = append(toDeleteList, v)
+				}
+			}
+		}
+		if !v.toDelete && !v.CheckLife(now) {
+			v.toDelete = true
+			toDeleteList = append(toDeleteList, v)
+		}
+	}
+	return toDeleteList
+}
+
+func (stg *Stage) ToStageInfo() *w3d_obj.NotiStageInfo_data {
+	now := time.Now().UnixNano()
+	rtn := &w3d_obj.NotiStageInfo_data{
+		Tick:         now,
+		ID:           stg.UUID,
+		BorderBounce: stg.BorderBounce,
+		BorderOctree: stg.BorderOctree,
+	}
+	for _, bt := range stg.Teams {
+		if !bt.IsAlive {
+			continue
+		}
+		rtn.Teams = append(rtn.Teams, bt.ToPacket())
+	}
+	return rtn
+}
+
+func (stg *Stage) ToStatsInfo() *w3d_obj.NotiStatsInfo_data {
+	rtn := &w3d_obj.NotiStatsInfo_data{}
+	for _, bt := range stg.Teams {
+		rtn.ActStats = append(rtn.ActStats, bt.ActStats)
 	}
 	return rtn
 }

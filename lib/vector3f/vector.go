@@ -65,10 +65,10 @@ func (p Vector3f) Sub(other Vector3f) Vector3f {
 func (p Vector3f) Mul(other Vector3f) Vector3f {
 	return Vector3f{p[0] * other[0], p[1] * other[1], p[2] * other[2]}
 }
-func (p Vector3f) Imul(other float64) Vector3f {
+func (p Vector3f) MulF(other float64) Vector3f {
 	return Vector3f{p[0] * other, p[1] * other, p[2] * other}
 }
-func (p Vector3f) Idiv(other float64) Vector3f {
+func (p Vector3f) DivF(other float64) Vector3f {
 	return Vector3f{p[0] / other, p[1] / other, p[2] / other}
 }
 func (p Vector3f) Abs() float64 {
@@ -87,17 +87,17 @@ func (p Vector3f) LenTo(other Vector3f) float64 {
 	return math.Sqrt(p.Sqd(other))
 }
 
-func (p Vector3f) Normalized() Vector3f {
+func (p Vector3f) Normalize() Vector3f {
 	d := p.Abs()
 	if d > 0 {
-		return p.Idiv(d)
+		return p.DivF(d)
 	}
 	return p
 }
 func (p Vector3f) NormalizedTo(l float64) Vector3f {
 	d := p.Abs() / l
 	if d != 0 {
-		return p.Idiv(d)
+		return p.DivF(d)
 	}
 	return p
 }
@@ -142,8 +142,8 @@ func (p Vector3f) Angle(other Vector3f) float64 {
 }
 func (p Vector3f) Project(other Vector3f) Vector3f {
 	// Return one vector projected on the vector other
-	n := other.Normalized()
-	return n.Imul(p.Dot(n))
+	n := other.Normalize()
+	return n.MulF(p.Dot(n))
 }
 
 // for aim ahead target with projectile

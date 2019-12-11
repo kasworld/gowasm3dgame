@@ -12,14 +12,15 @@
 package gameconst
 
 const (
-	// WorldSize w,h,d
-	WorldSize  = 1000.0
-	AIPerWorld = 1000
-	WorldCount = 100
+	// StageSize w,h,d
+	StageSize  = 1000.0
+	AIPerStage = 1000
+	StageCount = 100
 
 	// game rule relate
-	APIncPerFrame = 10
-	TeamPerWorld  = 10
-	ShieldCount   = 8
-	ScorePerKill  = 1
+	APIncPerFrame     = 10
+	TeamPerStage      = 10
+	ShieldCount       = 8
+	ScorePerKill      = 1
+	BallRespawnDurSec = 5
 )

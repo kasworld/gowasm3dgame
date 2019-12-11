@@ -14,22 +14,20 @@ package vector3f
 import "math/rand"
 
 type Cube struct {
-	Min, Max Vector3f
+	Min Vector3f
+	Max Vector3f
 }
 
 // make normalized cube , if not need use Cube{Min: , Max:}
 func NewCube(v1 Vector3f, v2 Vector3f) Cube {
 	rtn := Cube{
-		Min: Vector3f{},
-		Max: Vector3f{},
+		Min: v1,
+		Max: v2,
 	}
 	for i := 0; i < 3; i++ {
-		if v1[i] > v2[i] {
-			rtn.Max[i] = v1[i]
-			rtn.Min[i] = v2[i]
-		} else {
-			rtn.Max[i] = v2[i]
-			rtn.Min[i] = v1[i]
+		if rtn.Min[i] > rtn.Max[i] {
+			rtn.Max[i] = rtn.Min[i]
+			rtn.Min[i] = rtn.Max[i]
 		}
 	}
 	return rtn
@@ -55,7 +53,7 @@ func (h Cube) MakeCubeBy8Driect(center Vector3f, direct8 int) Cube {
 }
 
 func (h Cube) Center() Vector3f {
-	return h.Min.Add(h.Max).Idiv(2)
+	return h.Min.Add(h.Max).DivF(2)
 }
 
 func (h Cube) DiagLen() float64 {
@@ -88,7 +86,7 @@ func (h Cube) Move(v Vector3f) Cube {
 }
 
 func (h Cube) IMul(i float64) Cube {
-	hs := h.SizeVector().Imul(i / 2)
+	hs := h.SizeVector().MulF(i / 2)
 	hc := h.Center()
 	return Cube{
 		Min: hc.Sub(hs),
