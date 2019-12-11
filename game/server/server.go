@@ -20,7 +20,7 @@ import (
 
 	"github.com/kasworld/actpersec"
 	"github.com/kasworld/gowasm3dgame/game/serverconfig"
-	"github.com/kasworld/gowasm3dgame/game/world"
+	"github.com/kasworld/gowasm3dgame/game/stage"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connmanager"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_gob"
@@ -57,7 +57,7 @@ type Server struct {
 		w3d_packet.Header, interface{}, error)
 
 	connManager *w3d_connmanager.Manager
-	world       *world.World
+	stage       *stage.Stage
 }
 
 func New(config serverconfig.Config) *Server {
@@ -87,7 +87,7 @@ func New(config serverconfig.Config) *Server {
 		w3d_idcmd.Act:       svr.bytesAPIFn_ReqAct,
 		w3d_idcmd.Heartbeat: svr.bytesAPIFn_ReqHeartbeat,
 	}
-	svr.world = world.New(svr.log)
+	svr.stage = stage.New(svr.log, svr.config)
 	return svr
 }
 
@@ -142,7 +142,7 @@ func (svr *Server) ServiceMain(ctx context.Context) {
 		case <-timerInfoTk.C:
 			svr.SendStat.UpdateLap()
 			svr.RecvStat.UpdateLap()
-			// si := svr.world.ToStatsInfo()
+			// si := svr.stage.ToStatsInfo()
 			// conlist := svr.connManager.GetList()
 			// for _, v := range conlist {
 			// 	v.SendNotiPacket(w3d_idnoti.StatsInfo,
@@ -151,8 +151,8 @@ func (svr *Server) ServiceMain(ctx context.Context) {
 			// }
 
 		case <-timerTurnTk.C:
-			// svr.world.Turn()
-			// si := svr.world.ToStageInfo()
+			// svr.stage.Turn()
+			// si := svr.stage.ToStageInfo()
 			// conlist := svr.connManager.GetList()
 			// for _, v := range conlist {
 			// 	v.SendNotiPacket(w3d_idnoti.StageInfo,

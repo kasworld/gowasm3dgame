@@ -13,9 +13,13 @@ package gameconst
 
 const (
 	// WorldSize w,h,d
-	WorldSize     = 1000.0
+	WorldSize  = 1000.0
+	AIPerWorld = 1000
+	WorldCount = 100
+
+	// game rule relate
 	APIncPerFrame = 10
+	TeamPerWorld  = 10
 	ShieldCount   = 8
-	AIPerWorld    = 1000
 	ScorePerKill  = 1
 )

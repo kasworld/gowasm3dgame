@@ -9,7 +9,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package world
+package stage
 
 import (
 	"math/rand"
@@ -17,29 +17,40 @@ import (
 
 	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
+	"github.com/kasworld/gowasm3dgame/game/serverconfig"
 	"github.com/kasworld/gowasm3dgame/lib/octree"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connmanager"
 	"github.com/kasworld/uuidstr"
 )
 
-type World struct {
-	rnd *rand.Rand      `prettystring:"hide"`
-	log *w3dlog.LogBase `prettystring:"hide"`
+type Stage struct {
+	rnd    *rand.Rand      `prettystring:"hide"`
+	log    *w3dlog.LogBase `prettystring:"hide"`
+	config serverconfig.Config
 
-	UUID         string
+	UUID  string
+	Conns *w3d_connmanager.Manager
+
 	BorderBounce vector3f.Cube
 	BorderOctree vector3f.Cube
-	Teams        []*Team
-	octree       *octree.Octree
+
+	Teams   []*Team
+	Deco    []*GameObj
+	Food    []*GameObj
+	Terrain []*GameObj
 }
 
-func New(l *w3dlog.LogBase) *World {
-	wd := &World{
-		log:  l,
-		rnd:  rand.New(rand.NewSource(time.Now().UnixNano())),
-		UUID: uuidstr.New(),
+func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
+	wd := &Stage{
+		UUID:   uuidstr.New(),
+		config: config,
+		log:    l,
+		rnd:    rand.New(rand.NewSource(time.Now().UnixNano())),
+		Conns:  w3d_connmanager.New(),
 	}
+
 	wd.BorderBounce = vector3f.Cube{
 		Min: vector3f.Vector3f{
 			-gameconst.WorldSize / 2,
@@ -67,7 +78,7 @@ func New(l *w3dlog.LogBase) *World {
 	return wd
 }
 
-func (wd *World) MakeOctree() *octree.Octree {
+func (wd *Stage) MakeOctree() *octree.Octree {
 	rtn := octree.New(wd.BorderOctree)
 	for _, v := range wd.Teams {
 		for _, o := range v.Objs {

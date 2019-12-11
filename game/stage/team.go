@@ -9,7 +9,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package world
+package stage
 
 import (
 	"math/rand"
@@ -29,9 +29,10 @@ type Team struct {
 	IsAlive     bool
 	RespawnTick int64
 
-	UUID string
-	Ball *GameObj
-	Objs []*GameObj
+	UUID     string
+	Main     *GameObj
+	HomeMark *GameObj
+	Objs     []*GameObj
 
 	ActPoint int
 	Score    int
