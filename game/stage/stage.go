@@ -81,18 +81,6 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 	return wd
 }
 
-func (wd *Stage) MakeOctree() *octree.Octree {
-	rtn := octree.New(wd.BorderOctree)
-	for _, v := range wd.Teams {
-		for _, o := range v.Objs {
-			if o != nil && gameobjtype.Attrib[o.GOType].AddOctree {
-				rtn.Insert(o)
-			}
-		}
-	}
-	return rtn
-}
-
 func (stg *Stage) Run(ctx context.Context) {
 
 	timerInfoTk := time.NewTicker(1 * time.Second)
@@ -160,15 +148,12 @@ func (stg *Stage) move(now int64) *octree.Octree {
 		toDelList := stg.MoveTeam(bt, now)
 		_ = toDelList
 	}
-	aienv := stg.MakeOctree()
-	// toDelList, aienv := stg.checkCollision()
-	// for _, v := range toDelList {
-	// 	stg.AddEffectByGameObj(v)
-	// 	if v.GOType == gameobjtype.Ball {
-	// 		stg.handleBallKilled(now, v)
-	// 	}
-	// }
-
+	toDelList, aienv := stg.checkCollision()
+	for _, v := range toDelList {
+		if v.GOType == gameobjtype.Ball {
+			stg.handleBallKilled(now, v)
+		}
+	}
 	return aienv
 }
 

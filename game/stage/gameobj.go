@@ -40,6 +40,13 @@ func (o *GameObj) Pos() vector3f.Vector3f {
 	return o.PosVt
 }
 
+func (o *GameObj) GetCube() vector3f.Cube {
+	r := gameobjtype.Attrib[o.GOType].Radius
+	return vector3f.NewCubeByCR(
+		o.PosVt, r,
+	)
+}
+
 func (o *GameObj) IsCollision(dst *GameObj) bool {
 	return gameobjtype.CollisionTo(
 		o.GOType, dst.GOType,
