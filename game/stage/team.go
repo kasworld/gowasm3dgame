@@ -137,6 +137,10 @@ func (t *Team) CalcAP(stageDiag float64) int {
 	return rtn
 }
 
+func (bt *Team) CanAct(act acttype.ActType) bool {
+	return bt.ActPoint >= acttype.Attrib[act].AP
+}
+
 func (bt *Team) ApplyAct(actObj *w3d_obj.Act) {
 	bt.ActStats.Inc(actObj.Act)
 	switch actObj.Act {

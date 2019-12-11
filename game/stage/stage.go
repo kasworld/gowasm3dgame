@@ -125,18 +125,18 @@ func (stg *Stage) Turn() {
 		}
 	}
 
-	// aienv := stg.move(now)
-	// for _, bt := range stg.Teams {
-	// 	if !bt.IsAlive {
-	// 		continue
-	// 	}
-	// 	actObj := stg.AI(bt, now, aienv)
-	// 	if bt.GetRemainAct(now, actObj.Act) > 0 {
-	// 		bt.ApplyAct(actObj)
-	// 	} else {
-	// 		stg.log.Fatal("OverAct %v %v", bt, actObj)
-	// 	}
-	// }
+	aienv := stg.move(now)
+	for _, bt := range stg.Teams {
+		if !bt.IsAlive {
+			continue
+		}
+		actObj := stg.AI(bt, now, aienv)
+		if bt.CanAct(actObj.Act) {
+			bt.ApplyAct(actObj)
+		} else {
+			stg.log.Fatal("OverAct %v %v", bt, actObj)
+		}
+	}
 }
 
 func (stg *Stage) move(now int64) *octree.Octree {
