@@ -9,14 +9,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package actiontype
+package world
 
-var Attrib = [ActionType_Count]struct {
-	AP int
-}{
-	Accel:         {1},
-	Bullet:        {10},
-	SuperBullet:   {80},
-	HommingBullet: {100},
-	BurstBullet:   {10},
+import (
+	"math/rand"
+
+	"github.com/kasworld/gowasm3dgame/enums/acttype_stats"
+	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
+	"github.com/kasworld/htmlcolors"
+)
+
+type Team struct {
+	rnd *rand.Rand      `prettystring:"hide"`
+	log *w3dlog.LogBase `prettystring:"hide"`
+
+	ActStats acttype_stats.ActTypeStat
+	Color24  htmlcolors.Color24
+
+	IsAlive     bool
+	RespawnTick int64
+
+	UUID string
+	Ball *GameObj
+	Objs []*GameObj
+
+	ActPoint int
+	Score    int
 }

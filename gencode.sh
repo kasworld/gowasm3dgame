@@ -80,9 +80,9 @@ goimports -w w3d_idnoti_stats/w3d_idnoti_stats_gen.go
 cd ..
 
 
-genenum -typename=ActionType -packagename=actiontype -basedir=enums -statstype=int
-goimports -w enums/actiontype/actiontype_gen.go
-goimports -w enums/actiontype_stats/actiontype_stats_gen.go
+genenum -typename=ActType -packagename=acttype -basedir=enums -statstype=int
+goimports -w enums/acttype/acttype_gen.go
+goimports -w enums/acttype_stats/acttype_stats_gen.go
 
 genenum -typename=GameObjType -packagename=gameobjtype -basedir=enums -statstype=int
 goimports -w enums/gameobjtype/gameobjtype_gen.go

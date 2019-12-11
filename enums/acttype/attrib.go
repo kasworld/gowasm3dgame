@@ -9,34 +9,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package world
+package acttype
 
-import (
-	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
-	"github.com/kasworld/gowasm3dgame/lib/vector3f"
-)
-
-type GameObj struct {
-	ObjType  gameobjtype.GameObjType
-	UUID     string
-	TeamUUID string
-	PosVt    vector3f.Vector3f
-	MvVt     vector3f.Vector3f
-
-	BirthTick    int64
-	LastMoveTick int64
-	toDelete     bool
-
-	dstUUID string
-}
-
-func (o *GameObj) Pos() vector3f.Vector3f {
-	return o.PosVt
-}
-
-func (o *GameObj) IsCollision(dst *GameObj) bool {
-	return gameobjtype.CollisionTo(
-		o.ObjType, dst.ObjType,
-		dst.PosVt.Sqd(o.PosVt),
-	)
+var Attrib = [ActType_Count]struct {
+	AP int
+}{
+	Accel:         {1},
+	Bullet:        {10},
+	SuperBullet:   {80},
+	HommingBullet: {100},
+	BurstBullet:   {10},
 }
