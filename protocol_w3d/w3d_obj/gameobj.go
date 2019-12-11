@@ -12,59 +12,13 @@
 package w3d_obj
 
 import (
-	"github.com/kasworld/gowasm2dgame/enums/acttype"
+	"github.com/kasworld/gowasm3dgame/enums/acttype"
 	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/htmlcolors"
 )
 
-type ReqInvalid_data struct {
-	Dummy uint8
-}
-type RspInvalid_data struct {
-	Dummy uint8
-}
-
-type ReqMakeTeam_data struct {
-	Dummy uint8
-}
-type RspMakeTeam_data struct {
-	Dummy uint8
-}
-
-type ReqAct_data struct {
-	Dummy uint8
-}
-type RspAct_data struct {
-	Dummy uint8
-}
-
-type ReqHeartbeat_data struct {
-	Tick int64
-}
-type RspHeartbeat_data struct {
-	Tick int64
-}
-
-type NotiInvalid_data struct {
-	Dummy uint8
-}
-
-type NotiWorldInfo_data struct {
-	Dummy uint8
-}
-
-type NotiNearInfo_data struct {
-	Dummy uint8
-}
-
-type NotiStatsInfo_data struct {
-	Dummy uint8
-}
-
-/////////////////////////////
-
-type World struct {
+type Stage struct {
 	ID           string
 	BorderBounce vector3f.Cube
 	BorderOctree vector3f.Cube

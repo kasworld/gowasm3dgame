@@ -128,8 +128,7 @@ func (app *WasmClient) reqHeartbeat() error {
 
 var DemuxNoti2ObjFnMap = [...]func(me interface{}, hd w3d_packet.Header, body interface{}) error{
 	w3d_idnoti.Invalid:   objRecvNotiFn_Invalid,
-	w3d_idnoti.WorldInfo: objRecvNotiFn_WorldInfo,
-	w3d_idnoti.NearInfo:  objRecvNotiFn_NearInfo,
+	w3d_idnoti.StageInfo: objRecvNotiFn_StageInfo,
 	w3d_idnoti.StatsInfo: objRecvNotiFn_StatsInfo,
 }
 
@@ -141,16 +140,8 @@ func objRecvNotiFn_Invalid(me interface{}, hd w3d_packet.Header, body interface{
 	return fmt.Errorf("Not implemented %v", robj)
 }
 
-func objRecvNotiFn_WorldInfo(me interface{}, hd w3d_packet.Header, body interface{}) error {
-	robj, ok := body.(*w3d_obj.NotiWorldInfo_data)
-	if !ok {
-		return fmt.Errorf("packet mismatch %v", body)
-	}
-	return fmt.Errorf("Not implemented %v", robj)
-}
-
-func objRecvNotiFn_NearInfo(me interface{}, hd w3d_packet.Header, body interface{}) error {
-	robj, ok := body.(*w3d_obj.NotiNearInfo_data)
+func objRecvNotiFn_StageInfo(me interface{}, hd w3d_packet.Header, body interface{}) error {
+	robj, ok := body.(*w3d_obj.NotiStageInfo_data)
 	if !ok {
 		return fmt.Errorf("packet mismatch %v", body)
 	}
