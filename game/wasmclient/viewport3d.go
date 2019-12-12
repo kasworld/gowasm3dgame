@@ -52,9 +52,9 @@ func NewViewport3d(cnvid string) *Viewport3d {
 
 	vp.initGrid()
 	vp.setCamera(vector3f.Vector3f{
-		gameconst.StageSize,
-		gameconst.StageSize,
-		gameconst.StageSize}, vector3f.Vector3f{0, 0, 0})
+		gameconst.StageSize * 3 / 2,
+		gameconst.StageSize * 3 / 2,
+		gameconst.StageSize * 3 / 2}, vector3f.Vector3f{0, 0, 0})
 	vp.initLight()
 
 	// vp.cube = vp.newGLObj(30, htmlcolors.Red)
