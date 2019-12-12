@@ -9,16 +9,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package viewport3d
+package wasmclient
 
 import (
 	"syscall/js"
+
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 )
 
 type Viewport3d struct {
 	neecRecalc bool
 	ViewWidth  int
 	ViewHeight int
+
+	stageInfo *w3d_obj.NotiStageInfo_data
 
 	canvas   js.Value
 	threejs  js.Value
@@ -28,7 +32,7 @@ type Viewport3d struct {
 	cube     js.Value
 }
 
-func New(cnvid string) *Viewport3d {
+func NewViewport3d(cnvid string) *Viewport3d {
 	vp := &Viewport3d{}
 	vp.threejs = js.Global().Get("THREE")
 	vp.scene = vp.threejs.Get("Scene").New()

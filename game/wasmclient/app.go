@@ -21,7 +21,6 @@ import (
 	"github.com/kasworld/actjitter"
 	"github.com/kasworld/gowasm3dgame/enums/acttype"
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
-	"github.com/kasworld/gowasm3dgame/game/viewport3d"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connwasm"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_pid2rspfn"
@@ -39,7 +38,7 @@ type WasmClient struct {
 	ServerClientTictDiff int64
 	DispInterDur         *intervalduration.IntervalDuration
 
-	vp        *viewport3d.Viewport3d
+	vp        *Viewport3d
 	statsInfo *w3d_obj.NotiStatsInfo_data
 }
 
@@ -52,7 +51,7 @@ func InitApp() {
 		ClientJitter: actjitter.New("Client"),
 	}
 	app.DispInterDur = intervalduration.New("Display")
-	app.vp = viewport3d.New("canvas3d")
+	app.vp = NewViewport3d("canvas3d")
 
 	app.ResizeCanvas()
 	win := js.Global().Get("window")
