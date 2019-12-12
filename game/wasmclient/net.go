@@ -149,7 +149,7 @@ func objRecvNotiFn_StageInfo(me interface{}, hd w3d_packet.Header, body interfac
 	if !ok {
 		return fmt.Errorf("packet mismatch %v", body)
 	}
-	app.vp.stageInfo = robj
+	app.vp.processRecvStageInfo(robj)
 
 	app.ServerClientTictDiff = robj.Tick - time.Now().UnixNano()
 	return nil

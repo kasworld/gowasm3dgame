@@ -14,6 +14,8 @@ package wasmclient
 import (
 	"syscall/js"
 
+	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/htmlcolors"
 
@@ -25,8 +27,6 @@ type Viewport3d struct {
 	ViewWidth  int
 	ViewHeight int
 
-	stageInfo *w3d_obj.NotiStageInfo_data
-
 	canvas   js.Value
 	threejs  js.Value
 	scene    js.Value
@@ -34,12 +34,12 @@ type Viewport3d struct {
 	renderer js.Value
 	light    js.Value
 
-	jsGameObjs map[string]js.Value
-	cube       js.Value
+	jsSceneObjs map[string]js.Value
 }
 
 func NewViewport3d(cnvid string) *Viewport3d {
 	vp := &Viewport3d{}
+	vp.jsSceneObjs = make(map[string]js.Value)
 	vp.threejs = js.Global().Get("THREE")
 	vp.renderer = vp.ThreeJsNew("WebGLRenderer")
 	vp.canvas = vp.renderer.Get("domElement")
@@ -47,27 +47,31 @@ func NewViewport3d(cnvid string) *Viewport3d {
 
 	vp.scene = vp.ThreeJsNew("Scene")
 
-	vp.camera = vp.ThreeJsNew("PerspectiveCamera", 45, 1, 1, 10000)
+	vp.camera = vp.ThreeJsNew("PerspectiveCamera", 45, 1, 1,
+		gameconst.StageSize*10)
 
 	vp.initGrid()
-	vp.setCamera(vector3f.Vector3f{1000, 1000, 1000}, vector3f.Vector3f{0, 0, 0})
+	vp.setCamera(vector3f.Vector3f{
+		gameconst.StageSize,
+		gameconst.StageSize,
+		gameconst.StageSize}, vector3f.Vector3f{0, 0, 0})
 	vp.initLight()
 
-	vp.cube = vp.newGLObj(30, htmlcolors.Red)
-	vp.scene.Call("add", vp.cube)
+	// vp.cube = vp.newGLObj(30, htmlcolors.Red)
+	// vp.scene.Call("add", vp.cube)
 	return vp
 }
 
 func (vp *Viewport3d) initGrid() {
-	helper := vp.ThreeJsNew("GridHelper", 1000, 100, 0x0000ff, 0x404040)
-	helper.Get("position").Set("y", -1000)
+	helper := vp.ThreeJsNew("GridHelper", gameconst.StageSize, 100, 0x0000ff, 0x404040)
+	helper.Get("position").Set("y", -gameconst.StageSize)
 	vp.scene.Call("add", helper)
 
-	helper = vp.ThreeJsNew("GridHelper", 1000, 100, 0x0000ff, 0x404040)
-	helper.Get("position").Set("y", 1000)
+	helper = vp.ThreeJsNew("GridHelper", gameconst.StageSize, 100, 0x0000ff, 0x404040)
+	helper.Get("position").Set("y", gameconst.StageSize)
 	vp.scene.Call("add", helper)
 
-	axisHelper := vp.ThreeJsNew("AxesHelper", 1000)
+	axisHelper := vp.ThreeJsNew("AxesHelper", gameconst.StageSize)
 	vp.scene.Call("add", axisHelper)
 }
 func (vp *Viewport3d) initLight() {
@@ -127,17 +131,39 @@ func (vp *Viewport3d) calcResize() {
 func (vp *Viewport3d) Draw(tick int64) {
 	vp.calcResize()
 
-	rot := vp.cube.Get("rotation")
-	rot.Set("x", rot.Get("x").Float()+0.01)
-	rot.Set("y", rot.Get("y").Float()+0.01)
 	vp.renderer.Call("render", vp.scene, vp.camera)
 }
 
-func (vp *Viewport3d) newGLObj(radius float64, color htmlcolors.Color24) js.Value {
+func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co htmlcolors.Color24) js.Value {
+	if jso, exist := vp.jsSceneObjs[o.UUID]; exist {
+		JsSetPos(jso, o.PosVt)
+		return jso
+	}
+	radius := gameobjtype.Attrib[o.GOType].Radius
 	geometry := vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
 	material := vp.ThreeJsNew("MeshPhongMaterial")
 	material.Set("color", vp.ToThColor(htmlcolors.Gray))
-	material.Set("emissive", vp.ToThColor(htmlcolors.Red))
+	material.Set("emissive", vp.ToThColor(co))
 	material.Set("shininess", 30)
-	return vp.ThreeJsNew("Mesh", geometry, material)
+	jso := vp.ThreeJsNew("Mesh", geometry, material)
+	JsSetPos(jso, o.PosVt)
+	vp.scene.Call("add", jso)
+	vp.jsSceneObjs[o.UUID] = jso
+	return jso
+}
+
+func (vp *Viewport3d) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data) {
+	for _, tm := range stageInfo.Teams {
+		if tm == nil {
+			continue
+		}
+		vp.add2Scene(tm.Ball, tm.Color24)
+		vp.add2Scene(tm.HomeMark, tm.Color24)
+		for _, v := range tm.Objs {
+			if v == nil {
+				continue
+			}
+			vp.add2Scene(v, tm.Color24)
+		}
+	}
 }

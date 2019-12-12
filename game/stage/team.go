@@ -103,8 +103,11 @@ func (bt *Team) RespawnBall(now int64) {
 
 func (bt *Team) ToPacket() *w3d_obj.Team {
 	rtn := &w3d_obj.Team{
-		Ball: bt.Ball.ToPacket(),
-		Objs: make([]*w3d_obj.GameObj, 0),
+		ID:       bt.UUID,
+		Color24:  bt.Color24,
+		Ball:     bt.Ball.ToPacket(),
+		HomeMark: bt.HomeMark.ToPacket(),
+		Objs:     make([]*w3d_obj.GameObj, 0),
 	}
 	for _, v := range bt.Objs {
 		if v.toDelete {
