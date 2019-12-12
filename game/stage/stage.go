@@ -16,6 +16,8 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/kasworld/htmlcolors"
+
 	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/game/serverconfig"
@@ -77,6 +79,15 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 			gameconst.StageSize/2 + gameobjtype.MaxRadius,
 			gameconst.StageSize/2 + gameobjtype.MaxRadius,
 		},
+	}
+	teamcolor := []htmlcolors.Color24{
+		htmlcolors.Red,
+		htmlcolors.Blue,
+		htmlcolors.Green,
+		htmlcolors.Yellow,
+	}
+	for _, v := range teamcolor {
+		wd.Teams = append(wd.Teams, NewTeam(l, v))
 	}
 	return wd
 }

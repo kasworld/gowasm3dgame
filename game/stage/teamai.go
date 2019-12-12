@@ -65,7 +65,7 @@ func (stg *Stage) FindDangerObj(
 func (stg *Stage) TryEvade(me *Team, now int64, dsto *GameObj) *w3d_obj.Act {
 	actt := acttype.Accel
 	objt := gameobjtype.Ball
-	if me.CanAct(actt) {
+	if !me.CanAct(actt) {
 		return nil
 	}
 	maxv := gameobjtype.Attrib[objt].SpeedLimit
@@ -90,7 +90,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 	case 0:
 		actt := acttype.Bullet
 		objt := gameobjtype.Bullet
-		if me.CanAct(actt) {
+		if !me.CanAct(actt) {
 			break
 		}
 		dstteam := stg.SelectRandomTeam(me)
@@ -107,7 +107,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 	case 1:
 		actt := acttype.SuperBullet
 		objt := gameobjtype.SuperBullet
-		if me.CanAct(actt) {
+		if !me.CanAct(actt) {
 			break
 		}
 		dstteam := stg.SelectRandomTeam(me)
@@ -124,7 +124,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 	case 2:
 		actt := acttype.HommingBullet
 		objt := gameobjtype.HommingBullet
-		if me.CanAct(actt) {
+		if !me.CanAct(actt) {
 			break
 		}
 		dstteam := stg.SelectRandomTeam(me)
@@ -142,7 +142,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 	case 6:
 		actt := acttype.Accel
 		// objt := gameobjtype.Ball
-		if me.CanAct(actt) {
+		if !me.CanAct(actt) {
 			break
 		}
 		// maxv := gameobjtype.Attrib[objt].SpeedLimit

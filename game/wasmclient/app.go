@@ -19,9 +19,11 @@ import (
 	"time"
 
 	"github.com/kasworld/actjitter"
+	"github.com/kasworld/gowasm3dgame/enums/acttype"
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/game/viewport3d"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connwasm"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_pid2rspfn"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_version"
 	"github.com/kasworld/intervalduration"
@@ -37,7 +39,8 @@ type WasmClient struct {
 	ServerClientTictDiff int64
 	DispInterDur         *intervalduration.IntervalDuration
 
-	vp *viewport3d.Viewport3d
+	vp        *viewport3d.Viewport3d
+	statsInfo *w3d_obj.NotiStatsInfo_data
 }
 
 func InitApp() {
@@ -92,6 +95,25 @@ func (app *WasmClient) updateSysmsg() {
 		"%v<br/>Ping %v<br/>ServerClientTickDiff %v<br/>",
 		app.DispInterDur, app.PingDur, app.ServerClientTictDiff,
 	)
+
+	if stats := app.statsInfo; stats != nil {
+		buf.WriteString(`<table border=1 style="border-collapse:collapse;">
+		<tr><th>act\team</th>`)
+		for ti, _ := range stats.ActStats {
+			fmt.Fprintf(&buf, "<th>%v</th>", ti)
+		}
+		buf.WriteString(`</tr>`)
+
+		for acti := 0; acti < acttype.ActType_Count; acti++ {
+			fmt.Fprintf(&buf, "<tr><td>%v</td>", acttype.ActType(acti))
+			for ti, _ := range stats.ActStats {
+				fmt.Fprintf(&buf, "<td>%v</td>",
+					stats.ActStats[ti][acti])
+			}
+			buf.WriteString(`</tr>`)
+		}
+		buf.WriteString(`</table>`)
+	}
 
 	div := js.Global().Get("document").Call("getElementById", "sysmsg")
 	div.Set("innerHTML", buf.String())

@@ -145,7 +145,14 @@ func objRecvNotiFn_StageInfo(me interface{}, hd w3d_packet.Header, body interfac
 	if !ok {
 		return fmt.Errorf("packet mismatch %v", body)
 	}
-	return fmt.Errorf("Not implemented %v", robj)
+	app, ok := me.(*WasmClient)
+	if !ok {
+		return fmt.Errorf("packet mismatch %v", body)
+	}
+	// app.vp.stageInfo = robj
+
+	app.ServerClientTictDiff = robj.Tick - time.Now().UnixNano()
+	return nil
 }
 
 func objRecvNotiFn_StatsInfo(me interface{}, hd w3d_packet.Header, body interface{}) error {
@@ -153,5 +160,10 @@ func objRecvNotiFn_StatsInfo(me interface{}, hd w3d_packet.Header, body interfac
 	if !ok {
 		return fmt.Errorf("packet mismatch %v", body)
 	}
-	return fmt.Errorf("Not implemented %v", robj)
+	app, ok := me.(*WasmClient)
+	if !ok {
+		return fmt.Errorf("packet mismatch %v", body)
+	}
+	app.statsInfo = robj
+	return nil
 }

@@ -131,9 +131,8 @@ func (svr *Server) ServiceMain(ctx context.Context) {
 	timerInfoTk := time.NewTicker(1 * time.Second)
 	defer timerInfoTk.Stop()
 
-	turnDur := time.Duration(float64(time.Second) / svr.config.ActTurnPerSec)
-	timerTurnTk := time.NewTicker(turnDur)
-	defer timerTurnTk.Stop()
+	svr.stage = stage.New(svr.log, svr.config)
+	go svr.stage.Run(ctx)
 
 	for {
 		select {
@@ -142,23 +141,6 @@ func (svr *Server) ServiceMain(ctx context.Context) {
 		case <-timerInfoTk.C:
 			svr.SendStat.UpdateLap()
 			svr.RecvStat.UpdateLap()
-			// si := svr.stage.ToStatsInfo()
-			// conlist := svr.connManager.GetList()
-			// for _, v := range conlist {
-			// 	v.SendNotiPacket(w3d_idnoti.StatsInfo,
-			// 		si,
-			// 	)
-			// }
-
-		case <-timerTurnTk.C:
-			// svr.stage.Turn()
-			// si := svr.stage.ToStageInfo()
-			// conlist := svr.connManager.GetList()
-			// for _, v := range conlist {
-			// 	v.SendNotiPacket(w3d_idnoti.StageInfo,
-			// 		si,
-			// 	)
-			// }
 		}
 	}
 }

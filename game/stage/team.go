@@ -45,7 +45,7 @@ type Team struct {
 	Score    int
 }
 
-func NewTeam(l *w3dlog.LogBase, TeamType, color htmlcolors.Color24) *Team {
+func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
 	nowtick := time.Now().UnixNano()
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	bt := &Team{
