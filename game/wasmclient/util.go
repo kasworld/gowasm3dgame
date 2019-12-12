@@ -15,6 +15,8 @@ import (
 	"fmt"
 	"syscall/js"
 	"time"
+
+	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 )
 
 func CalcCurrentFrame(difftick int64, fps float64) int {
@@ -32,4 +34,18 @@ func getImgWH(srcImageID string) (js.Value, float64, float64) {
 	srcw := img.Get("naturalWidth").Float()
 	srch := img.Get("naturalHeight").Float()
 	return img, srcw, srch
+}
+
+func JsSetPos(jsobj js.Value, vt vector3f.Vector3f) {
+	jsobj.Get("position").Set("x", vt[0])
+	jsobj.Get("position").Set("y", vt[1])
+	jsobj.Get("position").Set("z", vt[2])
+}
+
+func (vp *Viewport3d) Vt3fToThVt3(vt vector3f.Vector3f) js.Value {
+	return vp.threejs.Get("Vector3").New(vt[0], vt[1], vt[2])
+}
+
+func (vp *Viewport3d) ThreeJsNew(name string, args ...interface{}) js.Value {
+	return vp.threejs.Get(name).New(args...)
 }

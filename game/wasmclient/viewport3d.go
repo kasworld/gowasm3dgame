@@ -14,6 +14,8 @@ package wasmclient
 import (
 	"syscall/js"
 
+	"github.com/kasworld/gowasm3dgame/lib/vector3f"
+
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 )
 
@@ -29,57 +31,55 @@ type Viewport3d struct {
 	scene    js.Value
 	camera   js.Value
 	renderer js.Value
-	cube     js.Value
+	light    js.Value
+
+	cube js.Value
 }
 
 func NewViewport3d(cnvid string) *Viewport3d {
 	vp := &Viewport3d{}
 	vp.threejs = js.Global().Get("THREE")
-	vp.scene = vp.threejs.Get("Scene").New()
-	vp.renderer = vp.threejs.Get("WebGLRenderer").New()
+	vp.scene = vp.ThreeJsNew("Scene")
+	vp.renderer = vp.ThreeJsNew("WebGLRenderer")
 	vp.canvas = vp.renderer.Get("domElement")
 	js.Global().Get("document").Call("getElementById", "canvas3d").Call("appendChild", vp.canvas)
 
-	geometry := vp.threejs.Get("BoxGeometry").New(1, 1, 1)
-	material := vp.threejs.Get("MeshBasicMaterial").New()
-	vp.cube = vp.threejs.Get("Mesh").New(geometry, material)
+	geometry := vp.ThreeJsNew("BoxGeometry", 1, 1, 1)
+	material := vp.ThreeJsNew("MeshBasicMaterial")
+	vp.cube = vp.ThreeJsNew("Mesh", geometry, material)
 	vp.scene.Call("add", vp.cube)
-	vp.camera = vp.threejs.Get("PerspectiveCamera").New(45, 1, 1, 10000)
+	vp.camera = vp.ThreeJsNew("PerspectiveCamera", 45, 1, 1, 10000)
 
 	vp.initGrid()
-	vp.setCamera()
+	vp.setCamera(vector3f.Vector3f{1000, 1000, 1000}, vector3f.Vector3f{0, 0, 0})
 	vp.initLight()
 	// js.Global().Get("console").Call("debug", vp.camera)
 	return vp
 }
 
 func (vp *Viewport3d) initGrid() {
-	helper := vp.threejs.Get("GridHelper").New(1000, 100, 0x0000ff, 0x404040)
+	helper := vp.ThreeJsNew("GridHelper", 1000, 100, 0x0000ff, 0x404040)
 	// helper.Call("setColors", 0x0000ff, 0x404040)
 	helper.Get("position").Set("y", -1000)
 	vp.scene.Call("add", helper)
 
-	helper = vp.threejs.Get("GridHelper").New(1000, 100, 0x0000ff, 0x404040)
+	helper = vp.ThreeJsNew("GridHelper", 1000, 100, 0x0000ff, 0x404040)
 	// helper.Call("setColors", 0x0000ff, 0x404040)
 	helper.Get("position").Set("y", 1000)
 	vp.scene.Call("add", helper)
 
-	axisHelper := vp.threejs.Get("AxesHelper").New(1000)
+	axisHelper := vp.ThreeJsNew("AxesHelper", 1000)
 	vp.scene.Call("add", axisHelper)
 }
-
-func (vp *Viewport3d) setCamera() {
-	vp.camera.Get("position").Set("x", 100)
-	vp.camera.Get("position").Set("y", 100)
-	vp.camera.Get("position").Set("z", 100)
-	// vp.camera.Set("position", vp.threejs.Get("Vector3").New(100, 100, 100))
-	vp.camera.Call("lookAt", vp.threejs.Get("Vector3").New(0, 0, 0))
-	vp.camera.Call("updateProjectionMatrix")
+func (vp *Viewport3d) initLight() {
+	vp.light = vp.ThreeJsNew("PointLight", 0x808080, 1)
+	vp.scene.Call("add", vp.light)
 }
 
-func (vp *Viewport3d) initLight() {
-	pointLight := vp.threejs.Get("PointLight").New(0x808080, 1)
-	vp.scene.Call("add", pointLight)
+func (vp *Viewport3d) setCamera(vt1, vt2 vector3f.Vector3f) {
+	JsSetPos(vp.camera, vt1)
+	vp.camera.Call("lookAt", vp.Vt3fToThVt3(vt2))
+	vp.camera.Call("updateProjectionMatrix")
 }
 
 func (vp *Viewport3d) Hide() {
@@ -115,11 +115,6 @@ func (vp *Viewport3d) calcViewCellValue() {
 	winW := win.Get("innerWidth").Int()
 	winH := win.Get("innerHeight").Int()
 	winH = winH * 2 / 3
-	// if winH > winW {
-	// 	winH /= 2
-	// } else {
-	// 	winW /= 2
-	// }
 
 	vp.ViewWidth = winW
 	vp.ViewHeight = winH
@@ -128,7 +123,6 @@ func (vp *Viewport3d) calcViewCellValue() {
 	vp.canvas.Call("setAttribute", "height", vp.ViewHeight)
 
 	vp.renderer.Call("setSize", vp.ViewWidth, vp.ViewHeight)
-	vp.setCamera()
 }
 
 func (vp *Viewport3d) Draw(tick int64) {
