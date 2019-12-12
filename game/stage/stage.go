@@ -129,6 +129,13 @@ func (stg *Stage) Run(ctx context.Context) {
 func (stg *Stage) Turn() {
 	now := time.Now().UnixNano()
 
+	// add ap
+	diag := stg.BorderBounce.DiagLen()
+	for _, bt := range stg.Teams {
+		ap := bt.CalcAP(diag)
+		bt.ActPoint += ap
+	}
+
 	// respawn dead team
 	for _, bt := range stg.Teams {
 		if !bt.IsAlive && bt.RespawnTick < now {
@@ -173,7 +180,7 @@ func (stg *Stage) handleBallKilled(now int64, gobj *GameObj) {
 		// find ballteam
 		if bt.Ball.UUID == gobj.UUID {
 			bt.IsAlive = false
-			// regist respawn
+			// regest respawn
 			bt.RespawnTick = now + int64(time.Second)*gameconst.BallRespawnDurSec
 
 			// add effect
@@ -193,6 +200,13 @@ func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 	toDeleteList := make([]*GameObj, 0)
 	bt.Ball.Move_accel(now)
 	bt.Ball.BounceNormalize(gameconst.StageSize)
+	randvt := vector3f.Vector3f{
+		stg.rnd.Float64() * gameconst.StageSize,
+		stg.rnd.Float64() * gameconst.StageSize,
+		stg.rnd.Float64() * gameconst.StageSize,
+	}
+	bt.HomeMark.Move_rand(now, randvt)
+	bt.HomeMark.BounceNormalize(gameconst.StageSize)
 	for _, v := range bt.Objs {
 		if v.toDelete {
 			continue
