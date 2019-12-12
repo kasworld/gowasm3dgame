@@ -153,17 +153,27 @@ func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co htmlcolors.Color24) js.Va
 }
 
 func (vp *Viewport3d) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data) {
+	addUUID := make(map[string]bool)
 	for _, tm := range stageInfo.Teams {
 		if tm == nil {
 			continue
 		}
 		vp.add2Scene(tm.Ball, tm.Color24)
+		addUUID[tm.Ball.UUID] = true
 		vp.add2Scene(tm.HomeMark, tm.Color24)
+		addUUID[tm.HomeMark.UUID] = true
 		for _, v := range tm.Objs {
 			if v == nil {
 				continue
 			}
 			vp.add2Scene(v, tm.Color24)
+			addUUID[v.UUID] = true
+		}
+	}
+	for id, jso := range vp.jsSceneObjs {
+		if !addUUID[id] {
+			vp.scene.Call("remove", jso)
+			delete(vp.jsSceneObjs, id)
 		}
 	}
 }
