@@ -2,5 +2,5 @@ Nothing
 Accel
 Bullet
 SuperBullet
-HommingBullet
-BurstBullet
+HommingBullet // or homming shield if target self
+BurstBullet // 10 random bullet

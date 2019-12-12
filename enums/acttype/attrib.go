@@ -18,5 +18,5 @@ var Attrib = [ActType_Count]struct {
 	Bullet:        {10},
 	SuperBullet:   {80},
 	HommingBullet: {100},
-	BurstBullet:   {10},
+	BurstBullet:   {10 * 10 / 5},
 }

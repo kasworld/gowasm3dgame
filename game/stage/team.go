@@ -159,6 +159,15 @@ func (bt *Team) ApplyAct(actObj *w3d_obj.Act) {
 	case acttype.Nothing:
 	case acttype.Bullet:
 		bt.AddBullet(actObj.Vt)
+	case acttype.BurstBullet:
+		for i := 0; i < 10; i++ {
+			vt := vector3f.Vector3f{
+				bt.rnd.Float64() * gameconst.StageSize,
+				bt.rnd.Float64() * gameconst.StageSize,
+				bt.rnd.Float64() * gameconst.StageSize,
+			}
+			bt.AddBullet(vt.Sub(bt.Ball.PosVt))
+		}
 	case acttype.SuperBullet:
 		bt.AddSuperBullet(actObj.Vt)
 	case acttype.HommingBullet:

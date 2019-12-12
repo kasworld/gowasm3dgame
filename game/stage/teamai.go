@@ -104,7 +104,15 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 			Act: actt,
 			Vt:  vt,
 		}
-	case 1:
+	case 1: // 10 random bullet
+		actt := acttype.BurstBullet
+		if !me.CanAct(actt) {
+			break
+		}
+		return &w3d_obj.Act{
+			Act: actt,
+		}
+	case 2:
 		actt := acttype.SuperBullet
 		objt := gameobjtype.SuperBullet
 		if !me.CanAct(actt) {
@@ -121,7 +129,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 			Act: actt,
 			Vt:  vt,
 		}
-	case 2:
+	case 3:
 		actt := acttype.HommingBullet
 		objt := gameobjtype.HommingBullet
 		if !me.CanAct(actt) {
@@ -139,7 +147,26 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 				DstObjID: dstteam.Ball.UUID,
 			}
 		}
-	case 6:
+	case 4: // use homming bullet as shield
+		actt := acttype.HommingBullet
+		objt := gameobjtype.HommingBullet
+		if !me.CanAct(actt) {
+			break
+		}
+		dstteam := me
+		if dstteam == nil {
+			break
+		}
+		maxv := gameobjtype.Attrib[objt].SpeedLimit
+		if dstteam != me && dstteam.IsAlive {
+			return &w3d_obj.Act{
+				Act:      actt,
+				Vt:       me.Ball.MvVt.NormalizedTo(maxv).Neg(),
+				DstObjID: dstteam.Ball.UUID,
+			}
+		}
+
+	case 5:
 		actt := acttype.Accel
 		// objt := gameobjtype.Ball
 		if !me.CanAct(actt) {
