@@ -39,17 +39,47 @@ func NewViewport3d(cnvid string) *Viewport3d {
 	vp.renderer = vp.threejs.Get("WebGLRenderer").New()
 	vp.canvas = vp.renderer.Get("domElement")
 	js.Global().Get("document").Call("getElementById", "canvas3d").Call("appendChild", vp.canvas)
+
 	geometry := vp.threejs.Get("BoxGeometry").New(1, 1, 1)
 	material := vp.threejs.Get("MeshBasicMaterial").New()
 	vp.cube = vp.threejs.Get("Mesh").New(geometry, material)
 	vp.scene.Call("add", vp.cube)
-	vp.camera = vp.threejs.Get("PerspectiveCamera").New(75, 1, 0.1, 2000)
+	vp.camera = vp.threejs.Get("PerspectiveCamera").New(45, 1, 1, 10000)
 
-	// js.Global().Get("console").Call("debug", vp.threejs)
-	// js.Global().Get("console").Call("debug", vp.scene)
-	// js.Global().Get("console").Call("debug", vp.renderer)
+	vp.initGrid()
+	vp.setCamera()
+	vp.initLight()
 	// js.Global().Get("console").Call("debug", vp.camera)
 	return vp
+}
+
+func (vp *Viewport3d) initGrid() {
+	helper := vp.threejs.Get("GridHelper").New(1000, 100, 0x0000ff, 0x404040)
+	// helper.Call("setColors", 0x0000ff, 0x404040)
+	helper.Get("position").Set("y", -1000)
+	vp.scene.Call("add", helper)
+
+	helper = vp.threejs.Get("GridHelper").New(1000, 100, 0x0000ff, 0x404040)
+	// helper.Call("setColors", 0x0000ff, 0x404040)
+	helper.Get("position").Set("y", 1000)
+	vp.scene.Call("add", helper)
+
+	axisHelper := vp.threejs.Get("AxesHelper").New(1000)
+	vp.scene.Call("add", axisHelper)
+}
+
+func (vp *Viewport3d) setCamera() {
+	vp.camera.Get("position").Set("x", 100)
+	vp.camera.Get("position").Set("y", 100)
+	vp.camera.Get("position").Set("z", 100)
+	// vp.camera.Set("position", vp.threejs.Get("Vector3").New(100, 100, 100))
+	vp.camera.Call("lookAt", vp.threejs.Get("Vector3").New(0, 0, 0))
+	vp.camera.Call("updateProjectionMatrix")
+}
+
+func (vp *Viewport3d) initLight() {
+	pointLight := vp.threejs.Get("PointLight").New(0x808080, 1)
+	vp.scene.Call("add", pointLight)
 }
 
 func (vp *Viewport3d) Hide() {
@@ -84,11 +114,12 @@ func (vp *Viewport3d) calcViewCellValue() {
 	win := js.Global().Get("window")
 	winW := win.Get("innerWidth").Int()
 	winH := win.Get("innerHeight").Int()
-	if winH > winW {
-		winH /= 2
-	} else {
-		winW /= 2
-	}
+	winH = winH * 2 / 3
+	// if winH > winW {
+	// 	winH /= 2
+	// } else {
+	// 	winW /= 2
+	// }
 
 	vp.ViewWidth = winW
 	vp.ViewHeight = winH
@@ -97,11 +128,7 @@ func (vp *Viewport3d) calcViewCellValue() {
 	vp.canvas.Call("setAttribute", "height", vp.ViewHeight)
 
 	vp.renderer.Call("setSize", vp.ViewWidth, vp.ViewHeight)
-	vp.camera.Get("position").Set("x", 0)
-	vp.camera.Get("position").Set("y", 0)
-	vp.camera.Get("position").Set("z", 10)
-	vp.camera.Call("updateProjectionMatrix")
-
+	vp.setCamera()
 }
 
 func (vp *Viewport3d) Draw(tick int64) {
