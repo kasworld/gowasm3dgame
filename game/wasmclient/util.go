@@ -16,6 +16,8 @@ import (
 	"syscall/js"
 	"time"
 
+	"github.com/kasworld/htmlcolors"
+
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 )
 
@@ -48,4 +50,8 @@ func (vp *Viewport3d) Vt3fToThVt3(vt vector3f.Vector3f) js.Value {
 
 func (vp *Viewport3d) ThreeJsNew(name string, args ...interface{}) js.Value {
 	return vp.threejs.Get(name).New(args...)
+}
+
+func (vp *Viewport3d) ToThColor(co htmlcolors.Color24) js.Value {
+	return vp.ThreeJsNew("Color", int(co))
 }

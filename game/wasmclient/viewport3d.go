@@ -15,6 +15,7 @@ import (
 	"syscall/js"
 
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
+	"github.com/kasworld/htmlcolors"
 
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 )
@@ -33,38 +34,36 @@ type Viewport3d struct {
 	renderer js.Value
 	light    js.Value
 
-	cube js.Value
+	jsGameObjs map[string]js.Value
+	cube       js.Value
 }
 
 func NewViewport3d(cnvid string) *Viewport3d {
 	vp := &Viewport3d{}
 	vp.threejs = js.Global().Get("THREE")
-	vp.scene = vp.ThreeJsNew("Scene")
 	vp.renderer = vp.ThreeJsNew("WebGLRenderer")
 	vp.canvas = vp.renderer.Get("domElement")
 	js.Global().Get("document").Call("getElementById", "canvas3d").Call("appendChild", vp.canvas)
 
-	geometry := vp.ThreeJsNew("BoxGeometry", 1, 1, 1)
-	material := vp.ThreeJsNew("MeshBasicMaterial")
-	vp.cube = vp.ThreeJsNew("Mesh", geometry, material)
-	vp.scene.Call("add", vp.cube)
+	vp.scene = vp.ThreeJsNew("Scene")
+
 	vp.camera = vp.ThreeJsNew("PerspectiveCamera", 45, 1, 1, 10000)
 
 	vp.initGrid()
 	vp.setCamera(vector3f.Vector3f{1000, 1000, 1000}, vector3f.Vector3f{0, 0, 0})
 	vp.initLight()
-	// js.Global().Get("console").Call("debug", vp.camera)
+
+	vp.cube = vp.newGLObj(30, htmlcolors.Red)
+	vp.scene.Call("add", vp.cube)
 	return vp
 }
 
 func (vp *Viewport3d) initGrid() {
 	helper := vp.ThreeJsNew("GridHelper", 1000, 100, 0x0000ff, 0x404040)
-	// helper.Call("setColors", 0x0000ff, 0x404040)
 	helper.Get("position").Set("y", -1000)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper", 1000, 100, 0x0000ff, 0x404040)
-	// helper.Call("setColors", 0x0000ff, 0x404040)
 	helper.Get("position").Set("y", 1000)
 	vp.scene.Call("add", helper)
 
@@ -106,7 +105,7 @@ func (vp *Viewport3d) AddEventListener(evt string, fn func(this js.Value, args [
 	vp.canvas.Call("addEventListener", evt, js.FuncOf(fn))
 }
 
-func (vp *Viewport3d) calcViewCellValue() {
+func (vp *Viewport3d) calcResize() {
 	if !vp.neecRecalc {
 		return
 	}
@@ -126,10 +125,19 @@ func (vp *Viewport3d) calcViewCellValue() {
 }
 
 func (vp *Viewport3d) Draw(tick int64) {
-	vp.calcViewCellValue()
+	vp.calcResize()
 
 	rot := vp.cube.Get("rotation")
 	rot.Set("x", rot.Get("x").Float()+0.01)
 	rot.Set("y", rot.Get("y").Float()+0.01)
 	vp.renderer.Call("render", vp.scene, vp.camera)
+}
+
+func (vp *Viewport3d) newGLObj(radius float64, color htmlcolors.Color24) js.Value {
+	geometry := vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+	material := vp.ThreeJsNew("MeshPhongMaterial")
+	material.Set("color", vp.ToThColor(htmlcolors.Gray))
+	material.Set("emissive", vp.ToThColor(htmlcolors.Red))
+	material.Set("shininess", 30)
+	return vp.ThreeJsNew("Mesh", geometry, material)
 }
