@@ -94,6 +94,10 @@ func (app *WasmClient) updateSysmsg() {
 		"%v<br/>Ping %v<br/>ServerClientTickDiff %v<br/>",
 		app.DispInterDur, app.PingDur, app.ServerClientTictDiff,
 	)
+	fmt.Fprintf(&buf,
+		"obj count %v<br/>",
+		len(app.vp.jsSceneObjs),
+	)
 
 	if stats := app.statsInfo; stats != nil {
 		buf.WriteString(`<table border=1 style="border-collapse:collapse;">

@@ -17,9 +17,8 @@ import (
 	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
-	"github.com/kasworld/htmlcolors"
-
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
+	"github.com/kasworld/htmlcolors"
 )
 
 type Viewport3d struct {
@@ -51,14 +50,13 @@ func NewViewport3d(cnvid string) *Viewport3d {
 		gameconst.StageSize*10)
 
 	vp.initGrid()
-	vp.setCamera(vector3f.Vector3f{
+	camerapos := vector3f.Vector3f{
 		gameconst.StageSize * 3 / 2,
 		gameconst.StageSize * 3 / 2,
-		gameconst.StageSize * 3 / 2}, vector3f.Vector3f{0, 0, 0})
+		gameconst.StageSize * 3 / 2}
+	vp.setCamera(camerapos, vector3f.Vector3f{0, 0, 0})
 	vp.initLight()
-
-	// vp.cube = vp.newGLObj(30, htmlcolors.Red)
-	// vp.scene.Call("add", vp.cube)
+	JsSetPos(vp.light, camerapos)
 	return vp
 }
 
@@ -141,8 +139,8 @@ func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co htmlcolors.Color24) js.Va
 	}
 	radius := gameobjtype.Attrib[o.GOType].Radius
 	geometry := vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
-	material := vp.ThreeJsNew("MeshPhongMaterial")
-	material.Set("color", vp.ToThColor(htmlcolors.Gray))
+	material := vp.ThreeJsNew("MeshLambertMaterial")
+	// material.Set("color", vp.ToThColor(htmlcolors.Gray))
 	material.Set("emissive", vp.ToThColor(co))
 	material.Set("shininess", 30)
 	jso := vp.ThreeJsNew("Mesh", geometry, material)
