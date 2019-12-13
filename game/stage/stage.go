@@ -101,6 +101,7 @@ func (stg *Stage) Run(ctx context.Context) {
 	timerTurnTk := time.NewTicker(turnDur)
 	defer timerTurnTk.Stop()
 
+	diag := stg.BorderBounce.DiagLen()
 	for {
 		select {
 		case <-ctx.Done():
@@ -112,6 +113,11 @@ func (stg *Stage) Run(ctx context.Context) {
 				v.SendNotiPacket(w3d_idnoti.StatsInfo,
 					si,
 				)
+			}
+			// add ap
+			for _, bt := range stg.Teams {
+				ap := bt.CalcAP(diag)
+				bt.ActPoint += ap
 			}
 		case <-timerTurnTk.C:
 			stg.Turn()
@@ -128,13 +134,6 @@ func (stg *Stage) Run(ctx context.Context) {
 
 func (stg *Stage) Turn() {
 	now := time.Now().UnixNano()
-
-	// add ap
-	diag := stg.BorderBounce.DiagLen()
-	for _, bt := range stg.Teams {
-		ap := bt.CalcAP(diag)
-		bt.ActPoint += ap
-	}
 
 	// respawn dead team
 	for _, bt := range stg.Teams {

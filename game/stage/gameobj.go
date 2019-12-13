@@ -103,10 +103,11 @@ func (o *GameObj) CalcLenChange(dsto *GameObj) (float64, float64) {
 
 func (o *GameObj) Move_accel(now int64) bool {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
+	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	o.LastMoveTick = now
 	o.MvVt = o.MvVt.Add(o.AccVt.MulF(dur))
-	if o.MvVt.Abs() > gameobjtype.Attrib[o.GOType].SpeedLimit {
-		o.MvVt = o.MvVt.NormalizedTo(gameobjtype.Attrib[o.GOType].SpeedLimit)
+	if o.MvVt.Abs() > mvLimit {
+		o.MvVt = o.MvVt.NormalizedTo(mvLimit)
 	}
 	o.PosVt = o.PosVt.Add(o.MvVt.MulF(dur))
 	return true
@@ -114,12 +115,13 @@ func (o *GameObj) Move_accel(now int64) bool {
 
 func (o *GameObj) Move_rand(now int64, rndAccVt vector3f.Vector3f) bool {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
+	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	o.LastMoveTick = now
 
 	o.AccVt = rndAccVt
 	o.MvVt = o.MvVt.Add(o.AccVt.MulF(dur))
-	if o.MvVt.Abs() > gameobjtype.Attrib[o.GOType].SpeedLimit {
-		o.MvVt = o.MvVt.NormalizedTo(gameobjtype.Attrib[o.GOType].SpeedLimit)
+	if o.MvVt.Abs() > mvLimit {
+		o.MvVt = o.MvVt.NormalizedTo(mvLimit)
 	}
 	o.PosVt = o.PosVt.Add(o.MvVt.MulF(dur))
 	return true
@@ -127,14 +129,16 @@ func (o *GameObj) Move_rand(now int64, rndAccVt vector3f.Vector3f) bool {
 
 func (o *GameObj) Move_circular(now int64, dstObj *GameObj) bool {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
+	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	axis := dstObj.MvVt
-	p := dstObj.MvVt.Cross(o.MvVt).NormalizedTo(20)
+	p := dstObj.MvVt.Cross(o.MvVt).NormalizedTo(mvLimit)
 	o.PosVt = dstObj.PosVt.Add(p.RotateAround(axis, dur+o.AccVt.Abs()))
 	return true
 }
 
 func (o *GameObj) Move_homming(now int64, dstObj *GameObj) bool {
+	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	// how to other team obj pos? without panic
-	o.AccVt = dstObj.PosVt.Sub(o.PosVt).NormalizedTo(gameobjtype.Attrib[o.GOType].SpeedLimit)
+	o.AccVt = dstObj.PosVt.Sub(o.PosVt).NormalizedTo(mvLimit)
 	return o.Move_accel(now)
 }
