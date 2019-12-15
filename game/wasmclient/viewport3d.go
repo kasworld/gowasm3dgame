@@ -57,10 +57,14 @@ func NewViewport3d(cnvid string) *Viewport3d {
 
 	vp.initGrid()
 	camerapos := vector3f.Vector3f{
-		gameconst.StageSize * 3 / 2,
-		gameconst.StageSize * 3 / 2,
-		gameconst.StageSize * 3 / 2}
-	vp.setCamera(camerapos, vector3f.Vector3f{0, 0, 0})
+		gameconst.StageSize * 1.8,
+		gameconst.StageSize * .7,
+		gameconst.StageSize * 1.8}
+	vp.setCamera(camerapos, vector3f.Vector3f{
+		0,
+		gameconst.StageSize * .3,
+		0,
+	})
 	vp.initLight()
 	JsSetPos(vp.light, camerapos)
 	return vp
@@ -70,14 +74,18 @@ func (vp *Viewport3d) initGrid() {
 	helper := vp.ThreeJsNew("GridHelper",
 		gameconst.StageSize, 100, 0x0000ff, 0x404040)
 	JsSetPos(helper, vector3f.Vector3f{
-		0, 0, 0,
+		gameconst.StageSize / 2,
+		0,
+		gameconst.StageSize / 2,
 	})
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper",
 		gameconst.StageSize, 100, 0x0000ff, 0x404040)
 	JsSetPos(helper, vector3f.Vector3f{
-		0, gameconst.StageSize, 0,
+		gameconst.StageSize / 2,
+		gameconst.StageSize,
+		gameconst.StageSize / 2,
 	})
 	vp.scene.Call("add", helper)
 
