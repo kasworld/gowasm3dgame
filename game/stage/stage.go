@@ -79,11 +79,10 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 			gameconst.StageSize + gameobjtype.MaxRadius,
 		},
 	}
-	teamcolor := []htmlcolors.Color24{
-		htmlcolors.Red,
-		htmlcolors.Blue,
-		htmlcolors.Green,
-		htmlcolors.Yellow,
+	teamcolor := make([]htmlcolors.Color24, 0)
+	for i := 0; i < 8; i++ {
+		co := htmlcolors.Color24List[wd.rnd.Intn(len(htmlcolors.Color24List))]
+		teamcolor = append(teamcolor, co)
 	}
 	for _, v := range teamcolor {
 		wd.Teams = append(wd.Teams, NewTeam(l, v))
