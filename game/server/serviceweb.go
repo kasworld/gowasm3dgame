@@ -19,6 +19,9 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_authorize"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_gob"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idcmd"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_packet"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_serveconnbyte"
 	"github.com/kasworld/uuidstr"
 )
@@ -35,6 +38,17 @@ func (svr *Server) initServiceWeb(ctx context.Context) {
 		Handler: webMux,
 		Addr:    svr.config.ServicePort,
 	}
+	svr.marshalBodyFn = w3d_gob.MarshalBodyFn
+	svr.unmarshalPacketFn = w3d_gob.UnmarshalPacket
+	svr.DemuxReq2BytesAPIFnMap = [...]func(
+		me interface{}, hd w3d_packet.Header, rbody []byte) (
+		w3d_packet.Header, interface{}, error){
+		w3d_idcmd.Invalid:   svr.bytesAPIFn_ReqInvalid,
+		w3d_idcmd.MakeTeam:  svr.bytesAPIFn_ReqMakeTeam,
+		w3d_idcmd.Act:       svr.bytesAPIFn_ReqAct,
+		w3d_idcmd.Heartbeat: svr.bytesAPIFn_ReqHeartbeat,
+	}
+
 }
 
 func CheckOrigin(r *http.Request) bool {

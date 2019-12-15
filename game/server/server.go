@@ -23,7 +23,6 @@ import (
 	"github.com/kasworld/gowasm3dgame/game/stage"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connmanager"
-	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_gob"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idcmd"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_packet"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_statapierror"
@@ -76,16 +75,6 @@ func New(config serverconfig.Config) *Server {
 	}
 	svr.sendRecvStop = func() {
 		fmt.Printf("Too early sendRecvStop call\n")
-	}
-	svr.marshalBodyFn = w3d_gob.MarshalBodyFn
-	svr.unmarshalPacketFn = w3d_gob.UnmarshalPacket
-	svr.DemuxReq2BytesAPIFnMap = [...]func(
-		me interface{}, hd w3d_packet.Header, rbody []byte) (
-		w3d_packet.Header, interface{}, error){
-		w3d_idcmd.Invalid:   svr.bytesAPIFn_ReqInvalid,
-		w3d_idcmd.MakeTeam:  svr.bytesAPIFn_ReqMakeTeam,
-		w3d_idcmd.Act:       svr.bytesAPIFn_ReqAct,
-		w3d_idcmd.Heartbeat: svr.bytesAPIFn_ReqHeartbeat,
 	}
 	svr.stage = stage.New(svr.log, svr.config)
 	return svr
