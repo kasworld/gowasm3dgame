@@ -16,23 +16,14 @@ import (
 	"github.com/kasworld/gowasm3dgame/lib/octree"
 )
 
-func (wd *Stage) newOctree() *octree.Octree {
-	rtn := octree.New(wd.BorderOctree)
-	for _, v := range wd.Teams {
-		for _, o := range v.Objs {
-			if o != nil && gameobjtype.Attrib[o.GOType].AddOctree {
-				rtn.Insert(o)
-			}
-		}
-	}
-	return rtn
-}
-
 func (stg *Stage) checkCollision() ([]*GameObj, *octree.Octree) {
 	toDeleteList := make([]*GameObj, 0)
-	ot := stg.newOctree()
+	ot := octree.New(stg.BorderOctree)
 	obj2check := make([]*GameObj, 0)
 	for _, bt := range stg.Teams {
+		if !bt.IsAlive {
+			continue
+		}
 		if ot.Insert(bt.Ball) {
 			obj2check = append(obj2check, bt.Ball)
 		}
@@ -73,5 +64,7 @@ func (stg *Stage) checkCollision() ([]*GameObj, *octree.Octree) {
 	for _, v := range toDeleteList {
 		v.toDelete = true
 	}
+	// fmt.Printf("obj check len %v, del %v\n",
+	// 	len(obj2check), len(toDeleteList))
 	return toDeleteList, ot
 }

@@ -118,12 +118,14 @@ func (o *GameObj) Move_rand(now int64, rndAccVt vector3f.Vector3f) bool {
 	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	o.LastMoveTick = now
 
-	o.AccVt = rndAccVt
+	o.PosVt = o.PosVt.Add(o.MvVt.MulF(dur))
+
 	o.MvVt = o.MvVt.Add(o.AccVt.MulF(dur))
 	if o.MvVt.Abs() > mvLimit {
 		o.MvVt = o.MvVt.NormalizedTo(mvLimit)
 	}
-	o.PosVt = o.PosVt.Add(o.MvVt.MulF(dur))
+
+	o.AccVt = rndAccVt
 	return true
 }
 

@@ -171,20 +171,13 @@ func (srcpos Vector3f) CalcAimAheadDur(
 	return rtn
 }
 
-func (center Vector3f) To8Direct(v2 Vector3f) int {
-	rtn := 0
+func (p Vector3f) IsIn(hr Cube) bool {
 	for i := 0; i < 3; i++ {
-		if center[i] > v2[i] {
-			rtn += 1 << uint(i)
+		if p[i] < hr.Min[i] || p[i] > hr.Max[i] {
+			return false
 		}
 	}
-	return rtn
-}
-
-func (p Vector3f) IsIn(hr Cube) bool {
-	return hr.Min[0] <= p[0] && p[0] <= hr.Max[0] &&
-		hr.Min[1] <= p[1] && p[1] <= hr.Max[1] &&
-		hr.Min[2] <= p[2] && p[2] <= hr.Max[2]
+	return true
 }
 
 func (p Vector3f) MakeIn(hr Cube) (Vector3f, int) {

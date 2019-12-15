@@ -26,8 +26,7 @@ func NewCube(v1 Vector3f, v2 Vector3f) Cube {
 	}
 	for i := 0; i < 3; i++ {
 		if rtn.Min[i] > rtn.Max[i] {
-			rtn.Max[i] = rtn.Min[i]
-			rtn.Min[i] = rtn.Max[i]
+			rtn.Max[i], rtn.Min[i] = rtn.Min[i], rtn.Max[i]
 		}
 	}
 	return rtn
@@ -38,18 +37,6 @@ func NewCubeByCR(c Vector3f, r float64) Cube {
 		Vector3f{c[0] - r, c[1] - r, c[2] - r},
 		Vector3f{c[0] + r, c[1] + r, c[2] + r},
 	}
-}
-
-func (h Cube) MakeCubeBy8Driect(center Vector3f, direct8 int) Cube {
-	rtn := Vector3f{}
-	for i := 0; i < 3; i++ {
-		if direct8&(1<<uint(i)) != 0 {
-			rtn[i] = h.Min[i]
-		} else {
-			rtn[i] = h.Max[i]
-		}
-	}
-	return NewCube(center, rtn)
 }
 
 func (h Cube) Center() Vector3f {
@@ -95,9 +82,12 @@ func (h Cube) IMul(i float64) Cube {
 }
 
 func (h1 Cube) IsOverlap(h2 Cube) bool {
-	return !((h1.Min[0] > h2.Max[0] || h1.Max[0] < h2.Min[0]) ||
-		(h1.Min[1] > h2.Max[1] || h1.Max[1] < h2.Min[1]) ||
-		(h1.Min[2] > h2.Max[2] || h1.Max[2] < h2.Min[2]))
+	for i := 0; i < 3; i++ {
+		if h1.Max[i] < h2.Min[i] || h2.Max[i] < h1.Min[i] {
+			return false
+		}
+	}
+	return true
 }
 
 func (h1 Cube) IsIn(h2 Cube) bool {

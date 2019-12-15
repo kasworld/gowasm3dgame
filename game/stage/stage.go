@@ -21,7 +21,6 @@ import (
 	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/game/serverconfig"
-	"github.com/kasworld/gowasm3dgame/lib/octree"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connmanager"
@@ -58,26 +57,26 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 
 	wd.BorderBounce = vector3f.Cube{
 		Min: vector3f.Vector3f{
-			-gameconst.StageSize / 2,
-			-gameconst.StageSize / 2,
-			-gameconst.StageSize / 2,
+			0,
+			0,
+			0,
 		},
 		Max: vector3f.Vector3f{
-			gameconst.StageSize / 2,
-			gameconst.StageSize / 2,
-			gameconst.StageSize / 2,
+			gameconst.StageSize,
+			gameconst.StageSize,
+			gameconst.StageSize,
 		},
 	}
 	wd.BorderOctree = vector3f.Cube{
 		Min: vector3f.Vector3f{
-			-gameconst.StageSize/2 - gameobjtype.MaxRadius,
-			-gameconst.StageSize/2 - gameobjtype.MaxRadius,
-			-gameconst.StageSize/2 - gameobjtype.MaxRadius,
+			-gameobjtype.MaxRadius,
+			-gameobjtype.MaxRadius,
+			-gameobjtype.MaxRadius,
 		},
 		Max: vector3f.Vector3f{
-			gameconst.StageSize/2 + gameobjtype.MaxRadius,
-			gameconst.StageSize/2 + gameobjtype.MaxRadius,
-			gameconst.StageSize/2 + gameobjtype.MaxRadius,
+			gameconst.StageSize + gameobjtype.MaxRadius,
+			gameconst.StageSize + gameobjtype.MaxRadius,
+			gameconst.StageSize + gameobjtype.MaxRadius,
 		},
 	}
 	teamcolor := []htmlcolors.Color24{
@@ -142,7 +141,21 @@ func (stg *Stage) Turn() {
 		}
 	}
 
-	aienv := stg.move(now)
+	for _, bt := range stg.Teams {
+		if !bt.IsAlive {
+			continue
+		}
+		toDelList := stg.MoveTeam(bt, now)
+		_ = toDelList
+	}
+
+	toDelList, aienv := stg.checkCollision()
+	for _, v := range toDelList {
+		if v.GOType == gameobjtype.Ball {
+			stg.handleBallKilled(now, v)
+		}
+	}
+
 	for _, bt := range stg.Teams {
 		if !bt.IsAlive {
 			continue
@@ -154,24 +167,6 @@ func (stg *Stage) Turn() {
 			stg.log.Fatal("OverAct %v %v", bt, actObj)
 		}
 	}
-}
-
-func (stg *Stage) move(now int64) *octree.Octree {
-
-	for _, bt := range stg.Teams {
-		if !bt.IsAlive {
-			continue
-		}
-		toDelList := stg.MoveTeam(bt, now)
-		_ = toDelList
-	}
-	toDelList, aienv := stg.checkCollision()
-	for _, v := range toDelList {
-		if v.GOType == gameobjtype.Ball {
-			stg.handleBallKilled(now, v)
-		}
-	}
-	return aienv
 }
 
 func (stg *Stage) handleBallKilled(now int64, gobj *GameObj) {
@@ -200,9 +195,9 @@ func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 	bt.Ball.Move_accel(now)
 	bt.Ball.BounceNormalize(gameconst.StageSize)
 	randvt := vector3f.Vector3f{
-		stg.rnd.Float64() * gameconst.StageSize,
-		stg.rnd.Float64() * gameconst.StageSize,
-		stg.rnd.Float64() * gameconst.StageSize,
+		stg.rnd.Float64() * gameconst.StageSize / 100,
+		stg.rnd.Float64() * gameconst.StageSize / 100,
+		stg.rnd.Float64() * gameconst.StageSize / 100,
 	}
 	bt.HomeMark.Move_rand(now, randvt)
 	bt.HomeMark.BounceNormalize(gameconst.StageSize)

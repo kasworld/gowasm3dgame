@@ -51,38 +51,49 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
 	bt := &Team{
 		rnd:     rnd,
 		log:     l,
+		UUID:    uuidstr.New(),
 		IsAlive: true,
 		Color24: color,
-		Ball: &GameObj{
-			GOType:       gameobjtype.Ball,
-			UUID:         uuidstr.New(),
-			BirthTick:    nowtick,
-			LastMoveTick: nowtick,
-			PosVt: vector3f.Vector3f{
-				rnd.Float64() * gameconst.StageSize,
-				rnd.Float64() * gameconst.StageSize,
-				rnd.Float64() * gameconst.StageSize,
-			},
-		},
-		HomeMark: &GameObj{
-			GOType:       gameobjtype.Mark,
-			UUID:         uuidstr.New(),
-			BirthTick:    nowtick,
-			LastMoveTick: nowtick,
-			PosVt: vector3f.Vector3f{
-				rnd.Float64() * gameconst.StageSize,
-				rnd.Float64() * gameconst.StageSize,
-				rnd.Float64() * gameconst.StageSize,
-			},
-		},
-		Objs: make([]*GameObj, 0),
+		Objs:    make([]*GameObj, 0),
 	}
-	maxv := gameobjtype.Attrib[gameobjtype.Ball].SpeedLimit
-	bt.Ball.MvVt = vector3f.Vector3f{
-		bt.rnd.Float64() * maxv,
-		bt.rnd.Float64() * maxv,
-		bt.rnd.Float64() * maxv,
-	}.NormalizedTo(maxv)
+
+	maxv := gameobjtype.Attrib[gameobjtype.Mark].SpeedLimit
+	bt.HomeMark = &GameObj{
+		GOType:       gameobjtype.Mark,
+		UUID:         uuidstr.New(),
+		TeamUUID:     bt.UUID,
+		BirthTick:    nowtick,
+		LastMoveTick: nowtick,
+		PosVt: vector3f.Vector3f{
+			rnd.Float64() * gameconst.StageSize,
+			rnd.Float64() * gameconst.StageSize,
+			rnd.Float64() * gameconst.StageSize,
+		},
+		MvVt: vector3f.Vector3f{
+			bt.rnd.Float64() * maxv,
+			bt.rnd.Float64() * maxv,
+			bt.rnd.Float64() * maxv,
+		}.NormalizedTo(maxv),
+	}
+
+	maxv = gameobjtype.Attrib[gameobjtype.Ball].SpeedLimit
+	bt.Ball = &GameObj{
+		GOType:       gameobjtype.Ball,
+		UUID:         uuidstr.New(),
+		TeamUUID:     bt.UUID,
+		BirthTick:    nowtick,
+		LastMoveTick: nowtick,
+		PosVt: vector3f.Vector3f{
+			rnd.Float64() * gameconst.StageSize,
+			rnd.Float64() * gameconst.StageSize,
+			rnd.Float64() * gameconst.StageSize,
+		},
+		MvVt: vector3f.Vector3f{
+			bt.rnd.Float64() * maxv,
+			bt.rnd.Float64() * maxv,
+			bt.rnd.Float64() * maxv,
+		}.NormalizedTo(maxv),
+	}
 	return bt
 }
 

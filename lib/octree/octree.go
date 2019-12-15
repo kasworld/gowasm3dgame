@@ -21,15 +21,17 @@ const (
 
 type OctreeObjI interface {
 	Pos() vector3f.Vector3f
+	GetCube() vector3f.Cube
 }
 
 type OctreeObjList []OctreeObjI
 
 type Octree struct {
-	BoundCube vector3f.Cube
-	Center    vector3f.Vector3f
-	DataList  OctreeObjList
-	Children  [8]*Octree
+	BoundCube    vector3f.Cube
+	Center       vector3f.Vector3f
+	DataList     OctreeObjList
+	Children     [8]*Octree
+	TerminalNode bool // cannot split
 }
 
 func New(cube vector3f.Cube) *Octree {
@@ -38,11 +40,53 @@ func New(cube vector3f.Cube) *Octree {
 		DataList:  make(OctreeObjList, 0, MaxOctreeData),
 		Center:    cube.Center(),
 	}
-	//log.Printf("new octree %v", rtn.BoundCube)
+	szvt := cube.SizeVector()
+	for i := 0; i < 3; i++ {
+		if szvt[i] < 2 { // cannot divide
+			rtn.TerminalNode = true
+		}
+	}
 	return &rtn
 }
 
-func (ot *Octree) Split() {
+func (ot *Octree) Insert(o OctreeObjI) bool {
+	//log.Printf("insert to octree obj%v %v", o.ID, o.Pos())
+	if !o.Pos().IsIn(ot.BoundCube) {
+		// log.Printf("invalid Insert Octree %v %v", ot.BoundCube, o.Pos())
+		return false
+	}
+
+	if ot.Children[0] != nil { // splited
+		if !ot.insertChild(o) { // append to me
+			ot.DataList = append(ot.DataList, o)
+		}
+		return true
+	} else { // not splited
+		if ot.TerminalNode || len(ot.DataList) < MaxOctreeData { // check need split
+			// simple append
+			ot.DataList = append(ot.DataList, o)
+			return true
+		} else {
+			ot.split()
+			if !ot.insertChild(o) { // append to me
+				ot.DataList = append(ot.DataList, o)
+			}
+			return true
+		}
+	}
+
+}
+
+func (ot *Octree) insertChild(o OctreeObjI) bool {
+	for _, chot := range ot.Children { // try child
+		if chot.Insert(o) {
+			return true
+		}
+	}
+	return false
+}
+
+func (ot *Octree) split() {
 	if ot.Children[0] != nil {
 		return
 	}
@@ -52,23 +96,16 @@ func (ot *Octree) Split() {
 		newbound := ot.BoundCube.MakeCubeBy8Driect(ot.Center, i)
 		ot.Children[i] = New(newbound)
 	}
-}
+	// move this node data to child
+	newDataList := make([]OctreeObjI, 0, len(ot.DataList))
+	for _, o := range ot.DataList {
+		if !ot.insertChild(o) {
+			newDataList = append(newDataList, o)
+		}
+	}
+	ot.DataList = newDataList
+	return
 
-func (ot *Octree) Insert(o OctreeObjI) bool {
-	//log.Printf("insert to octree obj%v %v", o.ID, o.Pos())
-	if !o.Pos().IsIn(ot.BoundCube) {
-		// log.Printf("invalid Insert Octree %v %v", ot.BoundCube, o.Pos())
-		return false
-	}
-	if len(ot.DataList) < MaxOctreeData {
-		// simple append
-		ot.DataList = append(ot.DataList, o)
-		return true
-	} else {
-		ot.Split()
-		d8 := ot.Center.To8Direct(o.Pos())
-		return ot.Children[d8].Insert(o)
-	}
 }
 
 func (ot *Octree) QueryByCube(
@@ -77,10 +114,10 @@ func (ot *Octree) QueryByCube(
 		return false
 	}
 	for _, o := range ot.DataList {
-		if !o.Pos().IsIn(hr) {
+		if !o.GetCube().IsOverlap(hr) {
 			continue
 		}
-		if fn(o) {
+		if fn == nil || fn(o) {
 			return true
 		}
 	}
