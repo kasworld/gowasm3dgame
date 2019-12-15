@@ -33,12 +33,18 @@ type Viewport3d struct {
 	renderer js.Value
 	light    js.Value
 
-	jsSceneObjs map[string]js.Value
+	jsSceneObjs   map[string]js.Value
+	geometryCache map[float64]js.Value
+	materialCache map[htmlcolors.Color24]js.Value
 }
 
 func NewViewport3d(cnvid string) *Viewport3d {
-	vp := &Viewport3d{}
-	vp.jsSceneObjs = make(map[string]js.Value)
+	vp := &Viewport3d{
+		jsSceneObjs:   make(map[string]js.Value),
+		geometryCache: make(map[float64]js.Value),
+		materialCache: make(map[htmlcolors.Color24]js.Value),
+	}
+
 	vp.threejs = js.Global().Get("THREE")
 	vp.renderer = vp.ThreeJsNew("WebGLRenderer")
 	vp.canvas = vp.renderer.Get("domElement")
@@ -132,17 +138,35 @@ func (vp *Viewport3d) Draw(tick int64) {
 	vp.renderer.Call("render", vp.scene, vp.camera)
 }
 
+func (vp *Viewport3d) getGeometry(radius float64) js.Value {
+	geo, exist := vp.geometryCache[radius]
+	if !exist {
+		geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+		vp.geometryCache[radius] = geo
+	}
+	return geo
+}
+
+func (vp *Viewport3d) getMaterial(co htmlcolors.Color24) js.Value {
+	mat, exist := vp.materialCache[co]
+	if !exist {
+		mat = vp.ThreeJsNew("MeshLambertMaterial")
+		// material.Set("color", vp.ToThColor(htmlcolors.Gray))
+		mat.Set("emissive", vp.ToThColor(co))
+		mat.Set("shininess", 30)
+		vp.materialCache[co] = mat
+	}
+	return mat
+}
+
 func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co htmlcolors.Color24) js.Value {
 	if jso, exist := vp.jsSceneObjs[o.UUID]; exist {
 		JsSetPos(jso, o.PosVt)
 		return jso
 	}
 	radius := gameobjtype.Attrib[o.GOType].Radius
-	geometry := vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
-	material := vp.ThreeJsNew("MeshLambertMaterial")
-	// material.Set("color", vp.ToThColor(htmlcolors.Gray))
-	material.Set("emissive", vp.ToThColor(co))
-	material.Set("shininess", 30)
+	geometry := vp.getGeometry(radius)
+	material := vp.getMaterial(co)
 	jso := vp.ThreeJsNew("Mesh", geometry, material)
 	JsSetPos(jso, o.PosVt)
 	vp.scene.Call("add", jso)
