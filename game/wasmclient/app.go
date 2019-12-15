@@ -95,8 +95,10 @@ func (app *WasmClient) updateSysmsg() {
 		app.DispInterDur, app.PingDur, app.ServerClientTictDiff,
 	)
 	fmt.Fprintf(&buf,
-		"obj count %v<br/>",
+		"scene obj count %v<br/>geomatry cache count %v<br/>material cache count %v<br/>",
 		len(app.vp.jsSceneObjs),
+		len(app.vp.geometryCache),
+		len(app.vp.materialCache),
 	)
 
 	if stats := app.statsInfo; stats != nil {
