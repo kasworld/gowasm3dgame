@@ -27,8 +27,6 @@
 
 *.wasm
 core
-*_gen.go 
-*_gen_test.go
 .*~
 *~
 *.map
