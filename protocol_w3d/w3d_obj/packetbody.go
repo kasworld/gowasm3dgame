@@ -15,6 +15,7 @@ import (
 	"github.com/kasworld/gowasm3dgame/enums/acttype"
 	"github.com/kasworld/gowasm3dgame/enums/acttype_stats"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
+	"github.com/kasworld/htmlcolors"
 )
 
 type ReqInvalid_data struct {
@@ -58,10 +59,18 @@ type NotiStageInfo_data struct {
 }
 
 type NotiStatsInfo_data struct {
-	ActStats []acttype_stats.ActTypeStat
+	Stats []TeamStat
 }
 
 /////////////////////////////
+
+type TeamStat struct {
+	UUID     string
+	AP       int
+	Alive    bool
+	Color24  htmlcolors.Color24
+	ActStats acttype_stats.ActTypeStat
+}
 
 type Act struct {
 	Act      acttype.ActType

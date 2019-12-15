@@ -102,18 +102,46 @@ func (app *WasmClient) updateSysmsg() {
 	)
 
 	if stats := app.statsInfo; stats != nil {
-		buf.WriteString(`<table border=1 style="border-collapse:collapse;">
-		<tr><th>act\team</th>`)
-		for ti, _ := range stats.ActStats {
-			fmt.Fprintf(&buf, "<th>%v</th>", ti)
+		buf.WriteString(`<table border=1 style="border-collapse:collapse;">`)
+
+		buf.WriteString(`<colgroup>`)
+		fmt.Fprintf(&buf, `<col >`)
+		for _, v := range stats.Stats {
+			fmt.Fprintf(&buf, `<col style="background-color:%v">`,
+				v.Color24.ToHTMLColorString())
+		}
+		buf.WriteString(`</colgroup>`)
+
+		buf.WriteString(`<tr><th>act\team</th>`)
+		for ti, _ := range stats.Stats {
+			fmt.Fprintf(&buf, "<th >%v</th>",
+				ti)
+		}
+		buf.WriteString(`</tr>`)
+
+		buf.WriteString(`<tr><td>UUID</td>`)
+		for _, v := range stats.Stats {
+			fmt.Fprintf(&buf, "<td>%v</td>", v.UUID)
+		}
+		buf.WriteString(`</tr>`)
+
+		buf.WriteString(`<tr><td>AP</td>`)
+		for _, v := range stats.Stats {
+			fmt.Fprintf(&buf, "<td>%v</td>", v.AP)
+		}
+		buf.WriteString(`</tr>`)
+
+		buf.WriteString(`<tr><td>Alive</td>`)
+		for _, v := range stats.Stats {
+			fmt.Fprintf(&buf, "<td>%v</td>", v.Alive)
 		}
 		buf.WriteString(`</tr>`)
 
 		for acti := 0; acti < acttype.ActType_Count; acti++ {
 			fmt.Fprintf(&buf, "<tr><td>%v</td>", acttype.ActType(acti))
-			for ti, _ := range stats.ActStats {
+			for ti, _ := range stats.Stats {
 				fmt.Fprintf(&buf, "<td>%v</td>",
-					stats.ActStats[ti][acti])
+					stats.Stats[ti].ActStats[acti])
 			}
 			buf.WriteString(`</tr>`)
 		}

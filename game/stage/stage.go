@@ -81,7 +81,12 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 	}
 	teamcolor := make([]htmlcolors.Color24, 0)
 	for i := 0; i < 8; i++ {
-		co := htmlcolors.Color24List[wd.rnd.Intn(len(htmlcolors.Color24List))]
+		co := htmlcolors.NewColor24(
+			uint8(wd.rnd.Intn(256)),
+			uint8(wd.rnd.Intn(256)),
+			uint8(wd.rnd.Intn(256)),
+		)
+		// co := htmlcolors.Color24List[wd.rnd.Intn(len(htmlcolors.Color24List))]
 		teamcolor = append(teamcolor, co)
 	}
 	for _, v := range teamcolor {
@@ -262,7 +267,14 @@ func (stg *Stage) ToStageInfo() *w3d_obj.NotiStageInfo_data {
 func (stg *Stage) ToStatsInfo() *w3d_obj.NotiStatsInfo_data {
 	rtn := &w3d_obj.NotiStatsInfo_data{}
 	for _, bt := range stg.Teams {
-		rtn.ActStats = append(rtn.ActStats, bt.ActStats)
+		teamStats := w3d_obj.TeamStat{
+			UUID:     bt.UUID,
+			AP:       bt.ActPoint,
+			Alive:    bt.IsAlive,
+			Color24:  bt.Color24,
+			ActStats: bt.ActStats,
+		}
+		rtn.Stats = append(rtn.Stats, teamStats)
 	}
 	return rtn
 }

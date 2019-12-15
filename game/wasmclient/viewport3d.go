@@ -67,12 +67,18 @@ func NewViewport3d(cnvid string) *Viewport3d {
 }
 
 func (vp *Viewport3d) initGrid() {
-	helper := vp.ThreeJsNew("GridHelper", gameconst.StageSize, 100, 0x0000ff, 0x404040)
-	helper.Get("position").Set("y", -gameconst.StageSize)
+	helper := vp.ThreeJsNew("GridHelper",
+		gameconst.StageSize, 100, 0x0000ff, 0x404040)
+	JsSetPos(helper, vector3f.Vector3f{
+		0, 0, 0,
+	})
 	vp.scene.Call("add", helper)
 
-	helper = vp.ThreeJsNew("GridHelper", gameconst.StageSize, 100, 0x0000ff, 0x404040)
-	helper.Get("position").Set("y", gameconst.StageSize)
+	helper = vp.ThreeJsNew("GridHelper",
+		gameconst.StageSize, 100, 0x0000ff, 0x404040)
+	JsSetPos(helper, vector3f.Vector3f{
+		0, gameconst.StageSize, 0,
+	})
 	vp.scene.Call("add", helper)
 
 	axisHelper := vp.ThreeJsNew("AxesHelper", gameconst.StageSize)
