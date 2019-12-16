@@ -40,6 +40,8 @@ func (svr *Server) initAdminWeb() {
 	webMux.HandleFuncAuth("/StatServeAPI", svr.web_ProtocolStat)
 	webMux.HandleFuncAuth("/StatNotification", svr.web_NotiStat)
 	webMux.HandleFuncAuth("/StatAPIError", svr.web_ErrorStat)
+	webMux.HandleFuncAuth("/ConnectionManager", svr.web_ConnMan)
+	webMux.HandleFuncAuth("/StageManager", svr.web_StageMan)
 
 	authdata.AddAllActionName("root")
 
@@ -80,6 +82,10 @@ func (svr *Server) web_ServerInfo(w http.ResponseWriter, r *http.Request) {
     <br/>
     <a href="/StatAPIError" target="_blank">{{.GetErrorStat}}</a>
     <br/>
+    <a href="/ConnectionManager?page=0" target="_blank">{{.GetConnMan}}</a>
+    <br/>
+    <a href="/StageManager?page=0" target="_blank">{{.GetStageMan}}</a>
+    <br/>
 	<pre>{{.Config.StringForm}}</pre>
 	<br/>
 	</body> </html> 
@@ -114,4 +120,18 @@ func (svr *Server) web_ErrorStat(w http.ResponseWriter, r *http.Request) {
 		svr.log.Error("%v", err)
 	}
 	svr.errorStat.ToWeb(w, r)
+}
+
+func (svr *Server) web_ConnMan(w http.ResponseWriter, r *http.Request) {
+	if err := weblib.SetFresh(w, r); err != nil {
+		svr.log.Error("%v", err)
+	}
+	svr.connManager.ToWeb(w, r)
+}
+
+func (svr *Server) web_StageMan(w http.ResponseWriter, r *http.Request) {
+	if err := weblib.SetFresh(w, r); err != nil {
+		svr.log.Error("%v", err)
+	}
+	svr.stageManager.ToWeb(w, r)
 }

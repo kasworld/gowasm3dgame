@@ -21,6 +21,7 @@ import (
 	"github.com/kasworld/actpersec"
 	"github.com/kasworld/gowasm3dgame/game/serverconfig"
 	"github.com/kasworld/gowasm3dgame/game/stage"
+	"github.com/kasworld/gowasm3dgame/game/stagemanager"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connmanager"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idcmd"
@@ -55,28 +56,29 @@ type Server struct {
 		me interface{}, hd w3d_packet.Header, rbody []byte) (
 		w3d_packet.Header, interface{}, error)
 
-	connManager *w3d_connmanager.Manager
-	stage       *stage.Stage
+	connManager  *w3d_connmanager.Manager
+	stageManager *stagemanager.Manager
 }
 
 func New(config serverconfig.Config) *Server {
+	l := w3dlog.GlobalLogger
 	svr := &Server{
 		config: config,
-		log:    w3dlog.GlobalLogger,
+		log:    l,
 		rnd:    rand.New(rand.NewSource(time.Now().UnixNano())),
 
 		SendStat: actpersec.New(),
 		RecvStat: actpersec.New(),
 
-		apiStat:     w3d_statserveapi.New(),
-		notiStat:    w3d_statnoti.New(),
-		errorStat:   w3d_statapierror.New(),
-		connManager: w3d_connmanager.New(),
+		apiStat:      w3d_statserveapi.New(),
+		notiStat:     w3d_statnoti.New(),
+		errorStat:    w3d_statapierror.New(),
+		connManager:  w3d_connmanager.New(),
+		stageManager: stagemanager.New(l),
 	}
 	svr.sendRecvStop = func() {
 		fmt.Printf("Too early sendRecvStop call\n")
 	}
-	svr.stage = stage.New(svr.log, svr.config)
 	return svr
 }
 
@@ -120,8 +122,11 @@ func (svr *Server) ServiceMain(ctx context.Context) {
 	timerInfoTk := time.NewTicker(1 * time.Second)
 	defer timerInfoTk.Stop()
 
-	svr.stage = stage.New(svr.log, svr.config)
-	go svr.stage.Run(ctx)
+	for i := 0; i < 100; i++ {
+		stg := stage.New(svr.log, svr.config)
+		svr.stageManager.Add(stg)
+		go stg.Run(ctx)
+	}
 
 	for {
 		select {
