@@ -250,10 +250,7 @@ func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 func (stg *Stage) ToStageInfo() *w3d_obj.NotiStageInfo_data {
 	now := time.Now().UnixNano()
 	rtn := &w3d_obj.NotiStageInfo_data{
-		Tick:         now,
-		ID:           stg.UUID,
-		BorderBounce: stg.BorderBounce,
-		BorderOctree: stg.BorderOctree,
+		Tick: now,
 	}
 	for _, bt := range stg.Teams {
 		if !bt.IsAlive {
@@ -265,7 +262,9 @@ func (stg *Stage) ToStageInfo() *w3d_obj.NotiStageInfo_data {
 }
 
 func (stg *Stage) ToStatsInfo() *w3d_obj.NotiStatsInfo_data {
-	rtn := &w3d_obj.NotiStatsInfo_data{}
+	rtn := &w3d_obj.NotiStatsInfo_data{
+		UUID: stg.UUID,
+	}
 	for _, bt := range stg.Teams {
 		teamStats := w3d_obj.TeamStat{
 			UUID:     bt.UUID,

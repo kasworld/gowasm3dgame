@@ -51,14 +51,12 @@ type NotiInvalid_data struct {
 }
 
 type NotiStageInfo_data struct {
-	Tick         int64
-	ID           string
-	BorderBounce vector3f.Cube
-	BorderOctree vector3f.Cube
-	Teams        []*Team
+	Tick  int64
+	Teams []*Team
 }
 
 type NotiStatsInfo_data struct {
+	UUID  string
 	Stats []TeamStat
 }
 

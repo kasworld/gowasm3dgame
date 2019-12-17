@@ -102,6 +102,8 @@ func (app *WasmClient) updateSysmsg() {
 	)
 
 	if stats := app.statsInfo; stats != nil {
+		fmt.Fprintf(&buf, "Stage %v<br/>", stats.UUID)
+
 		buf.WriteString(`<table border=1 style="border-collapse:collapse;">`)
 
 		buf.WriteString(`<colgroup>`)
