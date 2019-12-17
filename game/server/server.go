@@ -23,7 +23,7 @@ import (
 	"github.com/kasworld/gowasm3dgame/game/stage"
 	"github.com/kasworld/gowasm3dgame/game/stagemanager"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
-	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connmanager"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idcmd"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_packet"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_statapierror"
@@ -56,7 +56,7 @@ type Server struct {
 		me interface{}, hd w3d_packet.Header, rbody []byte) (
 		w3d_packet.Header, interface{}, error)
 
-	connManager  *w3d_connmanager.Manager
+	connManager  *w3d_connbytemanager.Manager
 	stageManager *stagemanager.Manager
 }
 
@@ -73,7 +73,7 @@ func New(config serverconfig.Config) *Server {
 		apiStat:      w3d_statserveapi.New(),
 		notiStat:     w3d_statnoti.New(),
 		errorStat:    w3d_statapierror.New(),
-		connManager:  w3d_connmanager.New(),
+		connManager:  w3d_connbytemanager.New(),
 		stageManager: stagemanager.New(l),
 	}
 	svr.sendRecvStop = func() {

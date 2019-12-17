@@ -23,7 +23,7 @@ import (
 	"github.com/kasworld/gowasm3dgame/game/serverconfig"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
-	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connmanager"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idnoti"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/uuidstr"
@@ -35,7 +35,7 @@ type Stage struct {
 	config serverconfig.Config
 
 	UUID  string
-	Conns *w3d_connmanager.Manager
+	Conns *w3d_connbytemanager.Manager
 
 	BorderBounce vector3f.Cube
 	BorderOctree vector3f.Cube
@@ -52,7 +52,7 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 		config: config,
 		log:    l,
 		rnd:    rand.New(rand.NewSource(time.Now().UnixNano())),
-		Conns:  w3d_connmanager.New(),
+		Conns:  w3d_connbytemanager.New(),
 	}
 
 	wd.BorderBounce = vector3f.Cube{

@@ -61,7 +61,7 @@ goimports -w w3d_handlereq/fnbytestemplate_gen.go
 goimports -w w3d_handlenoti/fnobjtemplate_gen.go
 goimports -w w3d_handlenoti/fnbytestemplate_gen.go
 goimports -w w3d_serveconnbyte/serveconnbyte_gen.go
-goimports -w w3d_connmanager/connmanager_gen.go
+goimports -w w3d_connbytemanager/connbytemanager_gen.go
 goimports -w w3d_conntcp/conntcp_gen.go
 goimports -w w3d_connwasm/connwasm_gen.go
 goimports -w w3d_connwsgorilla/connwsgorilla_gen.go

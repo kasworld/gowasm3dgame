@@ -19,7 +19,7 @@ import (
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/game/serverconfig"
 	"github.com/kasworld/gowasm3dgame/game/stagemanager"
-	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connmanager"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_statapierror"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_statnoti"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_statserveapi"
@@ -78,7 +78,7 @@ func (svr *Server) Config() serverconfig.Config {
 	return svr.config
 }
 
-func (svr *Server) GetConnMan() *w3d_connmanager.Manager {
+func (svr *Server) GetConnMan() *w3d_connbytemanager.Manager {
 	return svr.connManager
 }
 
