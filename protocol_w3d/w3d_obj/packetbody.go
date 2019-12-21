@@ -25,17 +25,19 @@ type RspInvalid_data struct {
 	Dummy uint8
 }
 
-type ReqMakeTeam_data struct {
-	Dummy uint8
+type ReqEnterStage_data struct {
+	StageUUID string // may be not same to req stage
+	NickToUse string
 }
-type RspMakeTeam_data struct {
-	Dummy uint8
+type RspEnterStage_data struct {
+	StageUUID string // may be not same to req stage
+	NickToUse string // may be not same to req nick
 }
 
-type ReqAct_data struct {
-	Dummy uint8
+type ReqChatToStage_data struct {
+	Chat string
 }
-type RspAct_data struct {
+type RspChatToStage_data struct {
 	Dummy uint8
 }
 
@@ -60,6 +62,11 @@ type NotiStageInfo_data struct {
 type NotiStatsInfo_data struct {
 	UUID  string
 	Stats []TeamStat
+}
+
+type NotiStageChat_data struct {
+	SenderNick string
+	Chat       string
 }
 
 //////////////////////////////////////////////////////////////////////////////

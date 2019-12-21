@@ -130,6 +130,7 @@ var DemuxNoti2ObjFnMap = [...]func(me interface{}, hd w3d_packet.Header, body in
 	w3d_idnoti.Invalid:   objRecvNotiFn_Invalid,
 	w3d_idnoti.StageInfo: objRecvNotiFn_StageInfo,
 	w3d_idnoti.StatsInfo: objRecvNotiFn_StatsInfo,
+	w3d_idnoti.StageChat: objRecvNotiFn_StageChat,
 }
 
 func objRecvNotiFn_Invalid(me interface{}, hd w3d_packet.Header, body interface{}) error {
@@ -165,5 +166,18 @@ func objRecvNotiFn_StatsInfo(me interface{}, hd w3d_packet.Header, body interfac
 		return fmt.Errorf("packet mismatch %v", body)
 	}
 	app.statsInfo = robj
+	return nil
+}
+
+func objRecvNotiFn_StageChat(me interface{}, hd w3d_packet.Header, body interface{}) error {
+	robj, ok := body.(*w3d_obj.NotiStageChat_data)
+	if !ok {
+		return fmt.Errorf("packet mismatch %v", body)
+	}
+	app, ok := me.(*WasmClient)
+	if !ok {
+		return fmt.Errorf("packet mismatch %v", body)
+	}
+	app.systemMessage.Appendf("%v : %v", robj.SenderNick, robj.Chat)
 	return nil
 }

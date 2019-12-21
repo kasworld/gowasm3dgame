@@ -1,4 +1,4 @@
 Invalid
-MakeTeam // make team 
-Act // client user,ai action 
-Heartbeat // sayHello? 
+EnterStage
+ChatToStage
+Heartbeat 

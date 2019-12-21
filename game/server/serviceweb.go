@@ -44,10 +44,10 @@ func (svr *Server) initServiceWeb(ctx context.Context) {
 	svr.DemuxReq2BytesAPIFnMap = [...]func(
 		me interface{}, hd w3d_packet.Header, rbody []byte) (
 		w3d_packet.Header, interface{}, error){
-		w3d_idcmd.Invalid:   svr.bytesAPIFn_ReqInvalid,
-		w3d_idcmd.MakeTeam:  svr.bytesAPIFn_ReqMakeTeam,
-		w3d_idcmd.Act:       svr.bytesAPIFn_ReqAct,
-		w3d_idcmd.Heartbeat: svr.bytesAPIFn_ReqHeartbeat,
+		w3d_idcmd.Invalid:     svr.bytesAPIFn_ReqInvalid,
+		w3d_idcmd.EnterStage:  svr.bytesAPIFn_ReqEnterStage,
+		w3d_idcmd.ChatToStage: svr.bytesAPIFn_ReqChatToStage,
+		w3d_idcmd.Heartbeat:   svr.bytesAPIFn_ReqHeartbeat,
 	}
 
 }
