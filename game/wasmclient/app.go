@@ -12,19 +12,16 @@
 package wasmclient
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"syscall/js"
 	"time"
 
 	"github.com/kasworld/actjitter"
-	"github.com/kasworld/gowasm3dgame/enums/acttype"
-	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connwasm"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_pid2rspfn"
-	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_version"
+	"github.com/kasworld/gowasmlib/textncount"
 	"github.com/kasworld/intervalduration"
 )
 
@@ -37,6 +34,7 @@ type WasmClient struct {
 	PingDur              int64
 	ServerClientTictDiff int64
 	DispInterDur         *intervalduration.IntervalDuration
+	systemMessage        textncount.TextNCountList
 
 	vp        *Viewport3d
 	statsInfo *w3d_obj.NotiStatsInfo_data
@@ -70,7 +68,7 @@ func (app *WasmClient) run() {
 	}
 	defer app.Cleanup()
 
-	app.updataClientInfoHTML()
+	app.updataServiceInfo()
 	js.Global().Call("requestAnimationFrame", js.FuncOf(app.drawCanvas))
 
 	timerPingTk := time.NewTicker(time.Second)
@@ -83,75 +81,11 @@ loop:
 
 		case <-timerPingTk.C:
 			go app.reqHeartbeat()
+			app.updateDebugInfo()
+			app.updateTeamStatsInfo()
 			app.updateSysmsg()
 		}
 	}
-}
-
-func (app *WasmClient) updateSysmsg() {
-	var buf bytes.Buffer
-	fmt.Fprintf(&buf,
-		"%v<br/>Ping %v<br/>ServerClientTickDiff %v<br/>",
-		app.DispInterDur, app.PingDur, app.ServerClientTictDiff,
-	)
-	fmt.Fprintf(&buf,
-		"scene obj count %v<br/>geomatry cache count %v<br/>material cache count %v<br/>",
-		len(app.vp.jsSceneObjs),
-		len(app.vp.geometryCache),
-		len(app.vp.materialCache),
-	)
-
-	if stats := app.statsInfo; stats != nil {
-		fmt.Fprintf(&buf, "Stage %v<br/>", stats.UUID)
-
-		buf.WriteString(`<table border=1 style="border-collapse:collapse;">`)
-
-		buf.WriteString(`<colgroup>`)
-		fmt.Fprintf(&buf, `<col >`)
-		for _, v := range stats.Stats {
-			fmt.Fprintf(&buf, `<col style="background-color:%v">`,
-				v.Color24.ToHTMLColorString())
-		}
-		buf.WriteString(`</colgroup>`)
-
-		buf.WriteString(`<tr><th>act\team</th>`)
-		for ti, _ := range stats.Stats {
-			fmt.Fprintf(&buf, "<th >%v</th>",
-				ti)
-		}
-		buf.WriteString(`</tr>`)
-
-		buf.WriteString(`<tr><td>UUID</td>`)
-		for _, v := range stats.Stats {
-			fmt.Fprintf(&buf, "<td>%v</td>", v.UUID)
-		}
-		buf.WriteString(`</tr>`)
-
-		buf.WriteString(`<tr><td>AP</td>`)
-		for _, v := range stats.Stats {
-			fmt.Fprintf(&buf, "<td>%v</td>", v.AP)
-		}
-		buf.WriteString(`</tr>`)
-
-		buf.WriteString(`<tr><td>Alive</td>`)
-		for _, v := range stats.Stats {
-			fmt.Fprintf(&buf, "<td>%v</td>", v.Alive)
-		}
-		buf.WriteString(`</tr>`)
-
-		for acti := 0; acti < acttype.ActType_Count; acti++ {
-			fmt.Fprintf(&buf, "<tr><td>%v</td>", acttype.ActType(acti))
-			for ti, _ := range stats.Stats {
-				fmt.Fprintf(&buf, "<td>%v</td>",
-					stats.Stats[ti].ActStats[acti])
-			}
-			buf.WriteString(`</tr>`)
-		}
-		buf.WriteString(`</table>`)
-	}
-
-	div := js.Global().Get("document").Call("getElementById", "sysmsg")
-	div.Set("innerHTML", buf.String())
 }
 
 func (app *WasmClient) drawCanvas(this js.Value, args []js.Value) interface{} {
@@ -171,19 +105,6 @@ func (app *WasmClient) drawCanvas(this js.Value, args []js.Value) interface{} {
 
 func (app *WasmClient) GetEstServerTick() int64 {
 	return time.Now().UnixNano() + app.ServerClientTictDiff
-}
-
-func (app *WasmClient) updataClientInfoHTML() {
-	msgCopyright := `</hr>Copyright 2019 SeukWon Kang 
-		<a href="https://github.com/kasworld/gowasm3dgame" target="_blank">gowasm3dgame</a>`
-
-	var buf bytes.Buffer
-	fmt.Fprintf(&buf, "gowasm3dgame webclient<br/>")
-	fmt.Fprintf(&buf, "Protocol %v<br/>", w3d_version.ProtocolVersion)
-	fmt.Fprintf(&buf, "Data %v<br/>", gameconst.DataVersion)
-	fmt.Fprintf(&buf, "%v<br/>", msgCopyright)
-	div := js.Global().Get("document").Call("getElementById", "serviceinfo")
-	div.Set("innerHTML", buf.String())
 }
 
 func (app *WasmClient) handleResizeCanvas(this js.Value, args []js.Value) interface{} {

@@ -32,11 +32,11 @@ type Team struct {
 
 	ActStats acttype_stats.ActTypeStat
 	Color24  htmlcolors.Color24
+	UUID     string
 
 	IsAlive     bool
 	RespawnTick int64
 
-	UUID     string
 	Ball     *GameObj
 	HomeMark *GameObj
 	Objs     []*GameObj
