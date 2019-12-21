@@ -34,14 +34,14 @@ type Viewport3d struct {
 	light    js.Value
 
 	jsSceneObjs   map[string]js.Value
-	geometryCache map[float64]js.Value
+	geometryCache map[gameobjtype.GameObjType]js.Value
 	materialCache map[htmlcolors.Color24]js.Value
 }
 
 func NewViewport3d(cnvid string) *Viewport3d {
 	vp := &Viewport3d{
 		jsSceneObjs:   make(map[string]js.Value),
-		geometryCache: make(map[float64]js.Value),
+		geometryCache: make(map[gameobjtype.GameObjType]js.Value),
 		materialCache: make(map[htmlcolors.Color24]js.Value),
 	}
 
@@ -152,11 +152,33 @@ func (vp *Viewport3d) Draw(tick int64) {
 	vp.renderer.Call("render", vp.scene, vp.camera)
 }
 
-func (vp *Viewport3d) getGeometry(radius float64) js.Value {
-	geo, exist := vp.geometryCache[radius]
+func (vp *Viewport3d) getGeometry(gotype gameobjtype.GameObjType) js.Value {
+	geo, exist := vp.geometryCache[gotype]
 	if !exist {
-		geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
-		vp.geometryCache[radius] = geo
+		radius := gameobjtype.Attrib[gotype].Radius
+		switch gotype {
+		default:
+			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+		case gameobjtype.Ball:
+			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+		case gameobjtype.Shield:
+			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+		case gameobjtype.Bullet:
+			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+		case gameobjtype.HommingBullet:
+			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+		case gameobjtype.SuperBullet:
+			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+		case gameobjtype.Deco:
+			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+		case gameobjtype.Mark:
+			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+		case gameobjtype.Hard:
+			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+		case gameobjtype.Food:
+			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+		}
+		vp.geometryCache[gotype] = geo
 	}
 	return geo
 }
@@ -178,8 +200,7 @@ func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co htmlcolors.Color24) js.Va
 		JsSetPos(jso, o.PosVt)
 		return jso
 	}
-	radius := gameobjtype.Attrib[o.GOType].Radius
-	geometry := vp.getGeometry(radius)
+	geometry := vp.getGeometry(o.GOType)
 	material := vp.getMaterial(co)
 	jso := vp.ThreeJsNew("Mesh", geometry, material)
 	JsSetPos(jso, o.PosVt)
