@@ -81,12 +81,28 @@ func (vp *Viewport3d) initGrid() {
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper",
-		gameconst.StageSize, 100, 0x0000ff, 0x404040)
+		gameconst.StageSize, 100, 0x00ff00, 0x404040)
 	JsSetPos(helper, vector3f.Vector3f{
 		gameconst.StageSize / 2,
 		gameconst.StageSize,
 		gameconst.StageSize / 2,
 	})
+	vp.scene.Call("add", helper)
+
+	box3 := vp.ThreeJsNew("Box3",
+		vp.Vt3fToThVt3(
+			vector3f.Vector3f{
+				0 - gameobjtype.MaxRadius,
+				0 - gameobjtype.MaxRadius,
+				0 - gameobjtype.MaxRadius,
+			}),
+		vp.Vt3fToThVt3(vector3f.Vector3f{
+			gameconst.StageSize + gameobjtype.MaxRadius,
+			gameconst.StageSize + gameobjtype.MaxRadius,
+			gameconst.StageSize + gameobjtype.MaxRadius,
+		}),
+	)
+	helper = vp.ThreeJsNew("Box3Helper", box3, 0xffffff)
 	vp.scene.Call("add", helper)
 
 	axisHelper := vp.ThreeJsNew("AxesHelper", gameconst.StageSize)
