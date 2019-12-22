@@ -52,7 +52,7 @@ func NewViewport3d(cnvid string) *Viewport3d {
 
 	vp.scene = vp.ThreeJsNew("Scene")
 
-	vp.camera = vp.ThreeJsNew("PerspectiveCamera", 45, 1, 1,
+	vp.camera = vp.ThreeJsNew("PerspectiveCamera", 75, 1, 1,
 		gameconst.StageSize*10)
 
 	vp.initGrid()
@@ -139,7 +139,7 @@ func (vp *Viewport3d) calcResize() {
 	if size > winH {
 		size = winH
 	}
-	size -= 20
+	// size -= 20
 	vp.ViewWidth = size
 	vp.ViewHeight = size
 
@@ -213,10 +213,15 @@ func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co htmlcolors.Color24) js.Va
 }
 
 func (vp *Viewport3d) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data) {
+	setCamera := false
 	addUUID := make(map[string]bool)
 	for _, tm := range stageInfo.Teams {
 		if tm == nil {
 			continue
+		}
+		if !setCamera {
+			setCamera = true
+			vp.setCamera(tm.HomeMark.PosVt, tm.Ball.PosVt)
 		}
 		vp.add2Scene(tm.Ball, tm.Color24)
 		addUUID[tm.Ball.UUID] = true
