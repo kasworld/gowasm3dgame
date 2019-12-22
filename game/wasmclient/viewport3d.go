@@ -135,10 +135,13 @@ func (vp *Viewport3d) calcResize() {
 	win := js.Global().Get("window")
 	winW := win.Get("innerWidth").Int()
 	winH := win.Get("innerHeight").Int()
-	winH = winH * 2 / 3
-
-	vp.ViewWidth = winW
-	vp.ViewHeight = winH
+	size := winW
+	if size > winH {
+		size = winH
+	}
+	size -= 20
+	vp.ViewWidth = size
+	vp.ViewHeight = size
 
 	vp.canvas.Call("setAttribute", "width", vp.ViewWidth)
 	vp.canvas.Call("setAttribute", "height", vp.ViewHeight)
@@ -162,17 +165,17 @@ func (vp *Viewport3d) getGeometry(gotype gameobjtype.GameObjType) js.Value {
 		case gameobjtype.Ball:
 			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
 		case gameobjtype.Shield:
-			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+			geo = vp.ThreeJsNew("IcosahedronGeometry", radius)
 		case gameobjtype.Bullet:
-			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+			geo = vp.ThreeJsNew("DodecahedronGeometry", radius)
 		case gameobjtype.HommingBullet:
-			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+			geo = vp.ThreeJsNew("OctahedronGeometry", radius)
 		case gameobjtype.SuperBullet:
-			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+			geo = vp.ThreeJsNew("TetrahedronGeometry", radius)
 		case gameobjtype.Deco:
 			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
 		case gameobjtype.Mark:
-			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+			geo = vp.ThreeJsNew("BoxGeometry", radius*2, radius*2, radius*2)
 		case gameobjtype.Hard:
 			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
 		case gameobjtype.Food:

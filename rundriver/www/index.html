@@ -13,12 +13,42 @@
       });
     }
 </script>
+
+<style>
+  #canvas3d {
+    grid-area: canvas3d;
+}
+  #info_area {
+    grid-area: info_area;
+  }
+  .grid_play {
+  display: grid;
+  grid-template-areas:
+    'canvas3d'
+    'info_area'
+}
+
+
+  @media only screen and (orientation: landscape) {
+    .grid_play {
+    display: grid;
+    grid-template-areas:
+    'canvas3d info_area'
+    }
+  }
+</style>
+
 </head>
 <body id="body" style="margin:0; padding:0;" onload="initPage()">
-<span id="canvas3d"></span>
-<div id="serviceinfo">ServiceInfo area</div>
-<div id="debuginfo">debug info area</div>
-<div id="teamstatsinfo">team stats area</div>
-<div id="sysmsg">System Message area</div>
+  <div class="grid_play">
+    <span id="canvas3d"></span>
+    <span id="info_area">
+      <div id="serviceinfo">ServiceInfo area</div>
+      <div id="debuginfo">debug info area</div>
+      <div id="teamstatsinfo">team stats area</div>
+      <div id="sysmsg">System Message area</div>
+    </span>
+  </div>
+
 </body>
 </html>
