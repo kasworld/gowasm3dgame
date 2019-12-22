@@ -56,14 +56,9 @@ func (o *GameObj) IsCollision(dst *GameObj) bool {
 
 func (o *GameObj) ToPacket() *w3d_obj.GameObj {
 	return &w3d_obj.GameObj{
-		GOType:       o.GOType,
-		UUID:         o.UUID,
-		BirthTick:    o.BirthTick,
-		LastMoveTick: o.LastMoveTick,
-		PosVt:        o.PosVt,
-		MvVt:         o.MvVt,
-		AccVt:        o.AccVt,
-		DstUUID:      o.DstUUID,
+		GOType: o.GOType,
+		UUID:   o.UUID,
+		PosVt:  o.PosVt,
 	}
 }
 
