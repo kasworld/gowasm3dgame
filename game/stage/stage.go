@@ -198,7 +198,6 @@ func (stg *Stage) handleBallKilled(now int64, gobj *GameObj) {
 
 func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 	toDeleteList := make([]*GameObj, 0)
-	bt.Ball.Rotate(now)
 	bt.Ball.Move_accel(now)
 	bt.Ball.BounceNormalize(gameconst.StageSize)
 	randvt := vector3f.Vector3f{
@@ -206,14 +205,12 @@ func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 		stg.rnd.Float64() * gameconst.StageSize / 100,
 		stg.rnd.Float64() * gameconst.StageSize / 100,
 	}
-	bt.HomeMark.Rotate(now)
 	bt.HomeMark.Move_rand(now, randvt)
 	bt.HomeMark.BounceNormalize(gameconst.StageSize)
 	for _, v := range bt.Objs {
 		if v.toDelete {
 			continue
 		}
-		v.Rotate(now)
 		switch v.GOType {
 		default:
 		case gameobjtype.Bullet, gameobjtype.SuperBullet:

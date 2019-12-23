@@ -99,13 +99,10 @@ func (o *GameObj) CalcLenChange(dsto *GameObj) (float64, float64) {
 }
 
 /////////////////
-func (o *GameObj) Rotate(now int64) {
-	dur := float64(now-o.LastMoveTick) / float64(time.Second)
-	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
-}
 
 func (o *GameObj) Move_accel(now int64) {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
+	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
 	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	o.LastMoveTick = now
 	o.VelVt = o.VelVt.Add(o.AccVt.MulF(dur))
@@ -117,6 +114,7 @@ func (o *GameObj) Move_accel(now int64) {
 
 func (o *GameObj) Move_rand(now int64, rndAccVt vector3f.Vector3f) {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
+	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
 	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	o.LastMoveTick = now
 
@@ -130,6 +128,7 @@ func (o *GameObj) Move_rand(now int64, rndAccVt vector3f.Vector3f) {
 
 func (o *GameObj) Move_circular(now int64, dstObj *GameObj) {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
+	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
 	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	axis := dstObj.VelVt
 	p := dstObj.VelVt.Cross(o.VelVt).NormalizedTo(mvLimit)
