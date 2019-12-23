@@ -105,9 +105,9 @@ func (bt *Team) RespawnBall(now int64) {
 
 func (bt *Team) RandRotVt() vector3f.Vector3f {
 	return vector3f.Vector3f{
-		bt.rnd.Float64() * math.Pi / 10,
-		bt.rnd.Float64() * math.Pi / 10,
-		bt.rnd.Float64() * math.Pi / 10,
+		bt.rnd.Float64() * math.Pi,
+		bt.rnd.Float64() * math.Pi,
+		bt.rnd.Float64() * math.Pi,
 	}
 }
 func (bt *Team) RandPosVt() vector3f.Vector3f {

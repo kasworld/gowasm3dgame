@@ -179,6 +179,7 @@ func (vp *Viewport3d) getGeometry(gotype gameobjtype.GameObjType) js.Value {
 		default:
 			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
 		case gameobjtype.Ball:
+			// geo = vp.ThreeJsNew("BoxGeometry", radius*2, radius*2, radius*2)
 			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
 		case gameobjtype.Shield:
 			geo = vp.ThreeJsNew("IcosahedronGeometry", radius)
@@ -191,6 +192,7 @@ func (vp *Viewport3d) getGeometry(gotype gameobjtype.GameObjType) js.Value {
 		case gameobjtype.Deco:
 			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
 		case gameobjtype.Mark:
+			// geo = vp.ThreeJsNew("TetrahedronGeometry", radius)
 			geo = vp.ThreeJsNew("BoxGeometry", radius*2, radius*2, radius*2)
 		case gameobjtype.Hard:
 			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
