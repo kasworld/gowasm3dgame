@@ -18,7 +18,7 @@ const (
 	StageCount = 100
 
 	// game rule relate
-	APIncPerFrame     = 10
+	APIncPerFrame     = 5
 	TeamPerStage      = 10
 	ShieldCount       = 8
 	ScorePerKill      = 1

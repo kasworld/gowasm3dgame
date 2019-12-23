@@ -86,7 +86,6 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 			uint8(wd.rnd.Intn(256)),
 			uint8(wd.rnd.Intn(256)),
 		)
-		// co := htmlcolors.Color24List[wd.rnd.Intn(len(htmlcolors.Color24List))]
 		teamcolor = append(teamcolor, co)
 	}
 	for _, v := range teamcolor {
@@ -104,7 +103,6 @@ func (stg *Stage) Run(ctx context.Context) {
 	timerTurnTk := time.NewTicker(turnDur)
 	defer timerTurnTk.Stop()
 
-	diag := stg.BorderBounce.DiagLen()
 	for {
 		select {
 		case <-ctx.Done():
@@ -116,11 +114,6 @@ func (stg *Stage) Run(ctx context.Context) {
 				v.SendNotiPacket(w3d_idnoti.StatsInfo,
 					si,
 				)
-			}
-			// add ap
-			for _, bt := range stg.Teams {
-				ap := bt.CalcAP(diag)
-				bt.ActPoint += ap
 			}
 		case <-timerTurnTk.C:
 			stg.Turn()
@@ -137,6 +130,7 @@ func (stg *Stage) Run(ctx context.Context) {
 
 func (stg *Stage) Turn() {
 	now := time.Now().UnixNano()
+	diag := stg.BorderBounce.DiagLen()
 
 	// respawn dead team
 	for _, bt := range stg.Teams {
@@ -146,14 +140,13 @@ func (stg *Stage) Turn() {
 	}
 
 	for _, bt := range stg.Teams {
+		bt.ActPoint += bt.CalcAP(diag)
 		if !bt.IsAlive {
 			continue
 		}
 		toDelList := stg.MoveTeam(bt, now)
 		_ = toDelList
 	}
-	// bt := stg.Teams[0]
-	// fmt.Printf("ball %v home %v\n", bt.Ball.RotVt, bt.HomeMark.RotVt)
 
 	toDelList, aienv := stg.checkCollision()
 	for _, v := range toDelList {
@@ -180,7 +173,7 @@ func (stg *Stage) handleBallKilled(now int64, gobj *GameObj) {
 		// find ballteam
 		if bt.Ball.UUID == gobj.UUID {
 			bt.IsAlive = false
-			// regest respawn
+			// regist respawn
 			bt.RespawnTick = now + int64(time.Second)*gameconst.BallRespawnDurSec
 
 			// add effect
@@ -270,7 +263,7 @@ func (stg *Stage) ToStatsInfo() *w3d_obj.NotiStatsInfo_data {
 	for _, bt := range stg.Teams {
 		teamStats := w3d_obj.TeamStat{
 			UUID:     bt.UUID,
-			AP:       bt.ActPoint,
+			AP:       int(bt.ActPoint),
 			Alive:    bt.IsAlive,
 			Color24:  bt.Color24,
 			ActStats: bt.ActStats,

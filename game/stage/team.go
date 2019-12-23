@@ -42,8 +42,8 @@ type Team struct {
 	HomeMark *GameObj
 	Objs     []*GameObj
 
-	ActPoint int
-	Score    int
+	ActPoint float64
+	Score    float64
 }
 
 func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
@@ -100,7 +100,6 @@ func (bt *Team) RespawnBall(now int64) {
 		0, 0, 0,
 	}
 	bt.Ball.LastMoveTick = now
-	// bt.Ball.BirthTick = now
 }
 
 func (bt *Team) RandRotVt() vector3f.Vector3f {
@@ -159,11 +158,11 @@ func (bt *Team) addGObj(o *GameObj) {
 }
 
 // 0(outer max) ~ GameConst.APIncFrame( 0,0,0)
-func (t *Team) CalcAP(stageDiag float64) int {
+func (t *Team) CalcAP(stageDiag float64) float64 {
 	homepos := t.HomeMark.PosVt
 	lenToHomepos := t.Ball.PosVt.LenTo(homepos)
-	rtn := int((stageDiag - lenToHomepos) / stageDiag * float64(gameconst.APIncPerFrame))
-	//log.Printf("ap:%v", rtn)
+	lenRate := (stageDiag - lenToHomepos) / stageDiag
+	rtn := lenRate * gameconst.APIncPerFrame
 	return rtn
 }
 
@@ -173,6 +172,8 @@ func (bt *Team) CanAct(act acttype.ActType) bool {
 
 func (bt *Team) ApplyAct(actObj *w3d_obj.Act) {
 	bt.ActStats.Inc(actObj.Act)
+	bt.ActPoint -= acttype.Attrib[actObj.Act].AP
+
 	switch actObj.Act {
 	default:
 		bt.log.Fatal("unknown act %+v %v", actObj, bt)

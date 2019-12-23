@@ -12,7 +12,7 @@
 package acttype
 
 var Attrib = [ActType_Count]struct {
-	AP int
+	AP float64
 }{
 	Accel:         {1},
 	Bullet:        {10},
