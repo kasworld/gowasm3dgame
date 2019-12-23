@@ -223,6 +223,7 @@ func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co htmlcolors.Color24) js.Va
 	material := vp.getMaterial(co)
 	jso := vp.ThreeJsNew("Mesh", geometry, material)
 	JsSetPos(jso, o.PosVt)
+	JsSetRotation(jso, o.RotVt)
 	vp.scene.Call("add", jso)
 	vp.jsSceneObjs[o.UUID] = jso
 	return jso

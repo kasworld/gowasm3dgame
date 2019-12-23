@@ -26,6 +26,8 @@ type GameObj struct {
 	TeamUUID string
 
 	PosVt vector3f.Vector3f
+	RotVt vector3f.Vector3f
+
 	MvVt  vector3f.Vector3f
 	AccVt vector3f.Vector3f
 
@@ -59,6 +61,7 @@ func (o *GameObj) ToPacket() *w3d_obj.GameObj {
 		GOType: o.GOType,
 		UUID:   o.UUID,
 		PosVt:  o.PosVt,
+		RotVt:  o.RotVt,
 	}
 }
 

@@ -29,4 +29,5 @@ type GameObj struct {
 	GOType gameobjtype.GameObjType
 	UUID   string
 	PosVt  vector3f.Vector3f
+	RotVt  vector3f.Vector3f
 }

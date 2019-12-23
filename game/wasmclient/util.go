@@ -44,6 +44,12 @@ func JsSetPos(jsobj js.Value, vt vector3f.Vector3f) {
 	jsobj.Get("position").Set("z", vt[2])
 }
 
+func JsSetRotation(jsobj js.Value, vt vector3f.Vector3f) {
+	jsobj.Call("rotateX", vt[0])
+	jsobj.Call("rotateY", vt[1])
+	jsobj.Call("rotateZ", vt[2])
+}
+
 func (vp *Viewport3d) Vt3fToThVt3(vt vector3f.Vector3f) js.Value {
 	return vp.threejs.Get("Vector3").New(vt[0], vt[1], vt[2])
 }
