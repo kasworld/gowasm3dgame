@@ -217,6 +217,7 @@ func (vp *Viewport3d) getMaterial(co htmlcolors.Color24) js.Value {
 func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co htmlcolors.Color24) js.Value {
 	if jso, exist := vp.jsSceneObjs[o.UUID]; exist {
 		JsSetPos(jso, o.PosVt)
+		JsSetRotation(jso, o.RotVt)
 		return jso
 	}
 	geometry := vp.getGeometry(o.GOType)

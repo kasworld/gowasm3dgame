@@ -28,8 +28,9 @@ type GameObj struct {
 	PosVt vector3f.Vector3f
 	RotVt vector3f.Vector3f
 
-	MvVt  vector3f.Vector3f
-	AccVt vector3f.Vector3f
+	VelVt    vector3f.Vector3f
+	RotVelVt vector3f.Vector3f
+	AccVt    vector3f.Vector3f
 
 	BirthTick    int64
 	LastMoveTick int64
@@ -74,11 +75,11 @@ func (o *GameObj) BounceNormalize(size float64) {
 	for i := 0; i < 3; i++ {
 		if o.PosVt[i] < 0 {
 			o.PosVt[i] = 0
-			o.MvVt[i] = abs.Absf(o.MvVt[i])
+			o.VelVt[i] = abs.Absf(o.VelVt[i])
 		}
 		if o.PosVt[i] > size {
 			o.PosVt[i] = size
-			o.MvVt[i] = -abs.Absf(o.MvVt[i])
+			o.VelVt[i] = -abs.Absf(o.VelVt[i])
 		}
 	}
 }
@@ -90,55 +91,54 @@ func (o *GameObj) CalcLenChange(dsto *GameObj) (float64, float64) {
 	r1 := gameobjtype.Attrib[o.GOType].Radius / 2
 	r2 := gameobjtype.Attrib[dsto.GOType].Radius / 2
 	curLen := dsto.PosVt.Sub(o.PosVt).Abs()
-	nextLen := dsto.PosVt.Add(dsto.MvVt).Sub(
-		o.PosVt.Add(o.MvVt),
+	nextLen := dsto.PosVt.Add(dsto.VelVt).Sub(
+		o.PosVt.Add(o.VelVt),
 	).Abs()
 	lenChange := nextLen - curLen
 	return curLen - r1 - r2, lenChange
 }
 
 /////////////////
-
-func (o *GameObj) Move_accel(now int64) bool {
+func (o *GameObj) Rotate(now int64) {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
-	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
-	o.LastMoveTick = now
-	o.MvVt = o.MvVt.Add(o.AccVt.MulF(dur))
-	if o.MvVt.Abs() > mvLimit {
-		o.MvVt = o.MvVt.NormalizedTo(mvLimit)
-	}
-	o.PosVt = o.PosVt.Add(o.MvVt.MulF(dur))
-	return true
+	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
 }
 
-func (o *GameObj) Move_rand(now int64, rndAccVt vector3f.Vector3f) bool {
+func (o *GameObj) Move_accel(now int64) {
+	dur := float64(now-o.LastMoveTick) / float64(time.Second)
+	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
+	o.LastMoveTick = now
+	o.VelVt = o.VelVt.Add(o.AccVt.MulF(dur))
+	if o.VelVt.Abs() > mvLimit {
+		o.VelVt = o.VelVt.NormalizedTo(mvLimit)
+	}
+	o.PosVt = o.PosVt.Add(o.VelVt.MulF(dur))
+}
+
+func (o *GameObj) Move_rand(now int64, rndAccVt vector3f.Vector3f) {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
 	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	o.LastMoveTick = now
 
-	o.PosVt = o.PosVt.Add(o.MvVt.MulF(dur))
-
-	o.MvVt = o.MvVt.Add(o.AccVt.MulF(dur))
-	if o.MvVt.Abs() > mvLimit {
-		o.MvVt = o.MvVt.NormalizedTo(mvLimit)
+	o.PosVt = o.PosVt.Add(o.VelVt.MulF(dur))
+	o.VelVt = o.VelVt.Add(o.AccVt.MulF(dur))
+	if o.VelVt.Abs() > mvLimit {
+		o.VelVt = o.VelVt.NormalizedTo(mvLimit)
 	}
-
 	o.AccVt = rndAccVt
-	return true
 }
 
-func (o *GameObj) Move_circular(now int64, dstObj *GameObj) bool {
+func (o *GameObj) Move_circular(now int64, dstObj *GameObj) {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
 	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
-	axis := dstObj.MvVt
-	p := dstObj.MvVt.Cross(o.MvVt).NormalizedTo(mvLimit)
+	axis := dstObj.VelVt
+	p := dstObj.VelVt.Cross(o.VelVt).NormalizedTo(mvLimit)
 	o.PosVt = dstObj.PosVt.Add(p.RotateAround(axis, dur+o.AccVt.Abs()))
-	return true
 }
 
-func (o *GameObj) Move_homming(now int64, dstObj *GameObj) bool {
+func (o *GameObj) Move_homming(now int64, dstObj *GameObj) {
 	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	// how to other team obj pos? without panic
 	o.AccVt = dstObj.PosVt.Sub(o.PosVt).NormalizedTo(mvLimit)
-	return o.Move_accel(now)
+	o.Move_accel(now)
 }

@@ -71,7 +71,7 @@ func (stg *Stage) TryEvade(me *Team, now int64, dsto *GameObj) *w3d_obj.Act {
 	maxv := gameobjtype.Attrib[objt].SpeedLimit
 	return &w3d_obj.Act{
 		Act: actt,
-		Vt:  dsto.MvVt.NormalizedTo(maxv),
+		Vt:  dsto.VelVt.NormalizedTo(maxv),
 	}
 
 }
@@ -143,7 +143,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		if dstteam != me && dstteam.IsAlive {
 			return &w3d_obj.Act{
 				Act:      actt,
-				Vt:       me.Ball.MvVt.NormalizedTo(maxv),
+				Vt:       me.Ball.VelVt.NormalizedTo(maxv),
 				DstObjID: dstteam.Ball.UUID,
 			}
 		}
@@ -161,7 +161,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		if dstteam != me && dstteam.IsAlive {
 			return &w3d_obj.Act{
 				Act:      actt,
-				Vt:       me.Ball.MvVt.NormalizedTo(maxv).Neg(),
+				Vt:       me.Ball.VelVt.NormalizedTo(maxv).Neg(),
 				DstObjID: dstteam.Ball.UUID,
 			}
 		}
@@ -216,14 +216,14 @@ func (stg *Stage) calcAims(
 	t *GameObj,
 	projectilemovelimit float64) (float64, vector3f.Vector3f, float64) {
 
-	dur := tm.Ball.PosVt.CalcAimAheadDur(t.PosVt, t.MvVt, projectilemovelimit)
+	dur := tm.Ball.PosVt.CalcAimAheadDur(t.PosVt, t.VelVt, projectilemovelimit)
 	if math.IsInf(dur, 1) {
 		return math.Inf(1), vector3f.VtZero, 0
 	}
-	if t.MvVt.Abs() < 0.1 {
+	if t.VelVt.Abs() < 0.1 {
 		return dur, t.PosVt, 0
 	}
-	estpos := t.PosVt.Add(t.MvVt.MulF(dur))
+	estpos := t.PosVt.Add(t.VelVt.MulF(dur))
 	estangle := t.PosVt.Sub(tm.Ball.PosVt).Angle(estpos.Sub(tm.Ball.PosVt))
 	return dur, estpos, estangle
 }

@@ -12,6 +12,7 @@
 package stage
 
 import (
+	"math"
 	"math/rand"
 	"time"
 
@@ -64,12 +65,9 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
 		TeamUUID:     bt.UUID,
 		BirthTick:    nowtick,
 		LastMoveTick: nowtick,
-		PosVt: vector3f.Vector3f{
-			rnd.Float64() * gameconst.StageSize,
-			rnd.Float64() * gameconst.StageSize,
-			rnd.Float64() * gameconst.StageSize,
-		},
-		MvVt: vector3f.Vector3f{
+		PosVt:        bt.RandPosVt(),
+		RotVelVt:     bt.RandRotVt(),
+		VelVt: vector3f.Vector3f{
 			bt.rnd.Float64() * maxv,
 			bt.rnd.Float64() * maxv,
 			bt.rnd.Float64() * maxv,
@@ -83,12 +81,9 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
 		TeamUUID:     bt.UUID,
 		BirthTick:    nowtick,
 		LastMoveTick: nowtick,
-		PosVt: vector3f.Vector3f{
-			rnd.Float64() * gameconst.StageSize,
-			rnd.Float64() * gameconst.StageSize,
-			rnd.Float64() * gameconst.StageSize,
-		},
-		MvVt: vector3f.Vector3f{
+		PosVt:        bt.RandPosVt(),
+		RotVelVt:     bt.RandRotVt(),
+		VelVt: vector3f.Vector3f{
 			bt.rnd.Float64() * maxv,
 			bt.rnd.Float64() * maxv,
 			bt.rnd.Float64() * maxv,
@@ -100,16 +95,27 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
 func (bt *Team) RespawnBall(now int64) {
 	bt.IsAlive = true
 	bt.Ball.toDelete = false
-	bt.Ball.PosVt = vector3f.Vector3f{
-		bt.rnd.Float64() * gameconst.StageSize,
-		bt.rnd.Float64() * gameconst.StageSize,
-		bt.rnd.Float64() * gameconst.StageSize,
-	}
-	bt.Ball.MvVt = vector3f.Vector3f{
+	bt.Ball.PosVt = bt.RandPosVt()
+	bt.Ball.VelVt = vector3f.Vector3f{
 		0, 0, 0,
 	}
 	bt.Ball.LastMoveTick = now
 	// bt.Ball.BirthTick = now
+}
+
+func (bt *Team) RandRotVt() vector3f.Vector3f {
+	return vector3f.Vector3f{
+		bt.rnd.Float64() * math.Pi / 10,
+		bt.rnd.Float64() * math.Pi / 10,
+		bt.rnd.Float64() * math.Pi / 10,
+	}
+}
+func (bt *Team) RandPosVt() vector3f.Vector3f {
+	return vector3f.Vector3f{
+		bt.rnd.Float64() * gameconst.StageSize,
+		bt.rnd.Float64() * gameconst.StageSize,
+		bt.rnd.Float64() * gameconst.StageSize,
+	}
 }
 
 func (bt *Team) ToPacket() *w3d_obj.Team {
@@ -175,11 +181,7 @@ func (bt *Team) ApplyAct(actObj *w3d_obj.Act) {
 		bt.AddBullet(actObj.Vt)
 	case acttype.BurstBullet:
 		for i := 0; i < 10; i++ {
-			vt := vector3f.Vector3f{
-				bt.rnd.Float64() * gameconst.StageSize,
-				bt.rnd.Float64() * gameconst.StageSize,
-				bt.rnd.Float64() * gameconst.StageSize,
-			}
+			vt := bt.RandPosVt()
 			bt.AddBullet(vt.Sub(bt.Ball.PosVt))
 		}
 	case acttype.SuperBullet:
@@ -199,7 +201,8 @@ func (bt *Team) AddShield(vt vector3f.Vector3f) *GameObj {
 		UUID:         uuidstr.New(),
 		BirthTick:    nowtick,
 		LastMoveTick: nowtick,
-		MvVt:         vt,
+		VelVt:        vt,
+		RotVelVt:     bt.RandRotVt(),
 	}
 	bt.addGObj(o)
 	return o
@@ -214,7 +217,8 @@ func (bt *Team) AddBullet(vt vector3f.Vector3f) *GameObj {
 		BirthTick:    nowtick,
 		LastMoveTick: nowtick,
 		PosVt:        bt.Ball.PosVt,
-		MvVt:         vt,
+		VelVt:        vt,
+		RotVelVt:     bt.RandRotVt(),
 	}
 	bt.addGObj(o)
 	return o
@@ -229,7 +233,8 @@ func (bt *Team) AddSuperBullet(vt vector3f.Vector3f) *GameObj {
 		BirthTick:    nowtick,
 		LastMoveTick: nowtick,
 		PosVt:        bt.Ball.PosVt,
-		MvVt:         vt,
+		VelVt:        vt,
+		RotVelVt:     bt.RandRotVt(),
 	}
 	bt.addGObj(o)
 	return o
@@ -244,7 +249,8 @@ func (bt *Team) AddHommingBullet(vt vector3f.Vector3f, dstid string) *GameObj {
 		BirthTick:    nowtick,
 		LastMoveTick: nowtick,
 		PosVt:        bt.Ball.PosVt,
-		MvVt:         vt,
+		VelVt:        vt,
+		RotVelVt:     bt.RandRotVt(),
 		DstUUID:      dstid,
 	}
 	bt.addGObj(o)
