@@ -59,56 +59,41 @@ func (app *WasmClient) updateSysmsg() {
 }
 
 func (app *WasmClient) updateTeamStatsInfo() {
+	stats := app.statsInfo
+	if stats == nil {
+		return
+	}
+
 	var buf bytes.Buffer
 
-	if stats := app.statsInfo; stats != nil {
-		fmt.Fprintf(&buf, "Stage %v<br/>", stats.UUID)
+	fmt.Fprintf(&buf, "Stage %v<br/>", stats.UUID)
 
-		buf.WriteString(`<table border=1 style="border-collapse:collapse;">`)
+	buf.WriteString(`<table border=1 style="border-collapse:collapse;">`)
+	buf.WriteString(`<tr>
+	<th>team \ act</th>
+	<th>UUID</th>
+	<th>AP</th>
+	<th>Alive</th>
+	`)
+	for acti := 0; acti < acttype.ActType_Count; acti++ {
+		fmt.Fprintf(&buf, "<th>%v</th>", acttype.ActType(acti))
+	}
 
-		buf.WriteString(`<colgroup>`)
-		fmt.Fprintf(&buf, `<col >`)
-		for _, v := range stats.Stats {
-			fmt.Fprintf(&buf, `<col style="background-color:%v">`,
-				v.Color24.ToHTMLColorString())
-		}
-		buf.WriteString(`</colgroup>`)
-
-		buf.WriteString(`<tr><th>act\team</th>`)
-		for ti, _ := range stats.Stats {
-			fmt.Fprintf(&buf, "<th >%v</th>",
-				ti)
-		}
-		buf.WriteString(`</tr>`)
-
-		buf.WriteString(`<tr><td>UUID</td>`)
-		for _, v := range stats.Stats {
-			fmt.Fprintf(&buf, "<td>%v</td>", v.UUID)
-		}
-		buf.WriteString(`</tr>`)
-
-		buf.WriteString(`<tr><td>AP</td>`)
-		for _, v := range stats.Stats {
-			fmt.Fprintf(&buf, "<td>%v</td>", v.AP)
-		}
-		buf.WriteString(`</tr>`)
-
-		buf.WriteString(`<tr><td>Alive</td>`)
-		for _, v := range stats.Stats {
-			fmt.Fprintf(&buf, "<td>%v</td>", v.Alive)
-		}
-		buf.WriteString(`</tr>`)
+	for ti, tv := range stats.Stats {
+		fmt.Fprintf(&buf, `<tr style="background-color:%v">`,
+			tv.Color24.ToHTMLColorString())
+		fmt.Fprintf(&buf, "<td>%v</td>", ti)
+		fmt.Fprintf(&buf, "<td>%v</td>", tv.UUID)
+		fmt.Fprintf(&buf, "<td>%v</td>", tv.AP)
+		fmt.Fprintf(&buf, "<td>%v</td>", tv.Alive)
 
 		for acti := 0; acti < acttype.ActType_Count; acti++ {
-			fmt.Fprintf(&buf, "<tr><td>%v</td>", acttype.ActType(acti))
-			for ti, _ := range stats.Stats {
-				fmt.Fprintf(&buf, "<td>%v</td>",
-					stats.Stats[ti].ActStats[acti])
-			}
-			buf.WriteString(`</tr>`)
+			fmt.Fprintf(&buf, "<td>%v</td>",
+				stats.Stats[ti].ActStats[acti])
 		}
-		buf.WriteString(`</table>`)
+		buf.WriteString(`</tr>`)
 	}
+	buf.WriteString(`</table>`)
 
 	div := js.Global().Get("document").Call("getElementById", "teamstatsinfo")
 	div.Set("innerHTML", buf.String())
