@@ -52,7 +52,7 @@ func NewViewport3d(cnvid string) *Viewport3d {
 
 	vp.scene = vp.ThreeJsNew("Scene")
 
-	vp.camera = vp.ThreeJsNew("PerspectiveCamera", 75, 1, 1,
+	vp.camera = vp.ThreeJsNew("PerspectiveCamera", 75, 1, gameobjtype.MaxRadius,
 		gameconst.StageSize*10)
 
 	vp.initGrid()
@@ -179,8 +179,7 @@ func (vp *Viewport3d) getGeometry(gotype gameobjtype.GameObjType) js.Value {
 		default:
 			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
 		case gameobjtype.Ball:
-			// geo = vp.ThreeJsNew("BoxGeometry", radius*2, radius*2, radius*2)
-			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
+			geo = vp.ThreeJsNew("TorusGeometry", radius, radius/2, 16, 64)
 		case gameobjtype.Shield:
 			geo = vp.ThreeJsNew("IcosahedronGeometry", radius)
 		case gameobjtype.Bullet:
@@ -192,7 +191,6 @@ func (vp *Viewport3d) getGeometry(gotype gameobjtype.GameObjType) js.Value {
 		case gameobjtype.Deco:
 			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
 		case gameobjtype.Mark:
-			// geo = vp.ThreeJsNew("TetrahedronGeometry", radius)
 			geo = vp.ThreeJsNew("BoxGeometry", radius*2, radius*2, radius*2)
 		case gameobjtype.Hard:
 			geo = vp.ThreeJsNew("SphereGeometry", radius, 32, 16)
@@ -207,7 +205,7 @@ func (vp *Viewport3d) getGeometry(gotype gameobjtype.GameObjType) js.Value {
 func (vp *Viewport3d) getMaterial(co htmlcolors.Color24) js.Value {
 	mat, exist := vp.materialCache[co]
 	if !exist {
-		mat = vp.ThreeJsNew("MeshLambertMaterial")
+		mat = vp.ThreeJsNew("MeshStandardMaterial")
 		// material.Set("color", vp.ToThColor(htmlcolors.Gray))
 		mat.Set("emissive", vp.ToThColor(co))
 		mat.Set("shininess", 30)

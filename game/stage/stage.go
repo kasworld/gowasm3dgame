@@ -152,6 +152,8 @@ func (stg *Stage) Turn() {
 		toDelList := stg.MoveTeam(bt, now)
 		_ = toDelList
 	}
+	// bt := stg.Teams[0]
+	// fmt.Printf("ball %v home %v\n", bt.Ball.RotVt, bt.HomeMark.RotVt)
 
 	toDelList, aienv := stg.checkCollision()
 	for _, v := range toDelList {
@@ -196,16 +198,16 @@ func (stg *Stage) handleBallKilled(now int64, gobj *GameObj) {
 
 func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 	toDeleteList := make([]*GameObj, 0)
-	bt.Ball.Move_accel(now)
 	bt.Ball.Rotate(now)
+	bt.Ball.Move_accel(now)
 	bt.Ball.BounceNormalize(gameconst.StageSize)
 	randvt := vector3f.Vector3f{
 		stg.rnd.Float64() * gameconst.StageSize / 100,
 		stg.rnd.Float64() * gameconst.StageSize / 100,
 		stg.rnd.Float64() * gameconst.StageSize / 100,
 	}
-	bt.HomeMark.Move_rand(now, randvt)
 	bt.HomeMark.Rotate(now)
+	bt.HomeMark.Move_rand(now, randvt)
 	bt.HomeMark.BounceNormalize(gameconst.StageSize)
 	for _, v := range bt.Objs {
 		if v.toDelete {

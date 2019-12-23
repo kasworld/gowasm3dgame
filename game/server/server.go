@@ -122,7 +122,7 @@ func (svr *Server) ServiceMain(ctx context.Context) {
 	timerInfoTk := time.NewTicker(1 * time.Second)
 	defer timerInfoTk.Stop()
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1; i++ {
 		stg := stage.New(svr.log, svr.config)
 		svr.stageManager.Add(stg)
 		go stg.Run(ctx)
