@@ -22,7 +22,7 @@ var Attrib = [GameObjType_Count]struct {
 	LifeTick   int64
 }{
 	Ball:          {300, 10, true, int64(time.Second) * LongLife},
-	Shield:        {200, 5, true, int64(time.Second) * LongLife},
+	Shield:        {50, 5, true, int64(time.Second) * LongLife},
 	Bullet:        {300, 5, true, int64(time.Second) * 10},
 	HommingBullet: {200, 7, true, int64(time.Second) * 60},
 	SuperBullet:   {600, 15, true, int64(time.Second) * 10},

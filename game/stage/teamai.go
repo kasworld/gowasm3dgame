@@ -85,6 +85,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		}
 	}
 	switch me.rnd.Intn(10) {
+	// switch 6 {
 	default:
 		//pass
 	case 0:
@@ -180,6 +181,21 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 				me.rnd.Float64() * gameconst.StageSize / 10,
 				me.rnd.Float64() * gameconst.StageSize / 10,
 			},
+		}
+	case 6:
+		actt := acttype.Shield
+		// objt := gameobjtype.Shield
+		if !me.CanAct(actt) {
+			break
+		}
+		vt := vector3f.Vector3f{
+			me.rnd.Float64() * gameconst.StageSize / 100,
+			me.rnd.Float64() * gameconst.StageSize / 100,
+			me.rnd.Float64() * gameconst.StageSize / 100,
+		}
+		return &w3d_obj.Act{
+			Act: actt,
+			Vt:  vt,
 		}
 	}
 	return &w3d_obj.Act{

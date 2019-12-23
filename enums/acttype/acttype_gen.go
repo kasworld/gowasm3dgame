@@ -9,6 +9,7 @@ type ActType uint8
 const (
 	Nothing       ActType = iota //
 	Accel                        //
+	Shield                       //
 	Bullet                       //
 	SuperBullet                  //
 	HommingBullet                // // or homming shield if target self
@@ -20,6 +21,7 @@ const (
 var _ActType2string = [ActType_Count]string{
 	Nothing:       "Nothing",
 	Accel:         "Accel",
+	Shield:        "Shield",
 	Bullet:        "Bullet",
 	SuperBullet:   "SuperBullet",
 	HommingBullet: "HommingBullet",
@@ -36,6 +38,7 @@ func (e ActType) String() string {
 var _string2ActType = map[string]ActType{
 	"Nothing":       Nothing,
 	"Accel":         Accel,
+	"Shield":        Shield,
 	"Bullet":        Bullet,
 	"SuperBullet":   SuperBullet,
 	"HommingBullet": HommingBullet,
