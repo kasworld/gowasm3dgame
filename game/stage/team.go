@@ -134,7 +134,7 @@ func (bt *Team) ToPacket() *w3d_obj.Team {
 	return rtn
 }
 
-func (bt *Team) Count(ot gameobjtype.GameObjType) int {
+func (bt *Team) CountByGOType(ot gameobjtype.GameObjType) int {
 	rtn := 0
 	for _, v := range bt.Objs {
 		if v.toDelete {
@@ -168,6 +168,10 @@ func (t *Team) CalcAP(stageDiag float64) float64 {
 
 func (bt *Team) CanAct(act acttype.ActType) bool {
 	return bt.ActPoint >= acttype.Attrib[act].AP
+}
+
+func (bt *Team) CanHave(objt gameobjtype.GameObjType) bool {
+	return bt.CountByGOType(objt) <= gameobjtype.Attrib[objt].MaxInTeam
 }
 
 func (bt *Team) ApplyAct(actObj *w3d_obj.Act) {
@@ -204,6 +208,7 @@ func (bt *Team) AddShield(vt vector3f.Vector3f) *GameObj {
 		UUID:         uuidstr.New(),
 		BirthTick:    nowtick,
 		LastMoveTick: nowtick,
+		PosVt:        bt.Ball.PosVt,
 		VelVt:        vt,
 		RotVelVt:     bt.RandRotVt(),
 	}

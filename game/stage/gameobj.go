@@ -103,8 +103,9 @@ func (o *GameObj) CalcLenChange(dsto *GameObj) (float64, float64) {
 func (o *GameObj) Move_accel(now int64) {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
 	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
-	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	o.LastMoveTick = now
+
+	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	o.VelVt = o.VelVt.Add(o.AccVt.MulF(dur))
 	if o.VelVt.Abs() > mvLimit {
 		o.VelVt = o.VelVt.NormalizedTo(mvLimit)
@@ -115,9 +116,9 @@ func (o *GameObj) Move_accel(now int64) {
 func (o *GameObj) Move_rand(now int64, rndAccVt vector3f.Vector3f) {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
 	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
-	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	o.LastMoveTick = now
 
+	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	o.PosVt = o.PosVt.Add(o.VelVt.MulF(dur))
 	o.VelVt = o.VelVt.Add(o.AccVt.MulF(dur))
 	if o.VelVt.Abs() > mvLimit {
@@ -127,12 +128,15 @@ func (o *GameObj) Move_rand(now int64, rndAccVt vector3f.Vector3f) {
 }
 
 func (o *GameObj) Move_circular(now int64, dstObj *GameObj) {
+	lifedur := float64(now-o.BirthTick) / float64(time.Second)
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
 	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
+	o.LastMoveTick = now
+
 	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	p := dstObj.VelVt.Cross(o.VelVt).NormalizedTo(mvLimit)
 	axis := dstObj.VelVt
-	diffVt := p.RotateAround(axis, dur+o.AccVt.Abs())
+	diffVt := p.RotateAround(axis, lifedur+o.AccVt.Abs())
 	o.PosVt = dstObj.PosVt.Add(diffVt)
 }
 

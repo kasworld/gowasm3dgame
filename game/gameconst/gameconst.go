@@ -22,7 +22,6 @@ const (
 	APIncPerFrame = 5
 
 	// not used
-	ShieldCount       = 8
 	ScorePerKill      = 1
 	BallRespawnDurSec = 5
 

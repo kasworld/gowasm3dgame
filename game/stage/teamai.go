@@ -85,13 +85,16 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		}
 	}
 	switch me.rnd.Intn(10) {
-	// switch 4 {
+	// switch 6 {
 	default:
 		//pass
 	case 0:
 		actt := acttype.Bullet
 		objt := gameobjtype.Bullet
 		if !me.CanAct(actt) {
+			break
+		}
+		if !me.CanHave(objt) {
 			break
 		}
 		dstteam := stg.SelectRandomTeam(me)
@@ -107,7 +110,11 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		}
 	case 1: // 10 random bullet
 		actt := acttype.BurstBullet
+		objt := gameobjtype.Bullet
 		if !me.CanAct(actt) {
+			break
+		}
+		if !me.CanHave(objt) {
 			break
 		}
 		return &w3d_obj.Act{
@@ -117,6 +124,9 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		actt := acttype.SuperBullet
 		objt := gameobjtype.SuperBullet
 		if !me.CanAct(actt) {
+			break
+		}
+		if !me.CanHave(objt) {
 			break
 		}
 		dstteam := stg.SelectRandomTeam(me)
@@ -136,6 +146,9 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		if !me.CanAct(actt) {
 			break
 		}
+		if !me.CanHave(objt) {
+			break
+		}
 		dstteam := stg.SelectRandomTeam(me)
 		if dstteam == nil {
 			break
@@ -152,6 +165,9 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		actt := acttype.HommingBullet
 		objt := gameobjtype.HommingBullet
 		if !me.CanAct(actt) {
+			break
+		}
+		if !me.CanHave(objt) {
 			break
 		}
 		dstteam := me
@@ -182,14 +198,17 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		}
 	case 6:
 		actt := acttype.Shield
-		// objt := gameobjtype.Shield
+		objt := gameobjtype.Shield
 		if !me.CanAct(actt) {
 			break
 		}
+		if !me.CanHave(objt) {
+			break
+		}
 		vt := vector3f.Vector3f{
-			me.rnd.Float64() * gameconst.StageSize / 100,
-			me.rnd.Float64() * gameconst.StageSize / 100,
-			me.rnd.Float64() * gameconst.StageSize / 100,
+			me.rnd.Float64() * gameconst.StageSize,
+			me.rnd.Float64() * gameconst.StageSize,
+			me.rnd.Float64() * gameconst.StageSize,
 		}
 		return &w3d_obj.Act{
 			Act: actt,
