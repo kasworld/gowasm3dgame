@@ -130,9 +130,10 @@ func (o *GameObj) Move_circular(now int64, dstObj *GameObj) {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
 	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
 	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
-	axis := dstObj.VelVt
 	p := dstObj.VelVt.Cross(o.VelVt).NormalizedTo(mvLimit)
-	o.PosVt = dstObj.PosVt.Add(p.RotateAround(axis, dur+o.AccVt.Abs()))
+	axis := dstObj.VelVt
+	diffVt := p.RotateAround(axis, dur+o.AccVt.Abs())
+	o.PosVt = dstObj.PosVt.Add(diffVt)
 }
 
 func (o *GameObj) Move_homming(now int64, dstObj *GameObj) {

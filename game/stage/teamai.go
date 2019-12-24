@@ -85,7 +85,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		}
 	}
 	switch me.rnd.Intn(10) {
-	// switch 6 {
+	// switch 4 {
 	default:
 		//pass
 	case 0:
@@ -155,16 +155,14 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 			break
 		}
 		dstteam := me
-		if dstteam == nil {
+		if !dstteam.IsAlive {
 			break
 		}
 		maxv := gameobjtype.Attrib[objt].SpeedLimit
-		if dstteam != me && dstteam.IsAlive {
-			return &w3d_obj.Act{
-				Act:      actt,
-				Vt:       me.Ball.VelVt.NormalizedTo(maxv).Neg(),
-				DstObjID: dstteam.Ball.UUID,
-			}
+		return &w3d_obj.Act{
+			Act:      actt,
+			Vt:       me.Ball.VelVt.NormalizedTo(maxv).Neg(),
+			DstObjID: dstteam.Ball.UUID,
 		}
 
 	case 5:

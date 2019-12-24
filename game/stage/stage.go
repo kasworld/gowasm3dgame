@@ -80,7 +80,7 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 		},
 	}
 	teamcolor := make([]htmlcolors.Color24, 0)
-	for i := 0; i < 16; i++ {
+	for i := 0; i < 8; i++ {
 		co := htmlcolors.NewColor24(
 			uint8(wd.rnd.Intn(256)),
 			uint8(wd.rnd.Intn(256)),
