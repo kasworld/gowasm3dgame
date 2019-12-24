@@ -30,7 +30,6 @@ type GameObj struct {
 
 	VelVt    vector3f.Vector3f
 	RotVelVt vector3f.Vector3f
-	AccVt    vector3f.Vector3f
 
 	BirthTick    int64
 	LastMoveTick int64
@@ -100,31 +99,28 @@ func (o *GameObj) CalcLenChange(dsto *GameObj) (float64, float64) {
 
 /////////////////
 
-func (o *GameObj) Move_accel(now int64) {
-	dur := float64(now-o.LastMoveTick) / float64(time.Second)
-	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
-	o.LastMoveTick = now
-
+func (o *GameObj) AccelTo(dstPosVt vector3f.Vector3f) {
 	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
-	o.VelVt = o.VelVt.Add(o.AccVt.MulF(dur))
+	diff := dstPosVt.Sub(o.PosVt)
+	if diff.Abs() > mvLimit {
+		diff = diff.NormalizedTo(mvLimit)
+	}
+	o.VelVt = o.VelVt.Add(diff)
 	if o.VelVt.Abs() > mvLimit {
 		o.VelVt = o.VelVt.NormalizedTo(mvLimit)
 	}
-	o.PosVt = o.PosVt.Add(o.VelVt.MulF(dur))
 }
 
-func (o *GameObj) Move_rand(now int64, rndAccVt vector3f.Vector3f) {
+func (o *GameObj) Move_straight(now int64) {
 	dur := float64(now-o.LastMoveTick) / float64(time.Second)
 	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
 	o.LastMoveTick = now
 
 	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
-	o.PosVt = o.PosVt.Add(o.VelVt.MulF(dur))
-	o.VelVt = o.VelVt.Add(o.AccVt.MulF(dur))
 	if o.VelVt.Abs() > mvLimit {
 		o.VelVt = o.VelVt.NormalizedTo(mvLimit)
 	}
-	o.AccVt = rndAccVt
+	o.PosVt = o.PosVt.Add(o.VelVt.MulF(dur))
 }
 
 func (o *GameObj) Move_circular(now int64, dstObj *GameObj) {
@@ -136,13 +132,11 @@ func (o *GameObj) Move_circular(now int64, dstObj *GameObj) {
 	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
 	p := dstObj.VelVt.Cross(o.VelVt).NormalizedTo(mvLimit)
 	axis := dstObj.VelVt
-	diffVt := p.RotateAround(axis, lifedur+o.AccVt.Abs())
+	diffVt := p.RotateAround(axis, lifedur)
 	o.PosVt = dstObj.PosVt.Add(diffVt)
 }
 
 func (o *GameObj) Move_homming(now int64, dstObj *GameObj) {
-	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
-	// how to other team obj pos? without panic
-	o.AccVt = dstObj.PosVt.Sub(o.PosVt).NormalizedTo(mvLimit)
-	o.Move_accel(now)
+	o.Move_straight(now)
+	o.AccelTo(dstObj.PosVt)
 }

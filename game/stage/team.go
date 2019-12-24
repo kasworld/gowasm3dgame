@@ -194,7 +194,7 @@ func (bt *Team) ApplyAct(actObj *w3d_obj.Act) {
 	case acttype.HommingBullet:
 		bt.AddHommingBullet(actObj.Vt, actObj.DstObjID)
 	case acttype.Accel:
-		bt.Ball.AccVt = actObj.Vt
+		bt.Ball.VelVt = bt.Ball.VelVt.Add(actObj.Vt)
 	case acttype.Shield:
 		bt.AddShield(actObj.Vt)
 	}
