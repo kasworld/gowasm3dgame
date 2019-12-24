@@ -2,7 +2,8 @@
 
 remake of [go4game](https://github.com/kasworld/go4game)
 
-![screenshot](gowasm3dgame.png)
+
+[![gowasm3dgame](https://img.youtube.com/vi/xC3vTiiO6CA/0.jpg)](https://www.youtube.com/watch?v=xC3vTiiO6CA "gowasm3dgame")
 
 꽤 예전에 서버 기반 게임 프레임웍 으로 만들었던 go4game을 remake 한 프로젝트 입니다. 
 
