@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/kasworld/actpersec"
+	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/game/serverconfig"
 	"github.com/kasworld/gowasm3dgame/game/stage"
 	"github.com/kasworld/gowasm3dgame/game/stagemanager"
@@ -122,7 +123,7 @@ func (svr *Server) ServiceMain(ctx context.Context) {
 	timerInfoTk := time.NewTicker(1 * time.Second)
 	defer timerInfoTk.Stop()
 
-	for i := 0; i < 1; i++ {
+	for i := 0; i < gameconst.StagePerServer; i++ {
 		stg := stage.New(svr.log, svr.config)
 		svr.stageManager.Add(stg)
 		go stg.Run(ctx)

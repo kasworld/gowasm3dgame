@@ -14,6 +14,7 @@ package w3d_obj
 import (
 	"github.com/kasworld/gowasm3dgame/enums/acttype"
 	"github.com/kasworld/gowasm3dgame/enums/acttype_stats"
+	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/htmlcolors"
 )
@@ -84,4 +85,19 @@ type Act struct {
 	Vt       vector3f.Vector3f
 	Count    int
 	DstObjID string
+}
+
+type Team struct {
+	ID       string
+	Color24  htmlcolors.Color24
+	Ball     *GameObj
+	HomeMark *GameObj
+	Objs     []*GameObj
+}
+
+type GameObj struct {
+	GOType gameobjtype.GameObjType
+	UUID   string
+	PosVt  vector3f.Vector3f
+	RotVt  vector3f.Vector3f
 }
