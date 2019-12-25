@@ -15,7 +15,6 @@ import (
 	"github.com/kasworld/gowasm3dgame/enums/acttype"
 	"github.com/kasworld/gowasm3dgame/enums/acttype_stats"
 	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
-	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/htmlcolors"
 )
 
@@ -82,7 +81,7 @@ type TeamStat struct {
 
 type Act struct {
 	Act      acttype.ActType
-	Vt       vector3f.Vector3f
+	Vt       [3]float64
 	Count    int
 	DstObjID string
 }
@@ -98,6 +97,6 @@ type Team struct {
 type GameObj struct {
 	GOType gameobjtype.GameObjType
 	UUID   string
-	PosVt  vector3f.Vector3f
-	RotVt  vector3f.Vector3f
+	PosVt  [3]float64
+	RotVt  [3]float64
 }

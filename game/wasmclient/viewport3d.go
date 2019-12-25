@@ -16,7 +16,6 @@ import (
 
 	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
-	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/htmlcolors"
 )
@@ -56,11 +55,11 @@ func NewViewport3d(cnvid string) *Viewport3d {
 		gameconst.StageSize*10)
 
 	vp.initGrid()
-	camerapos := vector3f.Vector3f{
+	camerapos := [3]float64{
 		gameconst.StageSize * 1.8,
 		gameconst.StageSize * .7,
 		gameconst.StageSize * 1.8}
-	vp.setCamera(camerapos, vector3f.Vector3f{
+	vp.setCamera(camerapos, [3]float64{
 		0,
 		gameconst.StageSize * .3,
 		0,
@@ -73,7 +72,7 @@ func NewViewport3d(cnvid string) *Viewport3d {
 func (vp *Viewport3d) initGrid() {
 	helper := vp.ThreeJsNew("GridHelper",
 		gameconst.StageSize, 100, 0x0000ff, 0x404040)
-	JsSetPos(helper, vector3f.Vector3f{
+	JsSetPos(helper, [3]float64{
 		gameconst.StageSize / 2,
 		0,
 		gameconst.StageSize / 2,
@@ -82,7 +81,7 @@ func (vp *Viewport3d) initGrid() {
 
 	helper = vp.ThreeJsNew("GridHelper",
 		gameconst.StageSize, 100, 0x00ff00, 0x404040)
-	JsSetPos(helper, vector3f.Vector3f{
+	JsSetPos(helper, [3]float64{
 		gameconst.StageSize / 2,
 		gameconst.StageSize,
 		gameconst.StageSize / 2,
@@ -91,12 +90,12 @@ func (vp *Viewport3d) initGrid() {
 
 	box3 := vp.ThreeJsNew("Box3",
 		vp.Vt3fToThVt3(
-			vector3f.Vector3f{
+			[3]float64{
 				0 - gameobjtype.MaxRadius,
 				0 - gameobjtype.MaxRadius,
 				0 - gameobjtype.MaxRadius,
 			}),
-		vp.Vt3fToThVt3(vector3f.Vector3f{
+		vp.Vt3fToThVt3([3]float64{
 			gameconst.StageSize + gameobjtype.MaxRadius,
 			gameconst.StageSize + gameobjtype.MaxRadius,
 			gameconst.StageSize + gameobjtype.MaxRadius,
@@ -113,7 +112,7 @@ func (vp *Viewport3d) initLight() {
 	vp.scene.Call("add", vp.light)
 }
 
-func (vp *Viewport3d) setCamera(vt1, vt2 vector3f.Vector3f) {
+func (vp *Viewport3d) setCamera(vt1, vt2 [3]float64) {
 	JsSetPos(vp.camera, vt1)
 	vp.camera.Call("lookAt", vp.Vt3fToThVt3(vt2))
 	vp.camera.Call("updateProjectionMatrix")
