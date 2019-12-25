@@ -74,10 +74,13 @@ func (app *WasmClient) updateTeamStatsInfo() {
 	<th>UUID</th>
 	<th>AP</th>
 	<th>Alive</th>
+	<th>Score</th>
+	<th>Kill/Death</th>
 	`)
 	for acti := 0; acti < acttype.ActType_Count; acti++ {
-		fmt.Fprintf(&buf, "<th>%v</th>", acttype.ActType(acti))
+		fmt.Fprintf(&buf, "<th>Act %v</th>", acttype.ActType(acti))
 	}
+	buf.WriteString(`</tr>`)
 
 	for ti, tv := range stats.Stats {
 		fmt.Fprintf(&buf, `<tr style="background-color:%v">`,
@@ -86,6 +89,8 @@ func (app *WasmClient) updateTeamStatsInfo() {
 		fmt.Fprintf(&buf, "<td>%v</td>", tv.UUID)
 		fmt.Fprintf(&buf, "<td>%v</td>", tv.AP)
 		fmt.Fprintf(&buf, "<td>%v</td>", tv.Alive)
+		fmt.Fprintf(&buf, "<td>%v</td>", tv.Score)
+		fmt.Fprintf(&buf, "<td>%v/%v</td>", tv.Kill, tv.Death)
 
 		for acti := 0; acti < acttype.ActType_Count; acti++ {
 			fmt.Fprintf(&buf, "<td>%v</td>",

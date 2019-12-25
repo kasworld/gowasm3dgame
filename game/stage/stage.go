@@ -273,8 +273,11 @@ func (stg *Stage) ToStatsInfo() *w3d_obj.NotiStatsInfo_data {
 	for _, bt := range stg.Teams {
 		teamStats := w3d_obj.TeamStat{
 			UUID:     bt.UUID,
-			AP:       int(bt.ActPoint),
 			Alive:    bt.IsAlive,
+			AP:       int(bt.ActPoint),
+			Score:    int(bt.Score),
+			Kill:     bt.Kill,
+			Death:    bt.Death,
 			Color24:  bt.Color24,
 			ActStats: bt.ActStats,
 		}

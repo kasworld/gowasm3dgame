@@ -44,6 +44,8 @@ type Team struct {
 
 	ActPoint float64
 	Score    float64
+	Kill     int
+	Death    int
 }
 
 func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {

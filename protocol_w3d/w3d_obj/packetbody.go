@@ -72,9 +72,13 @@ type NotiStageChat_data struct {
 //////////////////////////////////////////////////////////////////////////////
 
 type TeamStat struct {
-	UUID     string
-	AP       int
-	Alive    bool
+	UUID  string
+	Alive bool
+	AP    int
+	Score int
+	Kill  int
+	Death int
+
 	Color24  htmlcolors.Color24
 	ActStats acttype_stats.ActTypeStat
 }
