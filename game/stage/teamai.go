@@ -85,7 +85,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		}
 	}
 	switch me.rnd.Intn(10) {
-	// switch 6 {
+	// switch 4 {
 	default:
 		//pass
 	case 0:
@@ -162,24 +162,24 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 			}
 		}
 	case 4: // use homming bullet as shield
-		actt := acttype.HommingBullet
-		objt := gameobjtype.HommingBullet
-		if !me.CanAct(actt) {
-			break
-		}
-		if !me.CanHave(objt) {
-			break
-		}
-		dstteam := me
-		if !dstteam.IsAlive {
-			break
-		}
-		maxv := gameobjtype.Attrib[objt].SpeedLimit
-		return &w3d_obj.Act{
-			Act:      actt,
-			Vt:       me.Ball.VelVt.NormalizedTo(maxv).Neg(),
-			DstObjID: dstteam.Ball.UUID,
-		}
+		// actt := acttype.HommingBullet
+		// objt := gameobjtype.HommingBullet
+		// if !me.CanAct(actt) {
+		// 	break
+		// }
+		// if !me.CanHave(objt) {
+		// 	break
+		// }
+		// dstteam := me
+		// if !dstteam.IsAlive {
+		// 	break
+		// }
+		// maxv := gameobjtype.Attrib[objt].SpeedLimit
+		// return &w3d_obj.Act{
+		// 	Act:      actt,
+		// 	Vt:       me.Ball.VelVt.NormalizedTo(maxv).Neg(),
+		// 	DstObjID: dstteam.Ball.UUID,
+		// }
 
 	case 5:
 		actt := acttype.Accel

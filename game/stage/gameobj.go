@@ -124,16 +124,20 @@ func (o *GameObj) Move_straight(now int64) {
 }
 
 func (o *GameObj) Move_circular(now int64, dstObj *GameObj) {
-	lifedur := float64(now-o.BirthTick) / float64(time.Second)
-	dur := float64(now-o.LastMoveTick) / float64(time.Second)
-	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
-	o.LastMoveTick = now
+	// dur := float64(now-o.LastMoveTick) / float64(time.Second)
+	// o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
+	// o.LastMoveTick = now
 
-	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
-	p := dstObj.VelVt.Cross(o.VelVt).NormalizedTo(mvLimit)
+	// mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
+	lifedur := float64(now-o.BirthTick) / float64(time.Second)
+	orbitR := gameobjtype.Attrib[gameobjtype.Ball].Radius * 4
+	p := dstObj.VelVt.Cross(o.VelVt).NormalizedTo(orbitR)
 	axis := dstObj.VelVt
 	diffVt := p.RotateAround(axis, lifedur)
-	o.PosVt = dstObj.PosVt.Add(diffVt)
+	dstPos := dstObj.PosVt.Add(diffVt)
+	// o.AccelTo(dstPos)
+	// o.Move_straight(now)
+	o.PosVt = dstPos
 }
 
 func (o *GameObj) Move_homming(now int64, dstObj *GameObj) {
