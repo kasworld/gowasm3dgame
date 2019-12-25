@@ -10,11 +10,13 @@ const (
 	Nil           GameObjType = iota //
 	Ball                             //
 	Shield                           //
+	HommingShield                    //
 	Bullet                           //
 	HommingBullet                    //
 	SuperBullet                      //
+	BurstBullet                      // // 10 random bullet
+	HomeMark                         //
 	Deco                             //
-	Mark                             //
 	Hard                             //
 	Food                             //
 
@@ -25,11 +27,13 @@ var _GameObjType2string = [GameObjType_Count]string{
 	Nil:           "Nil",
 	Ball:          "Ball",
 	Shield:        "Shield",
+	HommingShield: "HommingShield",
 	Bullet:        "Bullet",
 	HommingBullet: "HommingBullet",
 	SuperBullet:   "SuperBullet",
+	BurstBullet:   "BurstBullet",
+	HomeMark:      "HomeMark",
 	Deco:          "Deco",
-	Mark:          "Mark",
 	Hard:          "Hard",
 	Food:          "Food",
 }
@@ -45,11 +49,13 @@ var _string2GameObjType = map[string]GameObjType{
 	"Nil":           Nil,
 	"Ball":          Ball,
 	"Shield":        Shield,
+	"HommingShield": HommingShield,
 	"Bullet":        Bullet,
 	"HommingBullet": HommingBullet,
 	"SuperBullet":   SuperBullet,
+	"BurstBullet":   BurstBullet,
+	"HomeMark":      HomeMark,
 	"Deco":          Deco,
-	"Mark":          Mark,
 	"Hard":          Hard,
 	"Food":          Food,
 }

@@ -211,7 +211,7 @@ func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 		}
 		switch v.GOType {
 		default:
-		case gameobjtype.Bullet, gameobjtype.SuperBullet:
+		case gameobjtype.Bullet, gameobjtype.SuperBullet, gameobjtype.BurstBullet:
 			v.Move_straight(now)
 			if !v.PosVt.IsIn(stg.BorderBounce) {
 				v.toDelete = true
@@ -219,6 +219,11 @@ func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 			}
 		case gameobjtype.Shield:
 			v.Move_circular(now, bt.Ball)
+
+		case gameobjtype.HommingShield:
+			v.Move_hommingshield(now, bt.Ball)
+			break
+
 		case gameobjtype.HommingBullet:
 			findDst := false
 			for _, dstbt := range stg.Teams {
@@ -227,7 +232,7 @@ func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 				}
 				if dstbt.Ball.UUID == v.DstUUID {
 					findDst = true
-					v.Move_homming(now, dstbt.Ball)
+					v.Move_hommingbullet(now, dstbt.Ball)
 					break
 				}
 			}

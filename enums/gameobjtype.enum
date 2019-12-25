@@ -1,10 +1,12 @@
 Nil
 Ball
 Shield
+HommingShield
 Bullet
 HommingBullet
 SuperBullet
+BurstBullet // 10 random bullet
+HomeMark
 Deco
-Mark
 Hard
 Food

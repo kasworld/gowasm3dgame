@@ -16,6 +16,7 @@ var Attrib = [ActType_Count]struct {
 }{
 	Accel:         {1},
 	Shield:        {10},
+	HommingShield: {10},
 	Bullet:        {10},
 	SuperBullet:   {80},
 	HommingBullet: {100},

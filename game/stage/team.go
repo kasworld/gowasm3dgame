@@ -58,9 +58,9 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
 		Objs:    make([]*GameObj, 0),
 	}
 
-	maxv := gameobjtype.Attrib[gameobjtype.Mark].SpeedLimit
+	maxv := gameobjtype.Attrib[gameobjtype.HomeMark].SpeedLimit
 	bt.HomeMark = &GameObj{
-		GOType:       gameobjtype.Mark,
+		GOType:       gameobjtype.HomeMark,
 		UUID:         uuidstr.New(),
 		TeamUUID:     bt.UUID,
 		BirthTick:    nowtick,
@@ -187,7 +187,7 @@ func (bt *Team) ApplyAct(actObj *w3d_obj.Act) {
 	case acttype.BurstBullet:
 		for i := 0; i < 10; i++ {
 			vt := bt.RandPosVt()
-			bt.AddBullet(vt.Sub(bt.Ball.PosVt))
+			bt.AddBurstBullet(vt.Sub(bt.Ball.PosVt))
 		}
 	case acttype.SuperBullet:
 		bt.AddSuperBullet(actObj.Vt)
@@ -197,6 +197,8 @@ func (bt *Team) ApplyAct(actObj *w3d_obj.Act) {
 		bt.Ball.VelVt = bt.Ball.VelVt.Add(actObj.Vt)
 	case acttype.Shield:
 		bt.AddShield(actObj.Vt)
+	case acttype.HommingShield:
+		bt.AddHommingShield(actObj.Vt, actObj.DstObjID)
 	}
 }
 
@@ -216,11 +218,44 @@ func (bt *Team) AddShield(vt vector3f.Vector3f) *GameObj {
 	return o
 }
 
+func (bt *Team) AddHommingShield(vt vector3f.Vector3f, dstid string) *GameObj {
+	nowtick := time.Now().UnixNano()
+	o := &GameObj{
+		TeamUUID:     bt.UUID,
+		GOType:       gameobjtype.HommingShield,
+		UUID:         uuidstr.New(),
+		BirthTick:    nowtick,
+		LastMoveTick: nowtick,
+		PosVt:        bt.Ball.PosVt,
+		VelVt:        vt,
+		RotVelVt:     bt.RandRotVt(),
+		DstUUID:      dstid,
+	}
+	bt.addGObj(o)
+	return o
+}
+
 func (bt *Team) AddBullet(vt vector3f.Vector3f) *GameObj {
 	nowtick := time.Now().UnixNano()
 	o := &GameObj{
 		TeamUUID:     bt.UUID,
 		GOType:       gameobjtype.Bullet,
+		UUID:         uuidstr.New(),
+		BirthTick:    nowtick,
+		LastMoveTick: nowtick,
+		PosVt:        bt.Ball.PosVt,
+		VelVt:        vt,
+		RotVelVt:     bt.RandRotVt(),
+	}
+	bt.addGObj(o)
+	return o
+}
+
+func (bt *Team) AddBurstBullet(vt vector3f.Vector3f) *GameObj {
+	nowtick := time.Now().UnixNano()
+	o := &GameObj{
+		TeamUUID:     bt.UUID,
+		GOType:       gameobjtype.BurstBullet,
 		UUID:         uuidstr.New(),
 		BirthTick:    nowtick,
 		LastMoveTick: nowtick,
