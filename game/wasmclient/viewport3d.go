@@ -182,13 +182,16 @@ func (vp *Viewport3d) getGeometry(gotype gameobjtype.GameObjType) js.Value {
 		case gameobjtype.Shield:
 			geo = vp.ThreeJsNew("IcosahedronGeometry", radius)
 		case gameobjtype.HommingShield:
-			geo = vp.ThreeJsNew("IcosahedronGeometry", radius)
+			geo = vp.ThreeJsNew("OctahedronGeometry", radius)
+			// geo = vp.ThreeJsNew("IcosahedronGeometry", radius)
 		case gameobjtype.Bullet:
 			geo = vp.ThreeJsNew("DodecahedronGeometry", radius)
 		case gameobjtype.HommingBullet:
-			geo = vp.ThreeJsNew("OctahedronGeometry", radius)
-		case gameobjtype.SuperBullet:
 			geo = vp.ThreeJsNew("TetrahedronGeometry", radius)
+			//geo = vp.ThreeJsNew("OctahedronGeometry", radius)
+		case gameobjtype.SuperBullet:
+			geo = vp.ThreeJsNew("ConeGeometry", radius, radius*2, 16)
+			// geo = vp.ThreeJsNew("TetrahedronGeometry", radius)
 		case gameobjtype.BurstBullet:
 			geo = vp.ThreeJsNew("DodecahedronGeometry", radius)
 		case gameobjtype.HomeMark:
