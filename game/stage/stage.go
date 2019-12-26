@@ -148,9 +148,13 @@ func (stg *Stage) Turn() {
 		_ = toDelList
 	}
 
-	toDelList, aienv := stg.checkCollision()
-	for _, v := range toDelList {
-		if v.GOType == gameobjtype.Ball {
+	collisionList, aienv := stg.checkCollision()
+	for _, v := range collisionList {
+		v[0].toDelete = true
+	}
+
+	for _, v := range collisionList {
+		if v[0].GOType == gameobjtype.Ball {
 			stg.handleBallKilled(now, v)
 		}
 	}
@@ -168,25 +172,38 @@ func (stg *Stage) Turn() {
 	}
 }
 
-func (stg *Stage) handleBallKilled(now int64, gobj *GameObj) {
+func (stg *Stage) getTeamByUUID(id string) *Team {
 	for _, bt := range stg.Teams {
-		// find ballteam
-		if bt.Ball.UUID == gobj.UUID {
-			bt.IsAlive = false
-			// regist respawn
-			bt.RespawnTick = now + int64(time.Second)*gameconst.BallRespawnDurSec
-
-			// add effect
-			for _, v := range bt.Objs {
-				if v.toDelete {
-					continue
-				}
-				v.toDelete = true
-			}
-			return
+		if bt.UUID == id {
+			return bt
 		}
 	}
-	stg.log.Fatal("ball not in ballteam? %v", gobj)
+	return nil
+}
+func (stg *Stage) handleBallKilled(now int64, gobj [2]*GameObj) {
+	bt := stg.getTeamByUUID(gobj[0].TeamUUID)
+	if bt == nil {
+		stg.log.Fatal("invalid team uuid %v", gobj)
+		return
+	}
+	killbt := stg.getTeamByUUID(gobj[1].TeamUUID)
+	if killbt == nil {
+		stg.log.Fatal("invalid team uuid %v", gobj)
+	}
+	killbt.Kill++
+
+	bt.IsAlive = false
+	bt.Death++
+	// regist respawn
+	bt.RespawnTick = now + int64(time.Second)*gameconst.BallRespawnDurSec
+
+	for _, v := range bt.Objs {
+		if v.toDelete {
+			continue
+		}
+		v.toDelete = true
+	}
+
 }
 
 func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
