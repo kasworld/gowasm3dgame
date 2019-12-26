@@ -49,7 +49,6 @@ type Team struct {
 }
 
 func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
-	nowtick := time.Now().UnixNano()
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	bt := &Team{
 		rnd:     rnd,
@@ -61,36 +60,27 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
 	}
 
 	maxv := gameobjtype.Attrib[gameobjtype.HomeMark].SpeedLimit
-	bt.HomeMark = &GameObj{
-		GOType:       gameobjtype.HomeMark,
-		UUID:         uuidstr.New(),
-		TeamUUID:     bt.UUID,
-		BirthTick:    nowtick,
-		LastMoveTick: nowtick,
-		PosVt:        bt.RandPosVt(),
-		RotVelVt:     bt.RandRotVt(),
-		VelVt: vector3f.Vector3f{
+	bt.HomeMark = bt.NewGameObj(
+		gameobjtype.HomeMark,
+		bt.RandPosVt(),
+		vector3f.Vector3f{
 			bt.rnd.Float64() * maxv,
 			bt.rnd.Float64() * maxv,
 			bt.rnd.Float64() * maxv,
 		}.NormalizedTo(maxv),
-	}
+	)
 
 	maxv = gameobjtype.Attrib[gameobjtype.Ball].SpeedLimit
-	bt.Ball = &GameObj{
-		GOType:       gameobjtype.Ball,
-		UUID:         uuidstr.New(),
-		TeamUUID:     bt.UUID,
-		BirthTick:    nowtick,
-		LastMoveTick: nowtick,
-		PosVt:        bt.RandPosVt(),
-		RotVelVt:     bt.RandRotVt(),
-		VelVt: vector3f.Vector3f{
+	bt.Ball = bt.NewGameObj(
+		gameobjtype.Ball,
+		bt.RandPosVt(),
+		vector3f.Vector3f{
 			bt.rnd.Float64() * maxv,
 			bt.rnd.Float64() * maxv,
 			bt.rnd.Float64() * maxv,
 		}.NormalizedTo(maxv),
-	}
+	)
+
 	return bt
 }
 
@@ -150,16 +140,6 @@ func (bt *Team) CountByGOType(ot gameobjtype.GameObjType) int {
 	return rtn
 }
 
-func (bt *Team) addGObj(o *GameObj) {
-	for i, v := range bt.Objs {
-		if v.toDelete {
-			bt.Objs[i] = o
-			return
-		}
-	}
-	bt.Objs = append(bt.Objs, o)
-}
-
 // 0(outer max) ~ GameConst.APIncFrame( 0,0,0)
 func (t *Team) CalcAP(stageDiag float64) float64 {
 	homepos := t.HomeMark.PosVt
@@ -186,119 +166,75 @@ func (bt *Team) ApplyAct(actObj *w3d_obj.Act) {
 		bt.log.Fatal("unknown act %+v %v", actObj, bt)
 	case acttype.Nothing:
 	case acttype.Bullet:
-		bt.AddBullet(actObj.Vt)
+		o := bt.NewGameObj(gameobjtype.Bullet,
+			bt.Ball.PosVt,
+			actObj.Vt,
+		)
+		bt.addGObj(o)
 	case acttype.BurstBullet:
 		for i := 0; i < 10; i++ {
 			vt := bt.RandPosVt()
-			bt.AddBurstBullet(vt.Sub(bt.Ball.PosVt))
+			o := bt.NewGameObj(gameobjtype.BurstBullet,
+				bt.Ball.PosVt,
+				vt.Sub(bt.Ball.PosVt),
+			)
+			bt.addGObj(o)
 		}
 	case acttype.SuperBullet:
-		bt.AddSuperBullet(actObj.Vt)
+		o := bt.NewGameObj(gameobjtype.SuperBullet,
+			bt.Ball.PosVt,
+			actObj.Vt,
+		)
+		bt.addGObj(o)
 	case acttype.HommingBullet:
-		bt.AddHommingBullet(actObj.Vt, actObj.DstObjID)
+		o := bt.NewGameObj(gameobjtype.HommingBullet,
+			bt.Ball.PosVt,
+			actObj.Vt,
+		)
+		o.DstUUID = actObj.DstObjID
+		bt.addGObj(o)
 	case acttype.Accel:
 		bt.Ball.VelVt = bt.Ball.VelVt.Add(actObj.Vt)
 	case acttype.Shield:
-		bt.AddShield(actObj.Vt)
+		o := bt.NewGameObj(gameobjtype.Shield,
+			bt.Ball.PosVt,
+			actObj.Vt,
+		)
+		bt.addGObj(o)
 	case acttype.HommingShield:
-		bt.AddHommingShield(actObj.Vt, actObj.DstObjID)
+		o := bt.NewGameObj(gameobjtype.HommingShield,
+			bt.Ball.PosVt,
+			actObj.Vt,
+		)
+		bt.addGObj(o)
 	}
 }
 
-func (bt *Team) AddShield(vt vector3f.Vector3f) *GameObj {
-	nowtick := time.Now().UnixNano()
-	o := &GameObj{
-		TeamUUID:     bt.UUID,
-		GOType:       gameobjtype.Shield,
-		UUID:         uuidstr.New(),
-		BirthTick:    nowtick,
-		LastMoveTick: nowtick,
-		PosVt:        bt.Ball.PosVt,
-		VelVt:        vt,
-		RotVelVt:     bt.RandRotVt(),
+func (bt *Team) addGObj(o *GameObj) {
+	for i, v := range bt.Objs {
+		if v.toDelete {
+			bt.Objs[i] = o
+			return
+		}
 	}
-	bt.addGObj(o)
-	return o
+	bt.Objs = append(bt.Objs, o)
 }
 
-func (bt *Team) AddHommingShield(vt vector3f.Vector3f, dstid string) *GameObj {
+func (bt *Team) NewGameObj(
+	gotype gameobjtype.GameObjType,
+	at vector3f.Vector3f,
+	velvt vector3f.Vector3f,
+) *GameObj {
 	nowtick := time.Now().UnixNano()
 	o := &GameObj{
 		TeamUUID:     bt.UUID,
-		GOType:       gameobjtype.HommingShield,
+		GOType:       gotype,
 		UUID:         uuidstr.New(),
 		BirthTick:    nowtick,
 		LastMoveTick: nowtick,
-		PosVt:        bt.Ball.PosVt,
-		VelVt:        vt,
-		RotVelVt:     bt.RandRotVt(),
-		DstUUID:      dstid,
-	}
-	bt.addGObj(o)
-	return o
-}
-
-func (bt *Team) AddBullet(vt vector3f.Vector3f) *GameObj {
-	nowtick := time.Now().UnixNano()
-	o := &GameObj{
-		TeamUUID:     bt.UUID,
-		GOType:       gameobjtype.Bullet,
-		UUID:         uuidstr.New(),
-		BirthTick:    nowtick,
-		LastMoveTick: nowtick,
-		PosVt:        bt.Ball.PosVt,
-		VelVt:        vt,
+		PosVt:        at,
+		VelVt:        velvt,
 		RotVelVt:     bt.RandRotVt(),
 	}
-	bt.addGObj(o)
-	return o
-}
-
-func (bt *Team) AddBurstBullet(vt vector3f.Vector3f) *GameObj {
-	nowtick := time.Now().UnixNano()
-	o := &GameObj{
-		TeamUUID:     bt.UUID,
-		GOType:       gameobjtype.BurstBullet,
-		UUID:         uuidstr.New(),
-		BirthTick:    nowtick,
-		LastMoveTick: nowtick,
-		PosVt:        bt.Ball.PosVt,
-		VelVt:        vt,
-		RotVelVt:     bt.RandRotVt(),
-	}
-	bt.addGObj(o)
-	return o
-}
-
-func (bt *Team) AddSuperBullet(vt vector3f.Vector3f) *GameObj {
-	nowtick := time.Now().UnixNano()
-	o := &GameObj{
-		TeamUUID:     bt.UUID,
-		GOType:       gameobjtype.SuperBullet,
-		UUID:         uuidstr.New(),
-		BirthTick:    nowtick,
-		LastMoveTick: nowtick,
-		PosVt:        bt.Ball.PosVt,
-		VelVt:        vt,
-		RotVelVt:     bt.RandRotVt(),
-	}
-	bt.addGObj(o)
-	return o
-}
-
-func (bt *Team) AddHommingBullet(vt vector3f.Vector3f, dstid string) *GameObj {
-	nowtick := time.Now().UnixNano()
-	o := &GameObj{
-		TeamUUID:     bt.UUID,
-		GOType:       gameobjtype.HommingBullet,
-		UUID:         uuidstr.New(),
-		BirthTick:    nowtick,
-		LastMoveTick: nowtick,
-		PosVt:        bt.Ball.PosVt,
-		VelVt:        vt,
-		RotVelVt:     bt.RandRotVt(),
-		DstUUID:      dstid,
-	}
-	bt.addGObj(o)
 	return o
 }

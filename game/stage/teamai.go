@@ -176,9 +176,8 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		}
 		maxv := gameobjtype.Attrib[objt].SpeedLimit
 		return &w3d_obj.Act{
-			Act:      actt,
-			Vt:       me.Ball.VelVt.NormalizedTo(maxv).Neg(),
-			DstObjID: dstteam.Ball.UUID,
+			Act: actt,
+			Vt:  me.Ball.VelVt.NormalizedTo(maxv).Neg(),
 		}
 
 	case 5:
