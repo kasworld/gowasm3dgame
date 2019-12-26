@@ -99,6 +99,6 @@ type Team struct {
 type GameObj struct {
 	GOType gameobjtype.GameObjType
 	UUID   string
-	PosVt  [3]float64
-	RotVt  [3]float64
+	PosVt  [3]float32
+	RotVt  [3]float32
 }

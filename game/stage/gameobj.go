@@ -60,8 +60,16 @@ func (o *GameObj) ToPacket() *w3d_obj.GameObj {
 	return &w3d_obj.GameObj{
 		GOType: o.GOType,
 		UUID:   o.UUID,
-		PosVt:  o.PosVt,
-		RotVt:  o.RotVt,
+		PosVt: [3]float32{
+			float32(o.PosVt[0]),
+			float32(o.PosVt[1]),
+			float32(o.PosVt[2]),
+		},
+		RotVt: [3]float32{
+			float32(o.RotVt[0]),
+			float32(o.RotVt[1]),
+			float32(o.RotVt[2]),
+		},
 	}
 }
 

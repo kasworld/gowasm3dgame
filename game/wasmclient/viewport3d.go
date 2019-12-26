@@ -55,24 +55,14 @@ func NewViewport3d(cnvid string) *Viewport3d {
 		gameconst.StageSize*10)
 
 	vp.initGrid()
-	camerapos := [3]float64{
-		gameconst.StageSize * 1.8,
-		gameconst.StageSize * .7,
-		gameconst.StageSize * 1.8}
-	vp.setCamera(camerapos, [3]float64{
-		0,
-		gameconst.StageSize * .3,
-		0,
-	})
 	vp.initLight()
-	JsSetPos(vp.light, camerapos)
 	return vp
 }
 
 func (vp *Viewport3d) initGrid() {
 	helper := vp.ThreeJsNew("GridHelper",
 		gameconst.StageSize, 100, 0x0000ff, 0x404040)
-	JsSetPos(helper, [3]float64{
+	JsSetPos(helper, [3]float32{
 		gameconst.StageSize / 2,
 		0,
 		gameconst.StageSize / 2,
@@ -81,7 +71,7 @@ func (vp *Viewport3d) initGrid() {
 
 	helper = vp.ThreeJsNew("GridHelper",
 		gameconst.StageSize, 100, 0x00ff00, 0x404040)
-	JsSetPos(helper, [3]float64{
+	JsSetPos(helper, [3]float32{
 		gameconst.StageSize / 2,
 		gameconst.StageSize,
 		gameconst.StageSize / 2,
@@ -89,17 +79,16 @@ func (vp *Viewport3d) initGrid() {
 	vp.scene.Call("add", helper)
 
 	box3 := vp.ThreeJsNew("Box3",
-		vp.Vt3fToThVt3(
-			[3]float64{
-				0 - gameobjtype.MaxRadius,
-				0 - gameobjtype.MaxRadius,
-				0 - gameobjtype.MaxRadius,
-			}),
-		vp.Vt3fToThVt3([3]float64{
-			gameconst.StageSize + gameobjtype.MaxRadius,
-			gameconst.StageSize + gameobjtype.MaxRadius,
-			gameconst.StageSize + gameobjtype.MaxRadius,
-		}),
+		vp.ThreeJsNew("Vector3",
+			0-gameobjtype.MaxRadius,
+			0-gameobjtype.MaxRadius,
+			0-gameobjtype.MaxRadius,
+		),
+		vp.ThreeJsNew("Vector3",
+			gameconst.StageSize+gameobjtype.MaxRadius,
+			gameconst.StageSize+gameobjtype.MaxRadius,
+			gameconst.StageSize+gameobjtype.MaxRadius,
+		),
 	)
 	helper = vp.ThreeJsNew("Box3Helper", box3, 0xffffff)
 	vp.scene.Call("add", helper)
@@ -110,12 +99,7 @@ func (vp *Viewport3d) initGrid() {
 func (vp *Viewport3d) initLight() {
 	vp.light = vp.ThreeJsNew("PointLight", 0x808080, 1)
 	vp.scene.Call("add", vp.light)
-}
-
-func (vp *Viewport3d) setCamera(vt1, vt2 [3]float64) {
-	JsSetPos(vp.camera, vt1)
-	vp.camera.Call("lookAt", vp.Vt3fToThVt3(vt2))
-	vp.camera.Call("updateProjectionMatrix")
+	// JsSetPos(vp.light, camerapos)
 }
 
 func (vp *Viewport3d) Hide() {
@@ -261,4 +245,14 @@ func (vp *Viewport3d) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data
 			delete(vp.jsSceneObjs, id)
 		}
 	}
+}
+
+func (vp *Viewport3d) setCamera(vt1, vt2 [3]float32) {
+	JsSetPos(vp.camera, vt1)
+	vp.camera.Call("lookAt",
+		vp.ThreeJsNew("Vector3",
+			vt2[0], vt2[1], vt2[2],
+		),
+	)
+	vp.camera.Call("updateProjectionMatrix")
 }

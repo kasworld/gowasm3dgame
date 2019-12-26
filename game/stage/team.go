@@ -109,24 +109,6 @@ func (bt *Team) RandPosVt() vector3f.Vector3f {
 	}
 }
 
-func (bt *Team) ToPacket() *w3d_obj.Team {
-	rtn := &w3d_obj.Team{
-		ID:      bt.UUID,
-		Color24: bt.Color24,
-		Objs:    make([]*w3d_obj.GameObj, 0),
-	}
-	rtn.Objs = append(rtn.Objs, bt.HomeMark.ToPacket())
-	rtn.Objs = append(rtn.Objs, bt.Ball.ToPacket())
-
-	for _, v := range bt.Objs {
-		if v.toDelete {
-			continue
-		}
-		rtn.Objs = append(rtn.Objs, v.ToPacket())
-	}
-	return rtn
-}
-
 func (bt *Team) CountByGOType(ot gameobjtype.GameObjType) int {
 	rtn := 0
 	for _, v := range bt.Objs {
@@ -237,4 +219,22 @@ func (bt *Team) NewGameObj(
 		RotVelVt:     bt.RandRotVt(),
 	}
 	return o
+}
+
+func (bt *Team) ToPacket() *w3d_obj.Team {
+	rtn := &w3d_obj.Team{
+		ID:      bt.UUID,
+		Color24: bt.Color24,
+		Objs:    make([]*w3d_obj.GameObj, 0),
+	}
+	rtn.Objs = append(rtn.Objs, bt.HomeMark.ToPacket())
+	rtn.Objs = append(rtn.Objs, bt.Ball.ToPacket())
+
+	for _, v := range bt.Objs {
+		if v.toDelete {
+			continue
+		}
+		rtn.Objs = append(rtn.Objs, v.ToPacket())
+	}
+	return rtn
 }

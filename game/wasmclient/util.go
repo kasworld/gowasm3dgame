@@ -36,23 +36,19 @@ func getImgWH(srcImageID string) (js.Value, float64, float64) {
 	return img, srcw, srch
 }
 
-func JsSetPos(jsobj js.Value, vt [3]float64) {
+func JsSetPos(jsobj js.Value, vt [3]float32) {
 	jsobj.Get("position").Set("x", vt[0])
 	jsobj.Get("position").Set("y", vt[1])
 	jsobj.Get("position").Set("z", vt[2])
 }
 
-func JsSetRotation(jsobj js.Value, vt [3]float64) {
+func JsSetRotation(jsobj js.Value, vt [3]float32) {
 	jsobj.Get("rotation").Set("x", vt[0])
 	jsobj.Get("rotation").Set("y", vt[1])
 	jsobj.Get("rotation").Set("z", vt[2])
 	// jsobj.Call("rotateX", vt[0])
 	// jsobj.Call("rotateY", vt[1])
 	// jsobj.Call("rotateZ", vt[2])
-}
-
-func (vp *Viewport3d) Vt3fToThVt3(vt [3]float64) js.Value {
-	return vp.threejs.Get("Vector3").New(vt[0], vt[1], vt[2])
 }
 
 func (vp *Viewport3d) ThreeJsNew(name string, args ...interface{}) js.Value {
