@@ -245,12 +245,8 @@ func (vp *Viewport3d) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data
 		}
 		if !setCamera {
 			setCamera = true
-			vp.setCamera(tm.HomeMark.PosVt, tm.Ball.PosVt)
+			vp.setCamera(tm.Objs[0].PosVt, tm.Objs[1].PosVt)
 		}
-		vp.add2Scene(tm.Ball, tm.Color24)
-		addUUID[tm.Ball.UUID] = true
-		vp.add2Scene(tm.HomeMark, tm.Color24)
-		addUUID[tm.HomeMark.UUID] = true
 		for _, v := range tm.Objs {
 			if v == nil {
 				continue

@@ -91,11 +91,9 @@ type Act struct {
 }
 
 type Team struct {
-	ID       string
-	Color24  htmlcolors.Color24
-	Ball     *GameObj
-	HomeMark *GameObj
-	Objs     []*GameObj
+	ID      string
+	Color24 htmlcolors.Color24
+	Objs    []*GameObj // 0 : homemark, 1: ball
 }
 
 type GameObj struct {

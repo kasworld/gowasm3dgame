@@ -121,12 +121,13 @@ func (bt *Team) RandPosVt() vector3f.Vector3f {
 
 func (bt *Team) ToPacket() *w3d_obj.Team {
 	rtn := &w3d_obj.Team{
-		ID:       bt.UUID,
-		Color24:  bt.Color24,
-		Ball:     bt.Ball.ToPacket(),
-		HomeMark: bt.HomeMark.ToPacket(),
-		Objs:     make([]*w3d_obj.GameObj, 0),
+		ID:      bt.UUID,
+		Color24: bt.Color24,
+		Objs:    make([]*w3d_obj.GameObj, 0),
 	}
+	rtn.Objs = append(rtn.Objs, bt.HomeMark.ToPacket())
+	rtn.Objs = append(rtn.Objs, bt.Ball.ToPacket())
+
 	for _, v := range bt.Objs {
 		if v.toDelete {
 			continue
