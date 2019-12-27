@@ -33,11 +33,3 @@ func getImgWH(srcImageID string) (js.Value, float64, float64) {
 	srch := img.Get("naturalHeight").Float()
 	return img, srcw, srch
 }
-
-func (vp *Viewport3d) ThreeJsNew(name string, args ...interface{}) js.Value {
-	return vp.threejs.Get(name).New(args...)
-}
-
-// func (vp *Viewport3d) ToThColor(co htmlcolors.Color24) js.Value {
-// 	return vp.ThreeJsNew("Color", int(co))
-// }

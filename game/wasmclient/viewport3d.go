@@ -58,6 +58,10 @@ func NewViewport3d(cnvid string) *Viewport3d {
 	return vp
 }
 
+func (vp *Viewport3d) ThreeJsNew(name string, args ...interface{}) js.Value {
+	return vp.threejs.Get(name).New(args...)
+}
+
 func (vp *Viewport3d) initGrid() {
 	helper := vp.ThreeJsNew("GridHelper",
 		gameconst.StageSize, 100, 0x0000ff, 0x404040)
