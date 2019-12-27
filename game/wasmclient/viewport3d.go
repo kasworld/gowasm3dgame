@@ -62,20 +62,17 @@ func NewViewport3d(cnvid string) *Viewport3d {
 func (vp *Viewport3d) initGrid() {
 	helper := vp.ThreeJsNew("GridHelper",
 		gameconst.StageSize, 100, 0x0000ff, 0x404040)
-	JsSetPos(helper, [3]float32{
-		gameconst.StageSize / 2,
-		0,
-		gameconst.StageSize / 2,
-	})
+
+	helper.Get("position").Set("x", gameconst.StageSize/2)
+	helper.Get("position").Set("y", 0)
+	helper.Get("position").Set("z", gameconst.StageSize/2)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper",
 		gameconst.StageSize, 100, 0x00ff00, 0x404040)
-	JsSetPos(helper, [3]float32{
-		gameconst.StageSize / 2,
-		gameconst.StageSize,
-		gameconst.StageSize / 2,
-	})
+	helper.Get("position").Set("x", gameconst.StageSize/2)
+	helper.Get("position").Set("y", 0)
+	helper.Get("position").Set("z", gameconst.StageSize/2)
 	vp.scene.Call("add", helper)
 
 	box3 := vp.ThreeJsNew("Box3",
@@ -99,7 +96,9 @@ func (vp *Viewport3d) initGrid() {
 func (vp *Viewport3d) initLight() {
 	vp.light = vp.ThreeJsNew("PointLight", 0x808080, 1)
 	vp.scene.Call("add", vp.light)
-	// JsSetPos(vp.light, camerapos)
+	// vp.light.Get("position").Set("x", vt[0])
+	// vp.light.Get("position").Set("y", vt[1])
+	// vp.light.Get("position").Set("z", vt[2])
 }
 
 func (vp *Viewport3d) Hide() {
@@ -206,15 +205,23 @@ func (vp *Viewport3d) getMaterial(co htmlcolors.Color24) js.Value {
 
 func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co htmlcolors.Color24) js.Value {
 	if jso, exist := vp.jsSceneObjs[o.UUID]; exist {
-		JsSetPos(jso, o.PosVt)
-		JsSetRotation(jso, o.RotVt)
+		jso.Get("position").Set("x", o.PosVt[0])
+		jso.Get("position").Set("y", o.PosVt[1])
+		jso.Get("position").Set("z", o.PosVt[2])
+		jso.Get("rotation").Set("x", o.RotVt[0])
+		jso.Get("rotation").Set("y", o.RotVt[1])
+		jso.Get("rotation").Set("z", o.RotVt[2])
 		return jso
 	}
 	geometry := vp.getGeometry(o.GOType)
 	material := vp.getMaterial(co)
 	jso := vp.ThreeJsNew("Mesh", geometry, material)
-	JsSetPos(jso, o.PosVt)
-	JsSetRotation(jso, o.RotVt)
+	jso.Get("position").Set("x", o.PosVt[0])
+	jso.Get("position").Set("y", o.PosVt[1])
+	jso.Get("position").Set("z", o.PosVt[2])
+	jso.Get("rotation").Set("x", o.RotVt[0])
+	jso.Get("rotation").Set("y", o.RotVt[1])
+	jso.Get("rotation").Set("z", o.RotVt[2])
 	vp.scene.Call("add", jso)
 	vp.jsSceneObjs[o.UUID] = jso
 	return jso
@@ -229,7 +236,19 @@ func (vp *Viewport3d) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data
 		}
 		if !setCamera {
 			setCamera = true
-			vp.setCamera(tm.Objs[0].PosVt, tm.Objs[1].PosVt)
+
+			vt1 := tm.Objs[0].PosVt
+			vp.camera.Get("position").Set("x", vt1[0])
+			vp.camera.Get("position").Set("y", vt1[1])
+			vp.camera.Get("position").Set("z", vt1[2])
+
+			vt2 := tm.Objs[1].PosVt
+			vp.camera.Call("lookAt",
+				vp.ThreeJsNew("Vector3",
+					vt2[0], vt2[1], vt2[2],
+				),
+			)
+			vp.camera.Call("updateProjectionMatrix")
 		}
 		for _, v := range tm.Objs {
 			if v == nil {
@@ -245,14 +264,4 @@ func (vp *Viewport3d) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data
 			delete(vp.jsSceneObjs, id)
 		}
 	}
-}
-
-func (vp *Viewport3d) setCamera(vt1, vt2 [3]float32) {
-	JsSetPos(vp.camera, vt1)
-	vp.camera.Call("lookAt",
-		vp.ThreeJsNew("Vector3",
-			vt2[0], vt2[1], vt2[2],
-		),
-	)
-	vp.camera.Call("updateProjectionMatrix")
 }
