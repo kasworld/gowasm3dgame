@@ -74,7 +74,7 @@ func (vp *Viewport3d) initGrid() {
 	helper = vp.ThreeJsNew("GridHelper",
 		gameconst.StageSize, 100, 0x00ff00, 0x404040)
 	helper.Get("position").Set("x", gameconst.StageSize/2)
-	helper.Get("position").Set("y", 0)
+	helper.Get("position").Set("y", gameconst.StageSize)
 	helper.Get("position").Set("z", gameconst.StageSize/2)
 	vp.scene.Call("add", helper)
 
