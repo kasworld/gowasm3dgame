@@ -63,38 +63,33 @@ func (vp *Viewport3d) ThreeJsNew(name string, args ...interface{}) js.Value {
 }
 
 func (vp *Viewport3d) initGrid() {
-	helper := vp.ThreeJsNew("GridHelper",
-		gameconst.StageSize, 100, 0x0000ff, 0x404040)
+	outerStageSize := gameconst.StageSize + gameobjtype.MaxRadius*2
+	innerStageSize := gameconst.StageSize
 
-	helper.Get("position").Set("x", gameconst.StageSize/2)
-	helper.Get("position").Set("y", 0)
-	helper.Get("position").Set("z", gameconst.StageSize/2)
+	helper := vp.ThreeJsNew("GridHelper",
+		outerStageSize, 100, 0x0000ff, 0x404040)
+
+	helper.Get("position").Set("x", outerStageSize/2)
+	helper.Get("position").Set("y", -gameobjtype.MaxRadius)
+	helper.Get("position").Set("z", outerStageSize/2)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper",
-		gameconst.StageSize, 100, 0x00ff00, 0x404040)
-	helper.Get("position").Set("x", gameconst.StageSize/2)
-	helper.Get("position").Set("y", gameconst.StageSize)
-	helper.Get("position").Set("z", gameconst.StageSize/2)
+		outerStageSize, 100, 0x00ff00, 0x404040)
+	helper.Get("position").Set("x", outerStageSize/2)
+	helper.Get("position").Set("y", gameconst.StageSize+gameobjtype.MaxRadius)
+	helper.Get("position").Set("z", outerStageSize/2)
 	vp.scene.Call("add", helper)
 
 	box3 := vp.ThreeJsNew("Box3",
-		vp.ThreeJsNew("Vector3",
-			0-gameobjtype.MaxRadius,
-			0-gameobjtype.MaxRadius,
-			0-gameobjtype.MaxRadius,
-		),
-		vp.ThreeJsNew("Vector3",
-			gameconst.StageSize+gameobjtype.MaxRadius,
-			gameconst.StageSize+gameobjtype.MaxRadius,
-			gameconst.StageSize+gameobjtype.MaxRadius,
-		),
+		vp.ThreeJsNew("Vector3", 0, 0, 0),
+		vp.ThreeJsNew("Vector3", innerStageSize, innerStageSize, innerStageSize),
 	)
 	helper = vp.ThreeJsNew("Box3Helper", box3, 0xffffff)
 	vp.scene.Call("add", helper)
 
-	axisHelper := vp.ThreeJsNew("AxesHelper", gameconst.StageSize)
-	vp.scene.Call("add", axisHelper)
+	// axisHelper := vp.ThreeJsNew("AxesHelper", gameconst.StageSize)
+	// vp.scene.Call("add", axisHelper)
 }
 func (vp *Viewport3d) initLight() {
 	vp.light = vp.ThreeJsNew("PointLight", 0x808080, 1)
