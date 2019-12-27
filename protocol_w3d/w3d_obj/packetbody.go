@@ -15,7 +15,6 @@ import (
 	"github.com/kasworld/gowasm3dgame/enums/acttype"
 	"github.com/kasworld/gowasm3dgame/enums/acttype_stats"
 	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
-	"github.com/kasworld/htmlcolors"
 )
 
 type ReqInvalid_data struct {
@@ -79,7 +78,7 @@ type TeamStat struct {
 	Kill  int
 	Death int
 
-	Color24  htmlcolors.Color24
+	Color24  uint32 // from htmlcolors.Color24
 	ActStats acttype_stats.ActTypeStat
 }
 
@@ -92,7 +91,7 @@ type Act struct {
 
 type Team struct {
 	ID      string
-	Color24 htmlcolors.Color24
+	Color24 uint32     // from htmlcolors.Color24
 	Objs    []*GameObj // 0 : homemark, 1: ball
 }
 

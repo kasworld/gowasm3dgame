@@ -295,7 +295,7 @@ func (stg *Stage) ToStatsInfo() *w3d_obj.NotiStatsInfo_data {
 			Score:    int(bt.Score),
 			Kill:     bt.Kill,
 			Death:    bt.Death,
-			Color24:  bt.Color24,
+			Color24:  uint32(bt.Color24),
 			ActStats: bt.ActStats,
 		}
 		rtn.Stats = append(rtn.Stats, teamStats)

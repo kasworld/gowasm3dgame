@@ -83,8 +83,8 @@ func (app *WasmClient) updateTeamStatsInfo() {
 	buf.WriteString(`</tr>`)
 
 	for ti, tv := range stats.Stats {
-		fmt.Fprintf(&buf, `<tr style="background-color:%v">`,
-			tv.Color24.ToHTMLColorString())
+		fmt.Fprintf(&buf, `<tr style="background-color:#%06x">`,
+			tv.Color24)
 		fmt.Fprintf(&buf, "<td>%v</td>", ti)
 		fmt.Fprintf(&buf, "<td>%v</td>", tv.UUID)
 		fmt.Fprintf(&buf, "<td>%v</td>", tv.AP)

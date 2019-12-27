@@ -17,7 +17,6 @@ import (
 	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
-	"github.com/kasworld/htmlcolors"
 )
 
 type Viewport3d struct {
@@ -34,14 +33,14 @@ type Viewport3d struct {
 
 	jsSceneObjs   map[string]js.Value
 	geometryCache map[gameobjtype.GameObjType]js.Value
-	materialCache map[htmlcolors.Color24]js.Value
+	materialCache map[uint32]js.Value
 }
 
 func NewViewport3d(cnvid string) *Viewport3d {
 	vp := &Viewport3d{
 		jsSceneObjs:   make(map[string]js.Value),
 		geometryCache: make(map[gameobjtype.GameObjType]js.Value),
-		materialCache: make(map[htmlcolors.Color24]js.Value),
+		materialCache: make(map[uint32]js.Value),
 	}
 
 	vp.threejs = js.Global().Get("THREE")
@@ -191,19 +190,19 @@ func (vp *Viewport3d) getGeometry(gotype gameobjtype.GameObjType) js.Value {
 	return geo
 }
 
-func (vp *Viewport3d) getMaterial(co htmlcolors.Color24) js.Value {
+func (vp *Viewport3d) getMaterial(co uint32) js.Value {
 	mat, exist := vp.materialCache[co]
 	if !exist {
 		mat = vp.ThreeJsNew("MeshStandardMaterial")
 		// material.Set("color", vp.ToThColor(htmlcolors.Gray))
-		mat.Set("emissive", vp.ToThColor(co))
+		mat.Set("emissive", vp.ThreeJsNew("Color", co))
 		mat.Set("shininess", 30)
 		vp.materialCache[co] = mat
 	}
 	return mat
 }
 
-func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co htmlcolors.Color24) js.Value {
+func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co uint32) js.Value {
 	if jso, exist := vp.jsSceneObjs[o.UUID]; exist {
 		jso.Get("position").Set("x", o.PosVt[0])
 		jso.Get("position").Set("y", o.PosVt[1])

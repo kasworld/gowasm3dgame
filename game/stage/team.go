@@ -224,7 +224,7 @@ func (bt *Team) NewGameObj(
 func (bt *Team) ToPacket() *w3d_obj.Team {
 	rtn := &w3d_obj.Team{
 		ID:      bt.UUID,
-		Color24: bt.Color24,
+		Color24: uint32(bt.Color24),
 		Objs:    make([]*w3d_obj.GameObj, 0),
 	}
 	rtn.Objs = append(rtn.Objs, bt.HomeMark.ToPacket())
