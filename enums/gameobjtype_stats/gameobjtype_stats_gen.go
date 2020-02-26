@@ -24,6 +24,9 @@ func (es *GameObjTypeStat) String() string {
 	buf.WriteString("]")
 	return buf.String()
 }
+func (es *GameObjTypeStat) Dec(e gameobjtype.GameObjType) {
+	es[e] -= 1
+}
 func (es *GameObjTypeStat) Inc(e gameobjtype.GameObjType) {
 	es[e] += 1
 }

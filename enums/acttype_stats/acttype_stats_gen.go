@@ -24,6 +24,9 @@ func (es *ActTypeStat) String() string {
 	buf.WriteString("]")
 	return buf.String()
 }
+func (es *ActTypeStat) Dec(e acttype.ActType) {
+	es[e] -= 1
+}
 func (es *ActTypeStat) Inc(e acttype.ActType) {
 	es[e] += 1
 }

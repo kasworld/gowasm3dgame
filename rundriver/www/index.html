@@ -43,6 +43,16 @@
   <div class="grid_play">
     <span id="canvas3d"></span>
     <span id="info_area">
+
+      <div id="login">
+        Player name: 
+        <input type="text" id="playername" value="Unnamed" autofocus size=20 maxlength=20>
+      </div>
+      <div id="chatform" >
+        <input type="text" id="chattext" value="" size=40 onkeypress="chatEnter(event)">
+        <button class="button" onclick="sendChat()">Chat</button>
+      </div>
+      <div id="cmdlist"></div>
       <div id="serviceinfo">ServiceInfo area</div>
       <div id="debuginfo">debug info area</div>
       <div id="teamstatsinfo">team stats area</div>
