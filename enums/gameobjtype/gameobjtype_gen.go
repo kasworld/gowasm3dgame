@@ -23,26 +23,33 @@ const (
 	GameObjType_Count int = iota
 )
 
-var _GameObjType2string = [GameObjType_Count]string{
-	Nil:           "Nil",
-	Ball:          "Ball",
-	Shield:        "Shield",
-	HommingShield: "HommingShield",
-	Bullet:        "Bullet",
-	HommingBullet: "HommingBullet",
-	SuperBullet:   "SuperBullet",
-	BurstBullet:   "BurstBullet",
-	HomeMark:      "HomeMark",
-	Deco:          "Deco",
-	Hard:          "Hard",
-	Food:          "Food",
+var _GameObjType2string = [GameObjType_Count][2]string{
+	Nil:           {"Nil", ""},
+	Ball:          {"Ball", ""},
+	Shield:        {"Shield", ""},
+	HommingShield: {"HommingShield", ""},
+	Bullet:        {"Bullet", ""},
+	HommingBullet: {"HommingBullet", ""},
+	SuperBullet:   {"SuperBullet", ""},
+	BurstBullet:   {"BurstBullet", "// 10 random bullet"},
+	HomeMark:      {"HomeMark", ""},
+	Deco:          {"Deco", ""},
+	Hard:          {"Hard", ""},
+	Food:          {"Food", ""},
 }
 
 func (e GameObjType) String() string {
 	if e >= 0 && e < GameObjType(GameObjType_Count) {
-		return _GameObjType2string[e]
+		return _GameObjType2string[e][0]
 	}
 	return fmt.Sprintf("GameObjType%d", uint8(e))
+}
+
+func (e GameObjType) CommentString() string {
+	if e >= 0 && e < GameObjType(GameObjType_Count) {
+		return _GameObjType2string[e][1]
+	}
+	return ""
 }
 
 var _string2GameObjType = map[string]GameObjType{

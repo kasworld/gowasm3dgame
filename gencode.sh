@@ -44,38 +44,7 @@ genprotocol -ver=${PROTOCOL_W3D_VERSION} \
     -basedir=. \
     -prefix=w3d -statstype=int
 
-goimports -w w3d_version/version_gen.go
-goimports -w w3d_idcmd/command_gen.go
-goimports -w w3d_idnoti/noti_gen.go
-goimports -w w3d_error/error_gen.go
-goimports -w w3d_const/const_gen.go
-goimports -w w3d_packet/packet_gen.go
-goimports -w w3d_obj/objtemplate_gen.go
-goimports -w w3d_msgp/serialize_gen.go
-goimports -w w3d_json/serialize_gen.go
-goimports -w w3d_gob/serialize_gen.go
-goimports -w w3d_handlersp/fnobjtemplate_gen.go
-goimports -w w3d_handlersp/fnbytestemplate_gen.go
-goimports -w w3d_handlereq/fnobjtemplate_gen.go
-goimports -w w3d_handlereq/fnbytestemplate_gen.go
-goimports -w w3d_handlenoti/fnobjtemplate_gen.go
-goimports -w w3d_handlenoti/fnbytestemplate_gen.go
-goimports -w w3d_serveconnbyte/serveconnbyte_gen.go
-goimports -w w3d_connbytemanager/connbytemanager_gen.go
-goimports -w w3d_conntcp/conntcp_gen.go
-goimports -w w3d_connwasm/connwasm_gen.go
-goimports -w w3d_connwsgorilla/connwsgorilla_gen.go
-goimports -w w3d_loopwsgorilla/loopwsgorilla_gen.go
-goimports -w w3d_looptcp/looptcp_gen.go
-goimports -w w3d_pid2rspfn/pid2rspfn_gen.go
-goimports -w w3d_statnoti/statnoti_gen.go
-goimports -w w3d_statcallapi/statcallapi_gen.go
-goimports -w w3d_statserveapi/statserveapi_gen.go
-goimports -w w3d_statapierror/statapierror_gen.go
-goimports -w w3d_authorize/authorize_gen.go
-goimports -w w3d_error_stats/w3d_error_stats_gen.go
-goimports -w w3d_idcmd_stats/w3d_idcmd_stats_gen.go
-goimports -w w3d_idnoti_stats/w3d_idnoti_stats_gen.go
+goimports -w .
 
 cd ..
 

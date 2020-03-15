@@ -14,18 +14,25 @@ const (
 	CommandID_Count int = iota
 )
 
-var _CommandID2string = [CommandID_Count]string{
-	Invalid:     "Invalid",
-	EnterStage:  "EnterStage",
-	ChatToStage: "ChatToStage",
-	Heartbeat:   "Heartbeat",
+var _CommandID2string = [CommandID_Count][2]string{
+	Invalid:     {"Invalid", ""},
+	EnterStage:  {"EnterStage", ""},
+	ChatToStage: {"ChatToStage", ""},
+	Heartbeat:   {"Heartbeat", ""},
 }
 
 func (e CommandID) String() string {
 	if e >= 0 && e < CommandID(CommandID_Count) {
-		return _CommandID2string[e]
+		return _CommandID2string[e][0]
 	}
 	return fmt.Sprintf("CommandID%d", uint16(e))
+}
+
+func (e CommandID) CommentString() string {
+	if e >= 0 && e < CommandID(CommandID_Count) {
+		return _CommandID2string[e][1]
+	}
+	return ""
 }
 
 var _string2CommandID = map[string]CommandID{

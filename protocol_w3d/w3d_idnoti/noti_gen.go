@@ -14,18 +14,24 @@ const (
 	NotiID_Count int = iota
 )
 
-var _NotiID2string = [NotiID_Count]string{
-	Invalid:   "Invalid",
-	StageInfo: "StageInfo",
-	StatsInfo: "StatsInfo",
-	StageChat: "StageChat",
+var _NotiID2string = [NotiID_Count][2]string{
+	Invalid:   {"Invalid", ""},
+	StageInfo: {"StageInfo", ""},
+	StatsInfo: {"StatsInfo", "// game stats info"},
+	StageChat: {"StageChat", ""},
 }
 
 func (e NotiID) String() string {
 	if e >= 0 && e < NotiID(NotiID_Count) {
-		return _NotiID2string[e]
+		return _NotiID2string[e][0]
 	}
 	return fmt.Sprintf("NotiID%d", uint16(e))
+}
+func (e NotiID) CommentString() string {
+	if e >= 0 && e < NotiID(NotiID_Count) {
+		return _NotiID2string[e][1]
+	}
+	return ""
 }
 
 var _string2NotiID = map[string]NotiID{

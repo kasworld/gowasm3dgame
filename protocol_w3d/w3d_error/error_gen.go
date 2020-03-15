@@ -15,19 +15,25 @@ const (
 	ErrorCode_Count int = iota
 )
 
-var _ErrorCode2string = [ErrorCode_Count]string{
-	None:             "None",
-	ActionProhibited: "ActionProhibited",
-	ObjectNotFound:   "ObjectNotFound",
-	ActionChaned:     "ActionChaned",
-	ActionCanceled:   "ActionCanceled",
+var _ErrorCode2string = [ErrorCode_Count][2]string{
+	None:             {"None", ""},
+	ActionProhibited: {"ActionProhibited", ""},
+	ObjectNotFound:   {"ObjectNotFound", ""},
+	ActionChaned:     {"ActionChaned", ""},
+	ActionCanceled:   {"ActionCanceled", ""},
 }
 
 func (e ErrorCode) String() string {
 	if e >= 0 && e < ErrorCode(ErrorCode_Count) {
-		return _ErrorCode2string[e]
+		return _ErrorCode2string[e][0]
 	}
 	return fmt.Sprintf("ErrorCode%d", uint16(e))
+}
+func (e ErrorCode) CommentString() string {
+	if e >= 0 && e < ErrorCode(ErrorCode_Count) {
+		return _ErrorCode2string[e][1]
+	}
+	return ""
 }
 
 // implement error interface
