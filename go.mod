@@ -18,7 +18,9 @@ require (
 	github.com/kasworld/intervalduration v0.0.0-20191119062840-82a720a6b837
 	github.com/kasworld/launcherlib v0.0.0-20190513092519-5ce52b882f53 // indirect
 	github.com/kasworld/log v0.0.0-20191101013826-9bd2997eac10
+	github.com/kasworld/multirun v0.0.0-20191216055936-decb66787001
 	github.com/kasworld/prettystring v0.0.0-20200313054137-8305061037e7
+	github.com/kasworld/rangestat v0.0.0-20190508031937-d4380fb43f7a
 	github.com/kasworld/signalhandle v0.0.0-20200408024356-5eb43fdac632
 	github.com/kasworld/uuidstr v0.0.0-20190503034528-2edffd24297a
 	github.com/kasworld/version v0.0.0-20190507052028-3d2e657a23f8

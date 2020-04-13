@@ -32,8 +32,12 @@ github.com/kasworld/launcherlib v0.0.0-20190513092519-5ce52b882f53 h1:Tu6vg+sX+b
 github.com/kasworld/launcherlib v0.0.0-20190513092519-5ce52b882f53/go.mod h1:OQOF2YYISM79z+SNFcpYn1ZIZ+VrA/QqATXvZR63N7s=
 github.com/kasworld/log v0.0.0-20191101013826-9bd2997eac10 h1:meVP467OVoZus/N9IuCHo5FYfNOyEPsu9d64bN5a6F8=
 github.com/kasworld/log v0.0.0-20191101013826-9bd2997eac10/go.mod h1:WSMsaXwrnpX2wOa1+tXYCaUvZRedAA3JK0HtxajFO74=
+github.com/kasworld/multirun v0.0.0-20191216055936-decb66787001 h1:imgS0/ZOfcButbzdj8LMGxUx0vh4l3qkroqsnlJ4CDw=
+github.com/kasworld/multirun v0.0.0-20191216055936-decb66787001/go.mod h1:zTS5cwoXKZuFAhJMs/cIMZYC8HRK0awy9q4R6kjWl50=
 github.com/kasworld/prettystring v0.0.0-20200313054137-8305061037e7 h1:c0l48LIAZdh0DCIlj28W/12ko6bcW+Ye+Fb0bWpH/BU=
 github.com/kasworld/prettystring v0.0.0-20200313054137-8305061037e7/go.mod h1:49hU/4Tzyzz8E4oIo6hZtjqO9LaM1LgXOvY+VG1EWtI=
+github.com/kasworld/rangestat v0.0.0-20190508031937-d4380fb43f7a h1:2C0tc01SY9C4W7fZj9G7kETkQC6coqb+j1bzEq4UxgI=
+github.com/kasworld/rangestat v0.0.0-20190508031937-d4380fb43f7a/go.mod h1:h6K7dvA2STMPa7uqgf43kf+0Ah1mWoGihRHVXGVbV18=
 github.com/kasworld/signalhandle v0.0.0-20200408024356-5eb43fdac632 h1:5fTbYtAkRsaH0PtB22/K7qBbkQv0ApHb2qu9bJ7gTco=
 github.com/kasworld/signalhandle v0.0.0-20200408024356-5eb43fdac632/go.mod h1:kqr1uEa2r29JYirqJBrIa/eCwBvH6iEzHCx11OuUX/0=
 github.com/kasworld/uuidstr v0.0.0-20190503034528-2edffd24297a h1:zB+eA5R/ffX2bI6nz/rrviKLOOPJq5nDjLbNHfthm+w=

@@ -82,6 +82,7 @@ SRC_DIR="rundriver"
 echo ${BUILD_VER} > ${BIN_DIR}/BUILD
 
 BuildBin ${SRC_DIR}/server.go ${BIN_DIR} server
+BuildBin ${SRC_DIR}/multiclient.go ${BIN_DIR} multiclient
 
 cd rundriver
 echo "build wasm client"

@@ -71,9 +71,15 @@ github.com/kasworld/log/logdestinationgroup
 github.com/kasworld/log/logdestinationi
 github.com/kasworld/log/logflagi
 github.com/kasworld/log/logflags
+# github.com/kasworld/multirun v0.0.0-20191216055936-decb66787001
+## explicit
+github.com/kasworld/multirun
 # github.com/kasworld/prettystring v0.0.0-20200313054137-8305061037e7
 ## explicit
 github.com/kasworld/prettystring
+# github.com/kasworld/rangestat v0.0.0-20190508031937-d4380fb43f7a
+## explicit
+github.com/kasworld/rangestat
 # github.com/kasworld/signalhandle v0.0.0-20200408024356-5eb43fdac632
 ## explicit
 github.com/kasworld/signalhandle
