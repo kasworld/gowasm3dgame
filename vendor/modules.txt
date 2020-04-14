@@ -24,33 +24,6 @@ github.com/kasworld/go-abs
 # github.com/kasworld/go-profile v0.0.0-20151115093915-b12be73c3c93
 ## explicit
 github.com/kasworld/go-profile
-# github.com/kasworld/gowasm2dgame v0.0.0-20200315073103-b09b09880038
-## explicit
-github.com/kasworld/gowasm2dgame/enums/acttype
-github.com/kasworld/gowasm2dgame/enums/acttype_stats
-github.com/kasworld/gowasm2dgame/enums/effecttype
-github.com/kasworld/gowasm2dgame/enums/gameobjtype
-github.com/kasworld/gowasm2dgame/enums/teamtype
-github.com/kasworld/gowasm2dgame/game/gameconst
-github.com/kasworld/gowasm2dgame/game/serverconfig
-github.com/kasworld/gowasm2dgame/game/stage
-github.com/kasworld/gowasm2dgame/lib/quadtreef
-github.com/kasworld/gowasm2dgame/lib/vector2f
-github.com/kasworld/gowasm2dgame/lib/w2dlog
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_authorize
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_connbytemanager
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_const
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_error
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_idcmd
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_idnoti
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_looptcp
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_loopwsgorilla
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_obj
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_packet
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_serveconnbyte
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_statapierror
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_statnoti
-github.com/kasworld/gowasm2dgame/protocol_w2d/w2d_statserveapi
 # github.com/kasworld/gowasmlib v0.0.0-20200306023233-6d534fae80d1
 ## explicit
 github.com/kasworld/gowasmlib/textncount

@@ -16,9 +16,9 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/kasworld/gowasm3dgame/enums/acttype"
-	"github.com/kasworld/gowasm3dgame/enums/acttype_stats"
-	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/enum/acttype"
+	"github.com/kasworld/gowasm3dgame/enum/acttype_stats"
+	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"

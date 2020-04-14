@@ -15,7 +15,7 @@ import (
 	"time"
 
 	"github.com/kasworld/go-abs"
-	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 )

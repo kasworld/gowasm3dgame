@@ -20,8 +20,6 @@ github.com/kasworld/go-abs v0.0.0-20190506031457-98e1b15a2888 h1:mixTHsjZw0A8CtQ
 github.com/kasworld/go-abs v0.0.0-20190506031457-98e1b15a2888/go.mod h1:moB6/tYyUKW8vrzgnT+8e/9qrf0PA0TEfjcLZcgYsuo=
 github.com/kasworld/go-profile v0.0.0-20151115093915-b12be73c3c93 h1:VKUGnqkj5GPGc8WYhWpm9EE5QozMqWWa3xdvGVXLrb4=
 github.com/kasworld/go-profile v0.0.0-20151115093915-b12be73c3c93/go.mod h1:vaAHegt/rkNqbmVH8A+kFkk619vik1ZCg1mxwi/WnA0=
-github.com/kasworld/gowasm2dgame v0.0.0-20200315073103-b09b09880038 h1:/UKUgPHopuHsYtuVzgZX/qYXvomMHr4MuCfP6gqIBv4=
-github.com/kasworld/gowasm2dgame v0.0.0-20200315073103-b09b09880038/go.mod h1:AxOWpji08A3y3XX7QKKF0jPwhYJRzUWMsZh0cvzWB5g=
 github.com/kasworld/gowasmlib v0.0.0-20200306023233-6d534fae80d1 h1:tMsTrkLojw+wwZCpMogL232bnDWRab+jx0t8QOAQTho=
 github.com/kasworld/gowasmlib v0.0.0-20200306023233-6d534fae80d1/go.mod h1:RqjBGAv4PzJUgdynTRp/lP8UPy9GUwjcH38zLnEUxiA=
 github.com/kasworld/htmlcolors v0.0.0-20200329020336-66b48ba18ef9 h1:hq3ZIyVYPP2hpYGfKcO+aEqXZXOCJgsl7yuVy5rPaSQ=

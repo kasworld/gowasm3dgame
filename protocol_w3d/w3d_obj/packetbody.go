@@ -12,9 +12,9 @@
 package w3d_obj
 
 import (
-	"github.com/kasworld/gowasm3dgame/enums/acttype"
-	"github.com/kasworld/gowasm3dgame/enums/acttype_stats"
-	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/enum/acttype"
+	"github.com/kasworld/gowasm3dgame/enum/acttype_stats"
+	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 )
 
 type ReqInvalid_data struct {

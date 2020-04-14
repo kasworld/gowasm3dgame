@@ -16,7 +16,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/kasworld/gowasm2dgame/game/stage"
+	"github.com/kasworld/gowasm3dgame/game/stage"
 	"github.com/kasworld/weblib"
 )
 

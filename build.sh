@@ -49,13 +49,13 @@ goimports -w .
 cd ..
 
 
-genenum -typename=ActType -packagename=acttype -basedir=enums -statstype=int
-goimports -w enums/acttype/acttype_gen.go
-goimports -w enums/acttype_stats/acttype_stats_gen.go
+genenum -typename=ActType -packagename=acttype -basedir=enum -statstype=int
+goimports -w enum/acttype/acttype_gen.go
+goimports -w enum/acttype_stats/acttype_stats_gen.go
 
-genenum -typename=GameObjType -packagename=gameobjtype -basedir=enums -statstype=int
-goimports -w enums/gameobjtype/gameobjtype_gen.go
-goimports -w enums/gameobjtype_stats/gameobjtype_stats_gen.go
+genenum -typename=GameObjType -packagename=gameobjtype -basedir=enum -statstype=int
+goimports -w enum/gameobjtype/gameobjtype_gen.go
+goimports -w enum/gameobjtype_stats/gameobjtype_stats_gen.go
 
 
 
@@ -63,7 +63,7 @@ GameDataFiles="
 game/gameconst/gameconst.go \
 game/gameconst/serviceconst.go \
 game/gamedata/*.go \
-enums/*.enum \
+enum/*.enum \
 "
 Data_VERSION=`cat ${GameDataFiles}| sha256sum | awk '{print $1}'`
 echo "Data Version:" ${Data_VERSION}

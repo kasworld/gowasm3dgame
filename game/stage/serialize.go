@@ -11,14 +11,6 @@
 
 package stage
 
-import "fmt"
-
-func (stg *Stage) String() string {
-	return fmt.Sprintf("Stage[%v Conn%v , Team%v]",
-		stg.UUID, stg.Conns, stg.Teams,
-	)
-}
-
 const (
 	HTML_tableheader = `
 <tr>

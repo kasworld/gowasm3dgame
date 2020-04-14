@@ -14,18 +14,16 @@ package stage
 import (
 	"math"
 
+	"github.com/kasworld/gowasm3dgame/enum/acttype"
+	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/lib/octree"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
-
-	"github.com/kasworld/gowasm2dgame/enums/teamtype"
-	"github.com/kasworld/gowasm3dgame/enums/acttype"
-	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
-	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 )
 
 func (stg *Stage) SelectRandomTeam(me *Team) *Team {
-	for i := 0; i < teamtype.TeamType_Count; i++ {
+	for i := 0; i < gameconst.TeamPerStage; i++ {
 		dstteam := stg.Teams[stg.rnd.Intn(len(stg.Teams))]
 		if dstteam != me && dstteam.IsAlive {
 			return dstteam

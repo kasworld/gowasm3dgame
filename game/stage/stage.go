@@ -16,9 +16,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/kasworld/htmlcolors"
-
-	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/game/gameconst"
 	"github.com/kasworld/gowasm3dgame/game/serverconfig"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
@@ -26,6 +24,7 @@ import (
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idnoti"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
+	"github.com/kasworld/htmlcolors"
 	"github.com/kasworld/uuidstr"
 )
 

@@ -12,7 +12,6 @@ require (
 	github.com/kasworld/g2rand v0.0.0-20200315073237-cff14c61a4f0 // indirect
 	github.com/kasworld/go-abs v0.0.0-20190506031457-98e1b15a2888
 	github.com/kasworld/go-profile v0.0.0-20151115093915-b12be73c3c93
-	github.com/kasworld/gowasm2dgame v0.0.0-20200315073103-b09b09880038
 	github.com/kasworld/gowasmlib v0.0.0-20200306023233-6d534fae80d1
 	github.com/kasworld/htmlcolors v0.0.0-20200329020336-66b48ba18ef9
 	github.com/kasworld/intervalduration v0.0.0-20191119062840-82a720a6b837

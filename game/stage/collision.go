@@ -12,7 +12,7 @@
 package stage
 
 import (
-	"github.com/kasworld/gowasm3dgame/enums/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/lib/octree"
 )
 
