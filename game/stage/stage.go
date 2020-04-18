@@ -17,8 +17,8 @@ import (
 	"time"
 
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
-	"github.com/kasworld/gowasm3dgame/game/gameconst"
-	"github.com/kasworld/gowasm3dgame/game/serverconfig"
+	"github.com/kasworld/gowasm3dgame/config/gameconst"
+	"github.com/kasworld/gowasm3dgame/config/serverconfig"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"

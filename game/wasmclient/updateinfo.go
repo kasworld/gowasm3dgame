@@ -17,7 +17,7 @@ import (
 	"syscall/js"
 
 	"github.com/kasworld/gowasm3dgame/enum/acttype"
-	"github.com/kasworld/gowasm3dgame/game/gameconst"
+	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_version"
 )
 
