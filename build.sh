@@ -83,5 +83,5 @@ BuildBin ${SRC_DIR}/multiclient.go ${BIN_DIR} multiclient
 
 cd rundriver
 echo "build wasm client"
-GOOS=js GOARCH=wasm go build -o www/wasmclient.wasm wasmclient.go
+GOOS=js GOARCH=wasm go build -o clientdata/wasmclient.wasm wasmclient.go
 cd ..

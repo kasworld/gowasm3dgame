@@ -15,7 +15,7 @@ type Config struct {
 	SplitLogLevel         w3dlog.LL_Type `argname:""`
 	BaseLogDir            string         `default:"/tmp/"  argname:""`
 	ServerDataFolder      string         `default:"./serverdata" argname:""`
-	ClientDataFolder      string         `default:"./www" argname:""`
+	ClientDataFolder      string         `default:"./clientdata" argname:""`
 	ServicePort           string         `default:":34101"  argname:""`
 	AdminPort             string         `default:":34201"  argname:""`
 	ConcurrentConnections int            `default:"1000" argname:""`
