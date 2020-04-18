@@ -31,10 +31,7 @@ genlog -leveldatafile ./w3dlog/w3dlog.data -packagename w3dlog
 cd ..
 
 
-ProtocolW3DFiles="protocol_w3d/w3d_gendata/command.data \
-protocol_w3d/w3d_gendata/error.data \
-protocol_w3d/w3d_gendata/noti.data \
-"
+ProtocolW3DFiles="protocol_w3d/*.enum"
 
 PROTOCOL_W3D_VERSION=`cat ${ProtocolW3DFiles}| sha256sum | awk '{print $1}'`
 echo "Protocol W3D Version:" ${PROTOCOL_W3D_VERSION}
