@@ -13,7 +13,7 @@ package w3d_obj
 
 import (
 	"github.com/kasworld/gowasm3dgame/enum/acttype"
-	"github.com/kasworld/gowasm3dgame/enum/acttype_stats"
+	"github.com/kasworld/gowasm3dgame/enum/acttype_vector"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 )
 
@@ -79,7 +79,7 @@ type TeamStat struct {
 	Death int
 
 	Color24  uint32 // from htmlcolors.Color24
-	ActStats acttype_stats.ActTypeStat
+	ActStats acttype_vector.ActTypeVector
 }
 
 type Act struct {

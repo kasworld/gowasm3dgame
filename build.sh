@@ -46,15 +46,12 @@ goimports -w .
 cd ..
 
 
-genenum -typename=ActType -packagename=acttype -basedir=enum -statstype=int
-goimports -w enum/acttype/acttype_gen.go
-goimports -w enum/acttype_stats/acttype_stats_gen.go
+genenum -typename=ActType -packagename=acttype -basedir=enum -vectortype=int
+genenum -typename=GameObjType -packagename=gameobjtype -basedir=enum -vectortype=int
 
-genenum -typename=GameObjType -packagename=gameobjtype -basedir=enum -statstype=int
-goimports -w enum/gameobjtype/gameobjtype_gen.go
-goimports -w enum/gameobjtype_stats/gameobjtype_stats_gen.go
-
-
+cd enum 
+goimports -w .
+cd ..
 
 GameDataFiles="
 config/gameconst/gameconst.go \

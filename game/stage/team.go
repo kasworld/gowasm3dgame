@@ -16,10 +16,10 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/kasworld/gowasm3dgame/enum/acttype"
-	"github.com/kasworld/gowasm3dgame/enum/acttype_stats"
-	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
+	"github.com/kasworld/gowasm3dgame/enum/acttype"
+	"github.com/kasworld/gowasm3dgame/enum/acttype_vector"
+	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
@@ -31,7 +31,7 @@ type Team struct {
 	rnd *rand.Rand      `prettystring:"hide"`
 	log *w3dlog.LogBase `prettystring:"hide"`
 
-	ActStats acttype_stats.ActTypeStat
+	ActStats acttype_vector.ActTypeVector
 	Color24  htmlcolors.Color24
 	UUID     string
 
