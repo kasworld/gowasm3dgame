@@ -44,9 +44,9 @@ func (es *GameObjTypeVector) Get(e gameobjtype.GameObjType) int {
 
 // Iter return true if iter stop, return false if iter all
 // fn return true to stop iter
-func (es GameObjTypeVector) Iter(fn func(i int, v int) bool) bool {
-	for i := 0; i < gameobjtype.GameObjType_Count; i++ {
-		if fn(i, es[i]) {
+func (es GameObjTypeVector) Iter(fn func(i gameobjtype.GameObjType, v int) bool) bool {
+	for i, v := range es {
+		if fn(gameobjtype.GameObjType(i), v) {
 			return true
 		}
 	}
@@ -56,8 +56,8 @@ func (es GameObjTypeVector) Iter(fn func(i int, v int) bool) bool {
 // VectorAdd add element to element
 func (es GameObjTypeVector) VectorAdd(arg GameObjTypeVector) GameObjTypeVector {
 	var rtn GameObjTypeVector
-	for i := 0; i < gameobjtype.GameObjType_Count; i++ {
-		rtn[i] = es[i] + arg[i]
+	for i, v := range es {
+		rtn[i] = v + arg[i]
 	}
 	return rtn
 }
@@ -65,8 +65,8 @@ func (es GameObjTypeVector) VectorAdd(arg GameObjTypeVector) GameObjTypeVector {
 // VectorSub sub element to element
 func (es GameObjTypeVector) VectorSub(arg GameObjTypeVector) GameObjTypeVector {
 	var rtn GameObjTypeVector
-	for i := 0; i < gameobjtype.GameObjType_Count; i++ {
-		rtn[i] = es[i] - arg[i]
+	for i, v := range es {
+		rtn[i] = v - arg[i]
 	}
 	return rtn
 }

@@ -44,9 +44,9 @@ func (es *ActTypeVector) Get(e acttype.ActType) int {
 
 // Iter return true if iter stop, return false if iter all
 // fn return true to stop iter
-func (es ActTypeVector) Iter(fn func(i int, v int) bool) bool {
-	for i := 0; i < acttype.ActType_Count; i++ {
-		if fn(i, es[i]) {
+func (es ActTypeVector) Iter(fn func(i acttype.ActType, v int) bool) bool {
+	for i, v := range es {
+		if fn(acttype.ActType(i), v) {
 			return true
 		}
 	}
@@ -56,8 +56,8 @@ func (es ActTypeVector) Iter(fn func(i int, v int) bool) bool {
 // VectorAdd add element to element
 func (es ActTypeVector) VectorAdd(arg ActTypeVector) ActTypeVector {
 	var rtn ActTypeVector
-	for i := 0; i < acttype.ActType_Count; i++ {
-		rtn[i] = es[i] + arg[i]
+	for i, v := range es {
+		rtn[i] = v + arg[i]
 	}
 	return rtn
 }
@@ -65,8 +65,8 @@ func (es ActTypeVector) VectorAdd(arg ActTypeVector) ActTypeVector {
 // VectorSub sub element to element
 func (es ActTypeVector) VectorSub(arg ActTypeVector) ActTypeVector {
 	var rtn ActTypeVector
-	for i := 0; i < acttype.ActType_Count; i++ {
-		rtn[i] = es[i] - arg[i]
+	for i, v := range es {
+		rtn[i] = v - arg[i]
 	}
 	return rtn
 }
