@@ -39,6 +39,35 @@ func (es *ErrorCodeStat) Get(e w3d_error.ErrorCode) int {
 	return es[e]
 }
 
+// Iter return true if iter stop, return false if iter all
+// fn return true to stop iter
+func (es ErrorCodeStat) Iter(fn func(i w3d_error.ErrorCode, v int) bool) bool {
+	for i, v := range es {
+		if fn(w3d_error.ErrorCode(i), v) {
+			return true
+		}
+	}
+	return false
+}
+
+// VectorAdd add element to element
+func (es ErrorCodeStat) VectorAdd(arg ErrorCodeStat) ErrorCodeStat {
+	var rtn ErrorCodeStat
+	for i, v := range es {
+		rtn[i] = v + arg[i]
+	}
+	return rtn
+}
+
+// VectorSub sub element to element
+func (es ErrorCodeStat) VectorSub(arg ErrorCodeStat) ErrorCodeStat {
+	var rtn ErrorCodeStat
+	for i, v := range es {
+		rtn[i] = v - arg[i]
+	}
+	return rtn
+}
+
 func (es *ErrorCodeStat) ToWeb(w http.ResponseWriter, r *http.Request) error {
 	tplIndex, err := template.New("index").Funcs(IndexFn).Parse(`
 		<html>

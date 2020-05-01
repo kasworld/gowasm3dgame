@@ -39,6 +39,35 @@ func (es *NotiIDStat) Get(e w3d_idnoti.NotiID) int {
 	return es[e]
 }
 
+// Iter return true if iter stop, return false if iter all
+// fn return true to stop iter
+func (es NotiIDStat) Iter(fn func(i w3d_idnoti.NotiID, v int) bool) bool {
+	for i, v := range es {
+		if fn(w3d_idnoti.NotiID(i), v) {
+			return true
+		}
+	}
+	return false
+}
+
+// VectorAdd add element to element
+func (es NotiIDStat) VectorAdd(arg NotiIDStat) NotiIDStat {
+	var rtn NotiIDStat
+	for i, v := range es {
+		rtn[i] = v + arg[i]
+	}
+	return rtn
+}
+
+// VectorSub sub element to element
+func (es NotiIDStat) VectorSub(arg NotiIDStat) NotiIDStat {
+	var rtn NotiIDStat
+	for i, v := range es {
+		rtn[i] = v - arg[i]
+	}
+	return rtn
+}
+
 func (es *NotiIDStat) ToWeb(w http.ResponseWriter, r *http.Request) error {
 	tplIndex, err := template.New("index").Funcs(IndexFn).Parse(`
 		<html>
