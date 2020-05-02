@@ -7,4 +7,4 @@ echo "GOOS=js GOARCH=wasm go build -o wasmclient.wasm"
 GOOS=js GOARCH=wasm go build -o wasmclient.wasm wasmclient.go
 
 echo "move files"
-mv wasmclient.wasm ./www/
+mv wasmclient.wasm ./clientdata/
