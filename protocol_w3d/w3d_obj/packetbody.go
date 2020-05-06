@@ -15,12 +15,45 @@ import (
 	"github.com/kasworld/gowasm3dgame/enum/acttype"
 	"github.com/kasworld/gowasm3dgame/enum/acttype_vector"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idcmd"
 )
 
 type ReqInvalid_data struct {
 	Dummy uint8
 }
 type RspInvalid_data struct {
+	Dummy uint8
+}
+
+type ReqLogin_data struct {
+	SessionKey string
+	NickName   string
+	AuthKey    string
+}
+type RspLogin_data struct {
+	Version         string
+	ProtocolVersion string
+	DataVersion     string
+
+	SessionKey string
+	NickName   string
+	CmdList    [w3d_idcmd.CommandID_Count]bool
+
+	FieldW int
+	FieldH int
+}
+
+type ReqHeartbeat_data struct {
+	Tick int64
+}
+type RspHeartbeat_data struct {
+	Tick int64
+}
+
+type ReqChat_data struct {
+	Chat string
+}
+type RspChat_data struct {
 	Dummy uint8
 }
 
@@ -31,20 +64,6 @@ type ReqEnterStage_data struct {
 type RspEnterStage_data struct {
 	StageUUID string // may be not same to req stage
 	NickToUse string // may be not same to req nick
-}
-
-type ReqChatToStage_data struct {
-	Chat string
-}
-type RspChatToStage_data struct {
-	Dummy uint8
-}
-
-type ReqHeartbeat_data struct {
-	Tick int64
-}
-type RspHeartbeat_data struct {
-	Tick int64
 }
 
 //////////////////////////////////////////////////////////////////////////////

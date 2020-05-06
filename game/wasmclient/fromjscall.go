@@ -29,8 +29,8 @@ func (app *WasmClient) registerJSButton() {
 
 func (app *WasmClient) jsSendChat(this js.Value, args []js.Value) interface{} {
 	msg := getChatMsg()
-	go app.sendPacket(w3d_idcmd.ChatToStage,
-		&w3d_obj.ReqChatToStage_data{Chat: msg})
+	go app.sendPacket(w3d_idcmd.Chat,
+		&w3d_obj.ReqChat_data{Chat: msg})
 	app.vp.Focus()
 	return nil
 }
