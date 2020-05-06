@@ -90,20 +90,9 @@ func (app *WasmClient) run() {
 	jsobj.Hide(jsdoc.Call("getElementById", "titleform"))
 	jsobj.Show(jsdoc.Call("getElementById", "cmdrow"))
 	gameOptions.RegisterJSFn(app)
-	// option from url arg
-loopOpt:
-	for _, v := range gameOptions.ButtonList {
-		optV := GetQuery().Get(v.IDBase)
-		if optV == "" {
-			continue
-		}
-		for j, w := range v.ButtonText {
-			if optV == w {
-				v.State = j
-				continue loopOpt
-			}
-		}
-		jslog.Errorf("invalid option %v %v", v.IDBase, optV)
+
+	if err := gameOptions.SetFromURLArg(); err != nil {
+		jslog.Errorf(err.Error())
 	}
 	jsdoc.Call("getElementById", "cmdbuttons").Set("innerHTML",
 		app.makeButtons())
