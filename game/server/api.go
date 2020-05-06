@@ -17,13 +17,23 @@ import (
 	"github.com/kasworld/gowasm3dgame/game/conndata"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_error"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_gob"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idcmd"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idnoti"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_packet"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_serveconnbyte"
 )
 
-///////////////////////////////////////////////////////////////
+func (svr *Server) setFnMap() {
+	svr.DemuxReq2BytesAPIFnMap = [...]func(
+		me interface{}, hd w3d_packet.Header, rbody []byte) (
+		w3d_packet.Header, interface{}, error){
+		w3d_idcmd.Invalid:     svr.bytesAPIFn_ReqInvalid,
+		w3d_idcmd.EnterStage:  svr.bytesAPIFn_ReqEnterStage,
+		w3d_idcmd.ChatToStage: svr.bytesAPIFn_ReqChatToStage,
+		w3d_idcmd.Heartbeat:   svr.bytesAPIFn_ReqHeartbeat,
+	}
+}
 
 func (svr *Server) bytesAPIFn_ReqInvalid(
 	me interface{}, hd w3d_packet.Header, rbody []byte) (

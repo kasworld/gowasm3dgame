@@ -17,12 +17,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
-	"github.com/kasworld/gowasm3dgame/game/conndata"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
+	"github.com/kasworld/gowasm3dgame/game/conndata"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_authorize"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_gob"
-	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idcmd"
-	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_packet"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_serveconnbyte"
 	"github.com/kasworld/uuidstr"
 )
@@ -41,15 +39,7 @@ func (svr *Server) initServiceWeb(ctx context.Context) {
 	}
 	svr.marshalBodyFn = w3d_gob.MarshalBodyFn
 	svr.unmarshalPacketFn = w3d_gob.UnmarshalPacket
-	svr.DemuxReq2BytesAPIFnMap = [...]func(
-		me interface{}, hd w3d_packet.Header, rbody []byte) (
-		w3d_packet.Header, interface{}, error){
-		w3d_idcmd.Invalid:     svr.bytesAPIFn_ReqInvalid,
-		w3d_idcmd.EnterStage:  svr.bytesAPIFn_ReqEnterStage,
-		w3d_idcmd.ChatToStage: svr.bytesAPIFn_ReqChatToStage,
-		w3d_idcmd.Heartbeat:   svr.bytesAPIFn_ReqHeartbeat,
-	}
-
+	svr.setFnMap()
 }
 
 func CheckOrigin(r *http.Request) bool {

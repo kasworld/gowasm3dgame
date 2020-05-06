@@ -1,4 +1,4 @@
-// Copyright 2015,2016,2017,2018,2019 SeukWon Kang (kasworld@gmail.com)
+// Copyright 2014,2015,2016,2017,2018,2019,2020 SeukWon Kang (kasworld@gmail.com)
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -9,13 +9,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package conndata
+package sessionmanager
 
-import "github.com/kasworld/gowasm3dgame/game/session"
+import (
+	"strings"
+)
 
-type ConnData struct {
-	UUID       string
-	RemoteAddr string
-	Session    *session.Session
-	StageID    string
+func ValidatePlayername(s string, padding string) string {
+	validPlayername := strings.NewReplacer(
+		" ", "_",
+		"<", "_",
+		">", "_",
+		"\r", "_",
+		"\t", "_",
+		"\n", "_",
+	)
+	s = validPlayername.Replace(s)
+	if l := len(s); l > 20 {
+		s = s[:20]
+	}
+	if len(s) < 4 {
+		s = s + padding
+	}
+	return s
 }

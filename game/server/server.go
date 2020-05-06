@@ -21,6 +21,7 @@ import (
 	"github.com/kasworld/actpersec"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/config/serverconfig"
+	"github.com/kasworld/gowasm3dgame/game/sessionmanager"
 	"github.com/kasworld/gowasm3dgame/game/stage"
 	"github.com/kasworld/gowasm3dgame/game/stagemanager"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
@@ -57,7 +58,9 @@ type Server struct {
 		me interface{}, hd w3d_packet.Header, rbody []byte) (
 		w3d_packet.Header, interface{}, error)
 
-	connManager  *w3d_connbytemanager.Manager
+	connManager    *w3d_connbytemanager.Manager
+	sessionManager *sessionmanager.SessionManager
+
 	stageManager *stagemanager.Manager
 }
 
@@ -71,10 +74,12 @@ func New(config serverconfig.Config) *Server {
 		SendStat: actpersec.New(),
 		RecvStat: actpersec.New(),
 
-		apiStat:      w3d_statserveapi.New(),
-		notiStat:     w3d_statnoti.New(),
-		errorStat:    w3d_statapierror.New(),
-		connManager:  w3d_connbytemanager.New(),
+		apiStat:        w3d_statserveapi.New(),
+		notiStat:       w3d_statnoti.New(),
+		errorStat:      w3d_statapierror.New(),
+		connManager:    w3d_connbytemanager.New(),
+		sessionManager: sessionmanager.New("", 100, l),
+
 		stageManager: stagemanager.New(l),
 	}
 	svr.sendRecvStop = func() {
