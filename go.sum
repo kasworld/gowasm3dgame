@@ -42,6 +42,8 @@ github.com/kasworld/uuidstr v0.0.0-20190503034528-2edffd24297a h1:zB+eA5R/ffX2bI
 github.com/kasworld/uuidstr v0.0.0-20190503034528-2edffd24297a/go.mod h1:3Unt++NR6Watw5y+3TymsoCVwJrd0ofAkQ1zU251HSM=
 github.com/kasworld/version v0.0.0-20190507052028-3d2e657a23f8 h1:IE+DyRvObPl3hkWkUHMdq7BPFCFO3qmKMCpwqXi8CuA=
 github.com/kasworld/version v0.0.0-20190507052028-3d2e657a23f8/go.mod h1:vdUYabS20uVSVS8KN4IFNwt8Gth30vFAdltrgHW8vVk=
+github.com/kasworld/way9type v0.0.0-20200404022030-f34f2327f7d3 h1:HLou4DtlL4MyxSSHAmEFRwPaMhz89oNzJLdy12cQm6Y=
+github.com/kasworld/way9type v0.0.0-20200404022030-f34f2327f7d3/go.mod h1:4/lkBdx8PyLuw5OjNzgNKbClNmUC8P+mOfl6svHJHGY=
 github.com/kasworld/weblib v0.0.0-20200408024824-4b4f01a6be3f h1:pTcno+UXDRvgWqXyqzLiXbMaAUxGFR0AMPh3KTjbsfM=
 github.com/kasworld/weblib v0.0.0-20200408024824-4b4f01a6be3f/go.mod h1:uzuYzY532n+RaDXT9fT5v5vzHxQfRtdVxTo3n3PfW6U=
 github.com/kasworld/wrapper v0.0.0-20190506073115-622d5083ea62 h1:FOMk4XqG2QhF8WFROCBZfpCx6/IkhlDMUF8eLSPk02o=

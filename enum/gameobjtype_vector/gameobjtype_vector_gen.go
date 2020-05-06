@@ -13,7 +13,7 @@ import (
 
 type GameObjTypeVector [gameobjtype.GameObjType_Count]int
 
-func (es *GameObjTypeVector) String() string {
+func (es GameObjTypeVector) String() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "GameObjTypeVector[")
 	for i, v := range es {
@@ -38,7 +38,7 @@ func (es *GameObjTypeVector) SetIfGt(e gameobjtype.GameObjType, v int) {
 		es[e] = v
 	}
 }
-func (es *GameObjTypeVector) Get(e gameobjtype.GameObjType) int {
+func (es GameObjTypeVector) Get(e gameobjtype.GameObjType) int {
 	return es[e]
 }
 

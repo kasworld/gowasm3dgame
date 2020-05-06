@@ -4,61 +4,205 @@
 <meta charset="utf-8">
 <title>Go Wasm 3D Game</title>
 <script src="/three.min.js"></script>
-<script src="/wasm_exec.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding.min.js"></script>
+<script src="wasm_exec.js"></script>
 <script>
+		if (!WebAssembly.instantiateStreaming) { // polyfill
+			WebAssembly.instantiateStreaming = async (resp, importObject) => {
+				const source = await (await resp).arrayBuffer();
+				return await WebAssembly.instantiate(source, importObject);
+			};
+		}
+
     function initPage() {
       const go = new Go();
       WebAssembly.instantiateStreaming(fetch("wasmclient.wasm"), go.importObject).then((result) => {
           go.run(result.instance);
-      });
+      }).catch((err) => {
+			console.error(err);
+		});
     }
 </script>
 
 <style>
-  #canvas3d {
-    grid-area: canvas3d;
-}
-  #info_area {
-    grid-area: info_area;
-  }
-  .grid_play {
-  display: grid;
-  grid-template-areas:
-    'canvas3d'
-    'info_area'
-}
+	/* https://www.w3schools.com/css/css_tooltip.asp */
+	/* Tooltip container */
+	.tooltip {
+	  position: relative;
+	  display: inline-block;
+	  border-bottom: 1px dotted gray; /* If you want dots under the hoverable text */
+	}
 
+	/* Tooltip text */
+	.tooltip .tooltiptext-right {
+	  visibility: hidden;
+	  width: 100%;
+	  background-color: gray;
+	  color: #fff;
+	  text-align: center;
+	  padding: 5px 0;
+	  border-radius: 6px;
 
-  @media only screen and (orientation: landscape) {
-    .grid_play {
-    display: grid;
-    grid-template-areas:
-    'canvas3d info_area'
-    }
-  }
+	  position: absolute;
+	  z-index: 1;
+	  top: -5px;
+	  left: 105%;
+	}
+	.tooltip .tooltiptext-right::after {
+	  content: " ";
+	  position: absolute;
+	  top: 50%;
+	  right: 100%; /* To the left of the tooltip */
+	  margin-top: -5px;
+	  border-width: 5px;
+	  border-style: solid;
+	  border-color: transparent gray transparent transparent;
+	}
+	.tooltip:hover .tooltiptext-right {
+	  visibility: visible;
+	}
+
+	.tooltip .tooltiptext-left {
+	  visibility: hidden;
+	  width: 100%;
+	  background-color: gray;
+	  color: #fff;
+	  text-align: center;
+	  padding: 5px 0;
+	  border-radius: 6px;
+
+	  position: absolute;
+	  z-index: 1;
+	  top: -5px;
+	  right: 105%;
+	}
+	.tooltip .tooltiptext-left::after {
+	  content: " ";
+	  position: absolute;
+	  top: 50%;
+	  left: 100%; /* To the right of the tooltip */
+	  margin-top: -5px;
+	  border-width: 5px;
+	  border-style: solid;
+	  border-color: transparent transparent transparent gray;
+	}
+	.tooltip:hover .tooltiptext-left {
+	  visibility: visible;
+	}
+
+	.tooltip .tooltiptext-top {
+	  visibility: hidden;
+	  background-color: gray;
+	  color: #fff;
+	  text-align: center;
+	  padding: 5px 0;
+	  border-radius: 6px;
+
+	  position: absolute;
+	  z-index: 1;
+	  width: 100%;
+	  bottom: 100%;
+	  left: 50%;
+	  margin-left: -50%; /* Use half of the width (120/2 = 60), to center the tooltip */
+	}
+	.tooltip .tooltiptext-top::after {
+	  content: " ";
+	  position: absolute;
+	  top: 100%; /* At the bottom of the tooltip */
+	  left: 50%;
+	  margin-left: -5px;
+	  border-width: 5px;
+	  border-style: solid;
+	  border-color: gray transparent transparent transparent;
+	}
+	.tooltip:hover .tooltiptext-top {
+	  visibility: visible;
+	}
+
+	.tooltip .tooltiptext-bottom {
+	  visibility: hidden;
+	  background-color: gray;
+	  color: #fff;
+	  text-align: center;
+	  padding: 5px 0;
+	  border-radius: 6px;
+
+	  position: absolute;
+	  z-index: 1;
+	  width: 100%;
+	  top: 100%;
+	  left: 50%;
+	  margin-left: -50%; /* Use half of the width (120/2 = 60), to center the tooltip */
+	}
+	.tooltip .tooltiptext-bottom::after {
+	  content: " ";
+	  position: absolute;
+	  bottom: 100%;  /* At the top of the tooltip */
+	  left: 50%;
+	  margin-left: -5px;
+	  border-width: 5px;
+	  border-style: solid;
+	  border-color: transparent transparent gray transparent;
+	}
+	.tooltip:hover .tooltiptext-bottom {
+	  visibility: visible;
+	}
 </style>
 
-</head>
-<body id="body" style="margin:0; padding:0;" onload="initPage()">
-  <div class="grid_play">
-    <span id="canvas3d"></span>
-    <span id="info_area">
+<style>
+	.textinfo {
+		background-color: black;
+		border: 1px solid white;
+		padding: 2px;
+		text-align: left;
+		opacity: 0.75;
+	}
+</style>
 
-      <div id="login">
-        Player name: 
-        <input type="text" id="playername" value="Unnamed" autofocus size=20 maxlength=20>
-      </div>
-      <div id="chatform" >
-        <input type="text" id="chattext" value="" size=40 onkeypress="chatEnter(event)">
-        <button class="button" onclick="sendChat()">Chat</button>
-      </div>
-      <div id="cmdlist"></div>
-      <div id="serviceinfo">ServiceInfo area</div>
-      <div id="debuginfo">debug info area</div>
-      <div id="teamstatsinfo">team stats area</div>
-      <div id="sysmsg">System Message area</div>
-    </span>
-  </div>
+
+<script>
+	function chatEnter(event) {
+	   if(event.keyCode == 13){
+		 sendChat()
+	   }
+	};
+</script>
+
+
+</head>
+<body id="body" style="margin:0; padding:0; overflow: hidden; font-size:20px; font-family: monospace;" onload="initPage()">
+
+<div id="loadmsg" style="font-size:60pt;">Loading Go Wasm 3d game, plaeae wait</div>
+
+<span id="canvas3d" tabindex="1" width="1" height="1"></span>
+
+<span id="titleform">
+	<span>
+	스마트폰 앱을 실행한 당신은 빛에 싸인 후 이계에 소환된것을 알게 되었다.<br/>
+	소환된 세계에서 살아남기위해 대륙의 세력 전쟁에 끼어들게 된다. <br/>
+	당신의 가문을 만들고 대를 이어 가문을 번영시켜야한다. <br/>
+	최고의 자리를 노리는, 가문과 가문의 피로 얽힌 복수의 끝없는 반복속에서<br/>
+	전쟁에 승리하여 대륙 최고의 황제자리에 오를 수 있을 것인가?<br/>
+	</span>
+	Player name:
+	<input type="text" style="font-size:20px;" id="nickname" value="Unnamed" autofocus size=20 maxlength=20>
+	<button type="button" style="font-size:20px;" onclick="enterField()">Enter FieldWar</button>
+	<button type="button" style="font-size:20px;" onclick="clearNickname()">Clear Memory</button>
+</span>
+
+<div id="cmdrow" style="position: fixed; bottom: 0; left: 0;display: none;color:gray;">
+	<input type="text" id="chattext" value="" size=40 onkeypress="chatEnter(event)">
+	<button id="chatbutton" onclick="sendChat()">Chat</button>
+	<span id="cmdbuttons"></span>
+</div>
+
+<div id="leftinfo" class=textinfo></div>
+<div id="rightinfo" class=textinfo></div>
+<div id="centerinfo" class=textinfo></div>
+
+<div id="resource" style="display:none;">
+</div>
+
 
 </body>
 </html>

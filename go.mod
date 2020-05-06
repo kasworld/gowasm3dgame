@@ -9,7 +9,7 @@ require (
 	github.com/kasworld/argdefault v0.0.0-20191109010013-6dd84fb12d6f
 	github.com/kasworld/configutil v0.0.0-20191216014610-0147549c8f10
 	github.com/kasworld/durjitter v0.0.0-20190506030451-c6b107ee04f5 // indirect
-	github.com/kasworld/g2rand v0.0.0-20200315073237-cff14c61a4f0 // indirect
+	github.com/kasworld/g2rand v0.0.0-20200315073237-cff14c61a4f0
 	github.com/kasworld/go-abs v0.0.0-20190506031457-98e1b15a2888
 	github.com/kasworld/go-profile v0.0.0-20151115093915-b12be73c3c93
 	github.com/kasworld/gowasmlib v0.0.0-20200306023233-6d534fae80d1
@@ -23,6 +23,7 @@ require (
 	github.com/kasworld/signalhandle v0.0.0-20200408024356-5eb43fdac632
 	github.com/kasworld/uuidstr v0.0.0-20190503034528-2edffd24297a
 	github.com/kasworld/version v0.0.0-20190507052028-3d2e657a23f8
+	github.com/kasworld/way9type v0.0.0-20200404022030-f34f2327f7d3
 	github.com/kasworld/weblib v0.0.0-20200408024824-4b4f01a6be3f
 	github.com/kasworld/wrapper v0.0.0-20190506073115-622d5083ea62
 	github.com/nightlyone/lockfile v1.0.0 // indirect

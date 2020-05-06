@@ -18,6 +18,7 @@ github.com/kasworld/configutil
 github.com/kasworld/durjitter
 # github.com/kasworld/g2rand v0.0.0-20200315073237-cff14c61a4f0
 ## explicit
+github.com/kasworld/g2rand
 # github.com/kasworld/go-abs v0.0.0-20190506031457-98e1b15a2888
 ## explicit
 github.com/kasworld/go-abs
@@ -26,7 +27,9 @@ github.com/kasworld/go-abs
 github.com/kasworld/go-profile
 # github.com/kasworld/gowasmlib v0.0.0-20200306023233-6d534fae80d1
 ## explicit
+github.com/kasworld/gowasmlib/jslog
 github.com/kasworld/gowasmlib/textncount
+github.com/kasworld/gowasmlib/wasmcookie
 # github.com/kasworld/htmlcolors v0.0.0-20200329020336-66b48ba18ef9
 ## explicit
 github.com/kasworld/htmlcolors
@@ -62,6 +65,9 @@ github.com/kasworld/uuidstr
 # github.com/kasworld/version v0.0.0-20190507052028-3d2e657a23f8
 ## explicit
 github.com/kasworld/version
+# github.com/kasworld/way9type v0.0.0-20200404022030-f34f2327f7d3
+## explicit
+github.com/kasworld/way9type
 # github.com/kasworld/weblib v0.0.0-20200408024824-4b4f01a6be3f
 ## explicit
 github.com/kasworld/weblib

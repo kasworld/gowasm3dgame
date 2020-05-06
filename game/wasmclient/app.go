@@ -18,38 +18,56 @@ import (
 	"time"
 
 	"github.com/kasworld/actjitter"
+	"github.com/kasworld/gowasm3dgame/lib/jskeypressmap"
+	"github.com/kasworld/gowasm3dgame/lib/jsobj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connwasm"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_pid2rspfn"
+	"github.com/kasworld/gowasmlib/jslog"
 	"github.com/kasworld/gowasmlib/textncount"
 	"github.com/kasworld/intervalduration"
 )
 
 type WasmClient struct {
-	DoClose              func()
-	pid2recv             *w3d_pid2rspfn.PID2RspFn
-	wsConn               *w3d_connwasm.Connection
+	DoClose  func()
+	pid2recv *w3d_pid2rspfn.PID2RspFn
+	wsConn   *w3d_connwasm.Connection
+
 	ServerJitter         *actjitter.ActJitter
 	ClientJitter         *actjitter.ActJitter
 	PingDur              int64
 	ServerClientTictDiff int64
-	DispInterDur         *intervalduration.IntervalDuration
-	systemMessage        textncount.TextNCountList
 
-	vp        *Viewport3d
+	DispInterDur  *intervalduration.IntervalDuration
+	systemMessage textncount.TextNCountList
+
+	KeyboardPressedMap *jskeypressmap.KeyPressMap
+	vp                 *Viewport3d
+
 	statsInfo *w3d_obj.NotiStatsInfo_data
 }
 
 func InitApp() {
-	// dst := "ws://localhost:8080/ws"
 	app := &WasmClient{
-		DoClose:      func() { fmt.Println("Too early DoClose call") },
-		pid2recv:     w3d_pid2rspfn.New(),
-		ServerJitter: actjitter.New("Server"),
-		ClientJitter: actjitter.New("Client"),
+		DoClose:            func() { fmt.Println("Too early DoClose call") },
+		pid2recv:           w3d_pid2rspfn.New(),
+		ServerJitter:       actjitter.New("Server"),
+		ClientJitter:       actjitter.New("Client"),
+		DispInterDur:       intervalduration.New(""),
+		KeyboardPressedMap: jskeypressmap.New(),
+		systemMessage:      make(textncount.TextNCountList, 0),
 	}
-	app.DispInterDur = intervalduration.New("Display")
 	app.vp = NewViewport3d("canvas3d")
+
+	gameOptions = _gameopt // prevent compiler initialize loop
+	jsdoc := js.Global().Get("document")
+	jsobj.Hide(jsdoc.Call("getElementById", "loadmsg"))
+	jsdoc.Call("getElementById", "leftinfo").Set("style",
+		"color: white; position: fixed; top: 0; left: 0; overflow: hidden;")
+	jsdoc.Call("getElementById", "rightinfo").Set("style",
+		"color: white; position: fixed; top: 0; right: 0; overflow: hidden; text-align: right;")
+	jsdoc.Call("getElementById", "centerinfo").Set("style",
+		"color: white; position: fixed; top: 0%; left: 25%; overflow: hidden;")
 
 	app.ResizeCanvas()
 	win := js.Global().Get("window")
@@ -68,7 +86,30 @@ func (app *WasmClient) run() {
 	}
 	defer app.Cleanup()
 
-	app.updataServiceInfo()
+	jsdoc := js.Global().Get("document")
+	jsobj.Hide(jsdoc.Call("getElementById", "titleform"))
+	jsobj.Show(jsdoc.Call("getElementById", "cmdrow"))
+	gameOptions.RegisterJSFn(app)
+	// option from url arg
+loopOpt:
+	for _, v := range gameOptions.ButtonList {
+		optV := GetQuery().Get(v.IDBase)
+		if optV == "" {
+			continue
+		}
+		for j, w := range v.ButtonText {
+			if optV == w {
+				v.State = j
+				continue loopOpt
+			}
+		}
+		jslog.Errorf("invalid option %v %v", v.IDBase, optV)
+	}
+	jsdoc.Call("getElementById", "cmdbuttons").Set("innerHTML",
+		app.makeButtons())
+
+	app.registerKeyboardMouseEvent()
+
 	js.Global().Call("requestAnimationFrame", js.FuncOf(app.drawCanvas))
 
 	timerPingTk := time.NewTicker(time.Second)
@@ -81,9 +122,7 @@ loop:
 
 		case <-timerPingTk.C:
 			go app.reqHeartbeat()
-			app.updateDebugInfo()
-			app.updateTeamStatsInfo()
-			app.updateSysmsg()
+			app.updateRightInfo()
 		}
 	}
 }

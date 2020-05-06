@@ -13,7 +13,7 @@ import (
 
 type CommandIDStat [w3d_idcmd.CommandID_Count]int
 
-func (es *CommandIDStat) String() string {
+func (es CommandIDStat) String() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "CommandIDStats[")
 	for i, v := range es {
@@ -35,7 +35,7 @@ func (es *CommandIDStat) SetIfGt(e w3d_idcmd.CommandID, v int) {
 		es[e] = v
 	}
 }
-func (es *CommandIDStat) Get(e w3d_idcmd.CommandID) int {
+func (es CommandIDStat) Get(e w3d_idcmd.CommandID) int {
 	return es[e]
 }
 
@@ -68,7 +68,7 @@ func (es CommandIDStat) VectorSub(arg CommandIDStat) CommandIDStat {
 	return rtn
 }
 
-func (es *CommandIDStat) ToWeb(w http.ResponseWriter, r *http.Request) error {
+func (es CommandIDStat) ToWeb(w http.ResponseWriter, r *http.Request) error {
 	tplIndex, err := template.New("index").Funcs(IndexFn).Parse(`
 		<html>
 		<head>

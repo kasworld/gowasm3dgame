@@ -26,4 +26,6 @@ const (
 	BallRespawnDurSec = 5
 
 	AIPerStage = 1000
+
+	MaxChatLen = 80
 )

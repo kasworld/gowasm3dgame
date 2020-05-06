@@ -13,7 +13,7 @@ import (
 
 type NotiIDStat [w3d_idnoti.NotiID_Count]int
 
-func (es *NotiIDStat) String() string {
+func (es NotiIDStat) String() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "NotiIDStats[")
 	for i, v := range es {
@@ -35,7 +35,7 @@ func (es *NotiIDStat) SetIfGt(e w3d_idnoti.NotiID, v int) {
 		es[e] = v
 	}
 }
-func (es *NotiIDStat) Get(e w3d_idnoti.NotiID) int {
+func (es NotiIDStat) Get(e w3d_idnoti.NotiID) int {
 	return es[e]
 }
 
@@ -68,7 +68,7 @@ func (es NotiIDStat) VectorSub(arg NotiIDStat) NotiIDStat {
 	return rtn
 }
 
-func (es *NotiIDStat) ToWeb(w http.ResponseWriter, r *http.Request) error {
+func (es NotiIDStat) ToWeb(w http.ResponseWriter, r *http.Request) error {
 	tplIndex, err := template.New("index").Funcs(IndexFn).Parse(`
 		<html>
 		<head>

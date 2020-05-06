@@ -13,7 +13,7 @@ import (
 
 type ActTypeVector [acttype.ActType_Count]int
 
-func (es *ActTypeVector) String() string {
+func (es ActTypeVector) String() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "ActTypeVector[")
 	for i, v := range es {
@@ -38,7 +38,7 @@ func (es *ActTypeVector) SetIfGt(e acttype.ActType, v int) {
 		es[e] = v
 	}
 }
-func (es *ActTypeVector) Get(e acttype.ActType) int {
+func (es ActTypeVector) Get(e acttype.ActType) int {
 	return es[e]
 }
 

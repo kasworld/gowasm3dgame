@@ -14,14 +14,25 @@ package wasmclient
 import (
 	"bytes"
 	"fmt"
-	"syscall/js"
 
-	"github.com/kasworld/gowasm3dgame/enum/acttype"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
+	"github.com/kasworld/gowasm3dgame/enum/acttype"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_version"
 )
 
-func (app *WasmClient) updataServiceInfo() {
+func (app *WasmClient) makeButtons() string {
+	var buf bytes.Buffer
+	gameOptions.MakeButtonToolTipTop(&buf)
+	return buf.String()
+}
+
+func (app *WasmClient) DisplayTextInfo() {
+	app.updateLeftInfo()
+	app.updateRightInfo()
+	app.updateCenterInfo()
+}
+
+func (app *WasmClient) makeServiceInfo() string {
 	msgCopyright := `</hr>Copyright 2019 SeukWon Kang 
 		<a href="https://github.com/kasworld/gowasm3dgame" target="_blank">gowasm3dgame</a>`
 
@@ -30,11 +41,10 @@ func (app *WasmClient) updataServiceInfo() {
 	fmt.Fprintf(&buf, "Protocol %v<br/>", w3d_version.ProtocolVersion)
 	fmt.Fprintf(&buf, "Data %v<br/>", gameconst.DataVersion)
 	fmt.Fprintf(&buf, "%v<br/>", msgCopyright)
-	div := js.Global().Get("document").Call("getElementById", "serviceinfo")
-	div.Set("innerHTML", buf.String())
+	return buf.String()
 }
 
-func (app *WasmClient) updateDebugInfo() {
+func (app *WasmClient) makeDebugInfo() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf,
 		"%v<br/>Ping %v<br/>ServerClientTickDiff %v<br/>",
@@ -47,20 +57,13 @@ func (app *WasmClient) updateDebugInfo() {
 		len(app.vp.materialCache),
 	)
 
-	div := js.Global().Get("document").Call("getElementById", "debuginfo")
-	div.Set("innerHTML", buf.String())
+	return buf.String()
 }
 
-func (app *WasmClient) updateSysmsg() {
-	app.systemMessage = app.systemMessage.GetLastN(100)
-	div := js.Global().Get("document").Call("getElementById", "sysmsg")
-	div.Set("innerHTML", app.systemMessage.ToHtmlStringRev())
-}
-
-func (app *WasmClient) updateTeamStatsInfo() {
+func (app *WasmClient) makeTeamStatsInfo() string {
 	stats := app.statsInfo
 	if stats == nil {
-		return
+		return ""
 	}
 
 	var buf bytes.Buffer
@@ -99,6 +102,5 @@ func (app *WasmClient) updateTeamStatsInfo() {
 	}
 	buf.WriteString(`</table>`)
 
-	div := js.Global().Get("document").Call("getElementById", "teamstatsinfo")
-	div.Set("innerHTML", buf.String())
+	return buf.String()
 }

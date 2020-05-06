@@ -13,7 +13,7 @@ import (
 
 type ErrorCodeStat [w3d_error.ErrorCode_Count]int
 
-func (es *ErrorCodeStat) String() string {
+func (es ErrorCodeStat) String() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "ErrorCodeStats[")
 	for i, v := range es {
@@ -35,7 +35,7 @@ func (es *ErrorCodeStat) SetIfGt(e w3d_error.ErrorCode, v int) {
 		es[e] = v
 	}
 }
-func (es *ErrorCodeStat) Get(e w3d_error.ErrorCode) int {
+func (es ErrorCodeStat) Get(e w3d_error.ErrorCode) int {
 	return es[e]
 }
 
@@ -68,7 +68,7 @@ func (es ErrorCodeStat) VectorSub(arg ErrorCodeStat) ErrorCodeStat {
 	return rtn
 }
 
-func (es *ErrorCodeStat) ToWeb(w http.ResponseWriter, r *http.Request) error {
+func (es ErrorCodeStat) ToWeb(w http.ResponseWriter, r *http.Request) error {
 	tplIndex, err := template.New("index").Funcs(IndexFn).Parse(`
 		<html>
 		<head>
