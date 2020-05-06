@@ -71,7 +71,12 @@ func InitApp() {
 
 	app.ResizeCanvas()
 	win := js.Global().Get("window")
-	win.Call("addEventListener", "resize", js.FuncOf(app.handleResizeCanvas))
+	win.Call("addEventListener", "resize", js.FuncOf(
+		func(this js.Value, args []js.Value) interface{} {
+			app.ResizeCanvas()
+			return nil
+		},
+	))
 
 	go app.run()
 }
@@ -111,6 +116,8 @@ loop:
 
 		case <-timerPingTk.C:
 			go app.reqHeartbeat()
+			app.systemMessage.Appendf("%.1fFPS",
+				1.0/app.DispInterDur.GetInterval().GetLastDuration().Seconds())
 			app.updateRightInfo()
 		}
 	}
@@ -135,10 +142,6 @@ func (app *WasmClient) GetEstServerTick() int64 {
 	return time.Now().UnixNano() + app.ServerClientTictDiff
 }
 
-func (app *WasmClient) handleResizeCanvas(this js.Value, args []js.Value) interface{} {
-	app.ResizeCanvas()
-	return nil
-}
 func (app *WasmClient) ResizeCanvas() {
 	app.vp.Resize()
 }
