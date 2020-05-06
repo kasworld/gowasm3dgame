@@ -13,8 +13,12 @@ package server
 
 import (
 	"fmt"
+	"runtime"
+	"time"
 
+	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/game/conndata"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_authorize"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_error"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_gob"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idcmd"
@@ -22,6 +26,8 @@ import (
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_packet"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_serveconnbyte"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_version"
+	"github.com/kasworld/version"
 )
 
 func (svr *Server) setFnMap() {
@@ -59,8 +65,55 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 	sendHeader := w3d_packet.Header{
 		ErrorCode: w3d_error.None,
 	}
-	sendBody := &w3d_obj.RspLogin_data{}
-	return sendHeader, sendBody, nil
+
+	c2sc, ok := me.(*w3d_serveconnbyte.ServeConnByte)
+	if !ok {
+		panic(fmt.Sprintf("invalid me not w3d_serveconnbyte.ServeConnByte %#v", me))
+	}
+
+	if err := c2sc.GetAuthorCmdList().UpdateByAuthKey(recvBody.AuthKey); err != nil {
+		return sendHeader, nil, err
+	}
+	connData := c2sc.GetConnData().(*conndata.ConnData)
+
+	ss := svr.sessionManager.UpdateOrNew(
+		recvBody.SessionKey,
+		connData.RemoteAddr,
+		recvBody.NickName)
+
+	if oldc2sc := svr.connManager.Get(ss.ConnUUID); oldc2sc != nil {
+		oldc2sc.Disconnect()
+		// wait
+		trycount := 10
+		for svr.connManager.Get(ss.ConnUUID) != nil && trycount > 0 {
+			runtime.Gosched()
+			time.Sleep(time.Millisecond * 100)
+			trycount--
+		}
+	}
+	if svr.connManager.Get(ss.ConnUUID) != nil {
+		svr.log.Fatal("old connection online %v", ss)
+		return sendHeader, nil, err
+	}
+
+	ss.ConnUUID = connData.UUID
+	connData.Session = ss
+
+	// user login?
+
+	if err != nil {
+		return sendHeader, nil, err
+	} else {
+		sendBody := &w3d_obj.RspLogin_data{
+			Version:         version.GetVersion(),
+			ProtocolVersion: w3d_version.ProtocolVersion,
+			DataVersion:     gameconst.DataVersion,
+			SessionKey:      recvBody.SessionKey,
+			NickName:        recvBody.NickName,
+			CmdList:         *w3d_authorize.NewAllSet(),
+		}
+		return sendHeader, sendBody, nil
+	}
 }
 
 func (svr *Server) bytesAPIFn_ReqChat(

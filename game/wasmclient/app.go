@@ -44,6 +44,7 @@ type WasmClient struct {
 	KeyboardPressedMap *jskeypressmap.KeyPressMap
 	vp                 *Viewport3d
 
+	loginData *w3d_obj.RspLogin_data
 	statsInfo *w3d_obj.NotiStatsInfo_data
 }
 
@@ -78,14 +79,24 @@ func InitApp() {
 		},
 	))
 
-	go app.run()
+	js.Global().Set("clearNickname", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		go ClearSession()
+		return nil
+	}))
+	// js.Global().Set("enterField", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	// 	go app.enterStage()
+	// 	return nil
+	// }))
+	go app.enterStage()
 }
 
-func (app *WasmClient) run() {
+func (app *WasmClient) enterStage() {
 	ctx, closeCtx := context.WithCancel(context.Background())
 	app.DoClose = closeCtx
 	defer app.DoClose()
-	if err := app.NetInit(ctx); err != nil {
+
+	var err error
+	if app.loginData, err = app.NetInit(ctx); err != nil {
 		fmt.Printf("%v\n", err)
 		return
 	}

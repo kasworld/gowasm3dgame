@@ -38,9 +38,6 @@ type RspLogin_data struct {
 	SessionKey string
 	NickName   string
 	CmdList    [w3d_idcmd.CommandID_Count]bool
-
-	FieldW int
-	FieldH int
 }
 
 type ReqHeartbeat_data struct {

@@ -19,12 +19,15 @@ import (
 	"syscall/js"
 	"time"
 
+	"github.com/kasworld/gowasm3dgame/lib/jsobj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connwasm"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_gob"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idcmd"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_packet"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_pid2rspfn"
+	"github.com/kasworld/gowasmlib/jslog"
+	"github.com/kasworld/gowasmlib/wasmcookie"
 )
 
 func getConnURL() string {
@@ -39,7 +42,7 @@ func getConnURL() string {
 	return u.String()
 }
 
-func (app *WasmClient) NetInit(ctx context.Context) error {
+func (app *WasmClient) NetInit(ctx context.Context) (*w3d_obj.RspLogin_data, error) {
 	app.wsConn = w3d_connwasm.New(
 		getConnURL(),
 		w3d_gob.MarshalBodyFn,
@@ -49,17 +52,43 @@ func (app *WasmClient) NetInit(ctx context.Context) error {
 	fmt.Println(getConnURL())
 
 	var wg sync.WaitGroup
+
+	// connect
 	wg.Add(1)
 	go func() {
 		err := app.wsConn.Connect(ctx, &wg)
 		if err != nil {
-			fmt.Printf("wsConn.Connect err %v\n", err)
+			jslog.Errorf("wsConn.Connect err %v", err)
 			app.DoClose()
 		}
 	}()
+	authkey := GetQuery().Get("authkey")
+	nick := jsobj.GetTextValueFromInputText("nickname")
+	ck := wasmcookie.GetMap()
+	sessionkey := ck[sessionKeyName()]
 	wg.Wait()
+	jslog.Info("connected")
 
-	return nil
+	// login
+	var rtn *w3d_obj.RspLogin_data
+	wg.Add(1)
+	app.ReqWithRspFn(
+		w3d_idcmd.Login,
+		&w3d_obj.ReqLogin_data{
+			SessionKey: sessionkey,
+			NickName:   nick,
+			AuthKey:    authkey,
+		},
+		func(hd w3d_packet.Header, rsp interface{}) error {
+			rtn = rsp.(*w3d_obj.RspLogin_data)
+			wg.Done()
+			return nil
+		},
+	)
+	wg.Wait()
+	jslog.Info("logined")
+
+	return rtn, nil
 }
 
 func (app *WasmClient) Cleanup() {
@@ -125,24 +154,23 @@ func (app *WasmClient) reqHeartbeat() error {
 	)
 }
 
-// func (app *WasmClient) ReqWithRspFnWithAuth(cmd w3d_idcmd.CommandID, body interface{},
-// 	fn w3d_pid2rspfn.HandleRspFn) error {
-// 	if !app.CanUseCmd(cmd) {
-// 		return fmt.Errorf("Cmd not allowed %v", cmd)
-// 	}
-// 	return app.ReqWithRspFn(cmd, body, fn)
-// }
+func (app *WasmClient) ReqWithRspFnWithAuth(cmd w3d_idcmd.CommandID, body interface{},
+	fn w3d_pid2rspfn.HandleRspFn) error {
+	if !app.CanUseCmd(cmd) {
+		return fmt.Errorf("Cmd not allowed %v", cmd)
+	}
+	return app.ReqWithRspFn(cmd, body, fn)
+}
 
-// func (app *WasmClient) CanUseCmd(cmd w3d_idcmd.CommandID) bool {
-// 	if app.loginData == nil {
-// 		return false
-// 	}
-// 	return app.loginData.CmdList[cmd]
-// }
+func (app *WasmClient) CanUseCmd(cmd w3d_idcmd.CommandID) bool {
+	if app.loginData == nil {
+		return false
+	}
+	return app.loginData.CmdList[cmd]
+}
 
 func (app *WasmClient) sendPacket(cmd w3d_idcmd.CommandID, arg interface{}) {
-	app.ReqWithRspFn(
-		// app.ReqWithRspFnWithAuth(
+	app.ReqWithRspFnWithAuth(
 		cmd, arg,
 		func(hd w3d_packet.Header, rsp interface{}) error {
 			return nil
