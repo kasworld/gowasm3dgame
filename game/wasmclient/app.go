@@ -18,11 +18,13 @@ import (
 	"time"
 
 	"github.com/kasworld/actjitter"
+	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/lib/jskeypressmap"
 	"github.com/kasworld/gowasm3dgame/lib/jsobj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connwasm"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_pid2rspfn"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_version"
 	"github.com/kasworld/gowasmlib/jslog"
 	"github.com/kasworld/gowasmlib/textncount"
 	"github.com/kasworld/intervalduration"
@@ -101,6 +103,16 @@ func (app *WasmClient) enterStage() {
 		return
 	}
 	defer app.Cleanup()
+
+	if gameconst.DataVersion != app.loginData.DataVersion {
+		jslog.Errorf("DataVersion mismatch client %v server %v",
+			gameconst.DataVersion, app.loginData.DataVersion)
+	}
+	if w3d_version.ProtocolVersion != app.loginData.ProtocolVersion {
+		jslog.Errorf("ProtocolVersion mismatch client %v server %v",
+			w3d_version.ProtocolVersion, app.loginData.ProtocolVersion)
+	}
+	SetSession(app.loginData.SessionKey, app.loginData.NickName)
 
 	jsdoc := js.Global().Get("document")
 	jsobj.Hide(jsdoc.Call("getElementById", "titleform"))

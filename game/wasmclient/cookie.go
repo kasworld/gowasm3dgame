@@ -36,10 +36,10 @@ func ClearSession() {
 	})
 }
 
-func SetSession(id string, nick string) {
+func SetSession(sessionkey string, nick string) {
 	wasmcookie.Set(&http.Cookie{
 		Name:    sessionKeyName(),
-		Value:   id,
+		Value:   sessionkey,
 		Path:    "/",
 		Expires: time.Now().AddDate(1, 0, 0),
 	})
