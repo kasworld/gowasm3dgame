@@ -9,7 +9,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package wasmclient
+package clientcookie
 
 import (
 	"fmt"
@@ -23,13 +23,13 @@ import (
 	"github.com/kasworld/gowasmlib/wasmcookie"
 )
 
-func sessionKeyName() string {
+func SessionKeyName() string {
 	return fmt.Sprintf("sessionkey")
 }
 
 func ClearSession() {
 	wasmcookie.Set(&http.Cookie{
-		Name:    sessionKeyName(),
+		Name:    SessionKeyName(),
 		Value:   "",
 		Path:    "/",
 		Expires: time.Now().AddDate(1, 0, 0),
@@ -38,7 +38,7 @@ func ClearSession() {
 
 func SetSession(sessionkey string, nick string) {
 	wasmcookie.Set(&http.Cookie{
-		Name:    sessionKeyName(),
+		Name:    SessionKeyName(),
 		Value:   sessionkey,
 		Path:    "/",
 		Expires: time.Now().AddDate(1, 0, 0),
@@ -51,7 +51,7 @@ func SetSession(sessionkey string, nick string) {
 	})
 }
 
-func initNickname() {
+func InitNickname() {
 	ck := wasmcookie.GetMap()
 	var nickname string
 	if oldnick, exist := ck["nickname"]; exist {

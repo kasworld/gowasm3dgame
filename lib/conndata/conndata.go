@@ -11,7 +11,7 @@
 
 package conndata
 
-import "github.com/kasworld/gowasm3dgame/game/session"
+import "github.com/kasworld/gowasm3dgame/lib/session"
 
 type ConnData struct {
 	UUID       string

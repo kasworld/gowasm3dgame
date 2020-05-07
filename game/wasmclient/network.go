@@ -19,6 +19,7 @@ import (
 	"syscall/js"
 	"time"
 
+	"github.com/kasworld/gowasm3dgame/lib/clientcookie"
 	"github.com/kasworld/gowasm3dgame/lib/jsobj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connwasm"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_gob"
@@ -62,10 +63,10 @@ func (app *WasmClient) NetInit(ctx context.Context) (*w3d_obj.RspLogin_data, err
 			app.DoClose()
 		}
 	}()
-	authkey := GetQuery().Get("authkey")
+	authkey := clientcookie.GetQuery().Get("authkey")
 	nick := jsobj.GetTextValueFromInputText("nickname")
 	ck := wasmcookie.GetMap()
-	sessionkey := ck[sessionKeyName()]
+	sessionkey := ck[clientcookie.SessionKeyName()]
 	wg.Wait()
 	jslog.Info("connected")
 

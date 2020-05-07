@@ -19,6 +19,7 @@ import (
 
 	"github.com/kasworld/actjitter"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
+	"github.com/kasworld/gowasm3dgame/lib/clientcookie"
 	"github.com/kasworld/gowasm3dgame/lib/jskeypressmap"
 	"github.com/kasworld/gowasm3dgame/lib/jsobj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connwasm"
@@ -82,9 +83,10 @@ func InitApp() {
 	))
 
 	js.Global().Set("clearNickname", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		go ClearSession()
+		go clientcookie.ClearSession()
 		return nil
 	}))
+	clientcookie.InitNickname()
 	// js.Global().Set("enterField", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 	// 	go app.enterStage()
 	// 	return nil
@@ -112,7 +114,7 @@ func (app *WasmClient) enterStage() {
 		jslog.Errorf("ProtocolVersion mismatch client %v server %v",
 			w3d_version.ProtocolVersion, app.loginData.ProtocolVersion)
 	}
-	SetSession(app.loginData.SessionKey, app.loginData.NickName)
+	clientcookie.SetSession(app.loginData.SessionKey, app.loginData.NickName)
 
 	jsdoc := js.Global().Get("document")
 	jsobj.Hide(jsdoc.Call("getElementById", "titleform"))

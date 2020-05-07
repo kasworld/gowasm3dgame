@@ -20,7 +20,7 @@ import (
 	"time"
 
 	"github.com/kasworld/g2rand"
-	"github.com/kasworld/gowasm3dgame/game/session"
+	"github.com/kasworld/gowasm3dgame/lib/session"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
 	"github.com/kasworld/rangestat"
 	"github.com/kasworld/uuidstr"

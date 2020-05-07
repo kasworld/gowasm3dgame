@@ -17,7 +17,7 @@ import (
 	"time"
 
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
-	"github.com/kasworld/gowasm3dgame/game/conndata"
+	"github.com/kasworld/gowasm3dgame/lib/conndata"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_authorize"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_error"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_gob"
