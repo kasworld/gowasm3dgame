@@ -33,7 +33,7 @@ func (app *WasmClient) DisplayTextInfo() {
 }
 
 func (app *WasmClient) makeServiceInfo() string {
-	msgCopyright := `</hr>Copyright 2019 SeukWon Kang 
+	msgCopyright := `</hr>Copyright 2019,2020 SeukWon Kang 
 		<a href="https://github.com/kasworld/gowasm3dgame" target="_blank">gowasm3dgame</a>`
 
 	var buf bytes.Buffer

@@ -119,14 +119,13 @@ func (app *WasmClient) enterStage() {
 	jsdoc := js.Global().Get("document")
 	jsobj.Hide(jsdoc.Call("getElementById", "titleform"))
 	jsobj.Show(jsdoc.Call("getElementById", "cmdrow"))
-	gameOptions.RegisterJSFn(app)
 
+	gameOptions.RegisterJSFn(app)
 	if err := gameOptions.SetFromURLArg(); err != nil {
 		jslog.Errorf(err.Error())
 	}
 	jsdoc.Call("getElementById", "cmdbuttons").Set("innerHTML",
 		app.makeButtons())
-
 	app.registerKeyboardMouseEvent()
 
 	js.Global().Call("requestAnimationFrame", js.FuncOf(app.drawCanvas))

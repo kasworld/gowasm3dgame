@@ -24,14 +24,14 @@ var gameOptions *htmlbutton.HTMLButtonGroup
 var _gameopt = htmlbutton.NewButtonGroup("Options",
 	[]*htmlbutton.HTMLButton{
 		htmlbutton.New("q", "LeftInfo", []string{"LeftInfoOff", "LeftInfoOn"},
-			"show/hide left info", cmdToggleLeftInfo, 1),
+			"show/hide left info", btnLeftInfo, 1),
 		htmlbutton.New("w", "CenterInfo", []string{"CenterInfoOff", "CenterInfoOn"},
-			"show/hide center info", cmdRotateCenterInfo, 0),
+			"show/hide center info", btnCenterInfo, 0),
 		htmlbutton.New("e", "RightInfo", []string{"RightInfoOff", "RightInfoOn"},
-			"show/hide right info", cmdRotateRightInfo, 1),
+			"show/hide right info", btnRightInfo, 1),
 	})
 
-func cmdToggleLeftInfo(obj interface{}, v *htmlbutton.HTMLButton) {
+func btnLeftInfo(obj interface{}, v *htmlbutton.HTMLButton) {
 	app, ok := obj.(*WasmClient)
 	if !ok {
 		jslog.Errorf("obj not app %v", obj)
@@ -52,7 +52,7 @@ func (app *WasmClient) updateLeftInfo() {
 	}
 }
 
-func cmdRotateCenterInfo(obj interface{}, v *htmlbutton.HTMLButton) {
+func btnCenterInfo(obj interface{}, v *htmlbutton.HTMLButton) {
 	app, ok := obj.(*WasmClient)
 	if !ok {
 		jslog.Errorf("obj not app %v", obj)
@@ -73,7 +73,7 @@ func (app *WasmClient) updateCenterInfo() {
 	}
 }
 
-func cmdRotateRightInfo(obj interface{}, v *htmlbutton.HTMLButton) {
+func btnRightInfo(obj interface{}, v *htmlbutton.HTMLButton) {
 	app, ok := obj.(*WasmClient)
 	if !ok {
 		jslog.Errorf("obj not app %v", obj)
