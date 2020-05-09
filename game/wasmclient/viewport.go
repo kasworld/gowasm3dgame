@@ -15,17 +15,17 @@ import (
 	"math"
 	"syscall/js"
 
-	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
+	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 )
 
-type Viewport3d struct {
+type Viewport struct {
 	neecRecalc bool
 	ViewWidth  int
 	ViewHeight int
 
-	canvas   js.Value
+	Canvas   js.Value
 	threejs  js.Value
 	scene    js.Value
 	camera   js.Value
@@ -37,8 +37,8 @@ type Viewport3d struct {
 	materialCache map[uint32]js.Value
 }
 
-func NewViewport3d(cnvid string) *Viewport3d {
-	vp := &Viewport3d{
+func NewViewport(cnvid string) *Viewport {
+	vp := &Viewport{
 		jsSceneObjs:   make(map[string]js.Value),
 		geometryCache: make(map[gameobjtype.GameObjType]js.Value),
 		materialCache: make(map[uint32]js.Value),
@@ -46,8 +46,8 @@ func NewViewport3d(cnvid string) *Viewport3d {
 
 	vp.threejs = js.Global().Get("THREE")
 	vp.renderer = vp.ThreeJsNew("WebGLRenderer")
-	vp.canvas = vp.renderer.Get("domElement")
-	js.Global().Get("document").Call("getElementById", "canvas3d").Call("appendChild", vp.canvas)
+	vp.Canvas = vp.renderer.Get("domElement")
+	js.Global().Get("document").Call("getElementById", "canvas3d").Call("appendChild", vp.Canvas)
 
 	vp.scene = vp.ThreeJsNew("Scene")
 
@@ -59,11 +59,11 @@ func NewViewport3d(cnvid string) *Viewport3d {
 	return vp
 }
 
-func (vp *Viewport3d) ThreeJsNew(name string, args ...interface{}) js.Value {
+func (vp *Viewport) ThreeJsNew(name string, args ...interface{}) js.Value {
 	return vp.threejs.Get(name).New(args...)
 }
 
-func (vp *Viewport3d) initGrid() {
+func (vp *Viewport) initGrid() {
 	outerStageSize := gameconst.StageSize + gameobjtype.MaxRadius*2
 	innerStageSize := gameconst.StageSize
 
@@ -117,7 +117,7 @@ func (vp *Viewport3d) initGrid() {
 	// axisHelper := vp.ThreeJsNew("AxesHelper", gameconst.StageSize)
 	// vp.scene.Call("add", axisHelper)
 }
-func (vp *Viewport3d) initLight() {
+func (vp *Viewport) initLight() {
 	vp.light = vp.ThreeJsNew("PointLight", 0x808080, 1)
 	vp.scene.Call("add", vp.light)
 	// vp.light.Get("position").Set("x", vt[0])
@@ -125,31 +125,31 @@ func (vp *Viewport3d) initLight() {
 	// vp.light.Get("position").Set("z", vt[2])
 }
 
-func (vp *Viewport3d) Hide() {
-	vp.canvas.Get("style").Set("display", "none")
+func (vp *Viewport) Hide() {
+	vp.Canvas.Get("style").Set("display", "none")
 }
-func (vp *Viewport3d) Show() {
+func (vp *Viewport) Show() {
 	vp.neecRecalc = true
-	vp.canvas.Get("style").Set("display", "initial")
+	vp.Canvas.Get("style").Set("display", "initial")
 }
 
-func (vp *Viewport3d) Resize() {
-	vp.neecRecalc = true
-}
-
-func (vp *Viewport3d) Focus() {
-	vp.canvas.Call("focus")
-}
-
-func (vp *Viewport3d) Zoom(state int) {
+func (vp *Viewport) Resize() {
 	vp.neecRecalc = true
 }
 
-func (vp *Viewport3d) AddEventListener(evt string, fn func(this js.Value, args []js.Value) interface{}) {
-	vp.canvas.Call("addEventListener", evt, js.FuncOf(fn))
+func (vp *Viewport) Focus() {
+	vp.Canvas.Call("focus")
 }
 
-func (vp *Viewport3d) calcResize() {
+func (vp *Viewport) Zoom(state int) {
+	vp.neecRecalc = true
+}
+
+func (vp *Viewport) AddEventListener(evt string, fn func(this js.Value, args []js.Value) interface{}) {
+	vp.Canvas.Call("addEventListener", evt, js.FuncOf(fn))
+}
+
+func (vp *Viewport) calcResize() {
 	if !vp.neecRecalc {
 		return
 	}
@@ -165,19 +165,19 @@ func (vp *Viewport3d) calcResize() {
 	vp.ViewWidth = size
 	vp.ViewHeight = size
 
-	vp.canvas.Call("setAttribute", "width", vp.ViewWidth)
-	vp.canvas.Call("setAttribute", "height", vp.ViewHeight)
+	vp.Canvas.Call("setAttribute", "width", vp.ViewWidth)
+	vp.Canvas.Call("setAttribute", "height", vp.ViewHeight)
 
 	vp.renderer.Call("setSize", vp.ViewWidth, vp.ViewHeight)
 }
 
-func (vp *Viewport3d) Draw(tick int64) {
+func (vp *Viewport) Draw(tick int64) {
 	vp.calcResize()
 
 	vp.renderer.Call("render", vp.scene, vp.camera)
 }
 
-func (vp *Viewport3d) getGeometry(gotype gameobjtype.GameObjType) js.Value {
+func (vp *Viewport) getGeometry(gotype gameobjtype.GameObjType) js.Value {
 	geo, exist := vp.geometryCache[gotype]
 	if !exist {
 		radius := gameobjtype.Attrib[gotype].Radius
@@ -215,7 +215,7 @@ func (vp *Viewport3d) getGeometry(gotype gameobjtype.GameObjType) js.Value {
 	return geo
 }
 
-func (vp *Viewport3d) getMaterial(co uint32) js.Value {
+func (vp *Viewport) getMaterial(co uint32) js.Value {
 	mat, exist := vp.materialCache[co]
 	if !exist {
 		mat = vp.ThreeJsNew("MeshStandardMaterial")
@@ -227,7 +227,7 @@ func (vp *Viewport3d) getMaterial(co uint32) js.Value {
 	return mat
 }
 
-func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co uint32) js.Value {
+func (vp *Viewport) add2Scene(o *w3d_obj.GameObj, co uint32) js.Value {
 	if jso, exist := vp.jsSceneObjs[o.UUID]; exist {
 		jso.Get("position").Set("x", o.PosVt[0])
 		jso.Get("position").Set("y", o.PosVt[1])
@@ -251,7 +251,7 @@ func (vp *Viewport3d) add2Scene(o *w3d_obj.GameObj, co uint32) js.Value {
 	return jso
 }
 
-func (vp *Viewport3d) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data) {
+func (vp *Viewport) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data) {
 	setCamera := false
 	addUUID := make(map[string]bool)
 	for _, tm := range stageInfo.Teams {

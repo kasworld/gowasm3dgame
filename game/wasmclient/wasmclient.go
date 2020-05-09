@@ -45,7 +45,7 @@ type WasmClient struct {
 	systemMessage textncount.TextNCountList
 
 	KeyboardPressedMap *jskeypressmap.KeyPressMap
-	vp                 *Viewport3d
+	vp                 *Viewport
 
 	loginData *w3d_obj.RspLogin_data
 	statsInfo *w3d_obj.NotiStatsInfo_data
@@ -61,7 +61,7 @@ func InitApp() {
 		KeyboardPressedMap: jskeypressmap.New(),
 		systemMessage:      make(textncount.TextNCountList, 0),
 	}
-	app.vp = NewViewport3d("canvas3d")
+	app.vp = NewViewport("canvas3d")
 
 	gameOptions = _gameopt // prevent compiler initialize loop
 	jsdoc := js.Global().Get("document")
