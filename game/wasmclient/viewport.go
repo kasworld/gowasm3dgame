@@ -95,17 +95,14 @@ func (vp *Viewport) calcResize() {
 	win := js.Global().Get("window")
 	winW := win.Get("innerWidth").Int()
 	winH := win.Get("innerHeight").Int()
-	size := winW
-	if size > winH {
-		size = winH
-	}
-	// size -= 20
-	vp.ViewWidth = size
-	vp.ViewHeight = size
+	vp.ViewWidth = winW
+	vp.ViewHeight = winH
+
+	vp.camera.Set("aspect", float64(winW)/float64(winH))
+	vp.camera.Call("updateProjectionMatrix")
 
 	vp.Canvas.Call("setAttribute", "width", vp.ViewWidth)
 	vp.Canvas.Call("setAttribute", "height", vp.ViewHeight)
-
 	vp.renderer.Call("setSize", vp.ViewWidth, vp.ViewHeight)
 }
 
@@ -121,7 +118,7 @@ func (vp *Viewport) DrawTitle() {
 	winH := win.Get("innerHeight").Int()
 
 	msgList := []string{
-		"Go 2D game",
+		"Go 3D game",
 	}
 
 	cellW := winW / len(msgList[0])
