@@ -128,6 +128,8 @@ func (app *WasmClient) enterStage() {
 		app.makeButtons())
 	app.registerKeyboardMouseEvent()
 
+	app.ResizeCanvas()
+	app.vp.Focus()
 	js.Global().Call("requestAnimationFrame", js.FuncOf(app.drawCanvas))
 
 	timerPingTk := time.NewTicker(time.Second)
@@ -167,18 +169,20 @@ func (app *WasmClient) GetEstServerTick() int64 {
 }
 
 func (app *WasmClient) ResizeCanvas() {
-	// if app.loginData == nil {
-	// 	app.vp.DrawTitle()
-	// } else {
-	// 	app.vp.Resized()
-	// 	ftsize := fmt.Sprintf("%vpx", app.vp.RefSize/6)
-	// 	jsdoc := js.Global().Get("document")
-	// 	jsdoc.Call("getElementById", "body").Get("style").Set("font-size", ftsize)
-	// 	jsdoc.Call("getElementById", "chattext").Get("style").Set("font-size", ftsize)
-	// 	jsdoc.Call("getElementById", "chatbutton").Get("style").Set("font-size", ftsize)
-	// 	for _, v := range gameOptions.ButtonList {
-	// 		v.JSButton().Get("style").Set("font-size", ftsize)
-	// 	}
-	// }
-	app.vp.Resize()
+	if app.loginData == nil {
+		app.vp.DrawTitle()
+	} else {
+		app.vp.Resized()
+		win := js.Global().Get("window")
+		winH := win.Get("innerHeight").Int()
+		ftsize := fmt.Sprintf("%vpx", winH/100)
+		jsdoc := js.Global().Get("document")
+		jsdoc.Call("getElementById", "body").Get("style").Set("font-size", ftsize)
+		jsdoc.Call("getElementById", "chattext").Get("style").Set("font-size", ftsize)
+		jsdoc.Call("getElementById", "chatbutton").Get("style").Set("font-size", ftsize)
+		for _, v := range gameOptions.ButtonList {
+			v.JSButton().Get("style").Set("font-size", ftsize)
+		}
+	}
+	// app.vp.Resize()
 }

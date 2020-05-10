@@ -47,6 +47,7 @@ func objRecvNotiFn_StageInfo(me interface{}, hd w3d_packet.Header, body interfac
 	app.vp.processRecvStageInfo(robj)
 
 	app.ServerClientTictDiff = robj.Tick - time.Now().UnixNano()
+	app.updateLeftInfo()
 	return nil
 }
 
@@ -60,6 +61,7 @@ func objRecvNotiFn_StatsInfo(me interface{}, hd w3d_packet.Header, body interfac
 		return fmt.Errorf("packet mismatch %v", body)
 	}
 	app.statsInfo = robj
+	app.updateCenterInfo()
 	return nil
 }
 

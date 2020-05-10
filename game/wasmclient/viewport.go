@@ -66,31 +66,17 @@ func (vp *Viewport) Show() {
 	vp.Canvas.Get("style").Set("display", "initial")
 }
 
-func (vp *Viewport) Resize() {
-	// win := js.Global().Get("window")
-	// winW := win.Get("innerWidth").Int()
-	// winH := win.Get("innerHeight").Int()
-	// if winW > winH {
-	// 	vp.RefSize = winH / 32
-	// } else {
-	// 	vp.RefSize = winW / 32
-	// }
-	// if vp.RefSize < 32 {
-	// 	vp.RefSize = 32
-	// }
-
+func (vp *Viewport) Resized() {
+	win := js.Global().Get("window")
+	winW := win.Get("innerWidth").Int()
+	winH := win.Get("innerHeight").Int()
+	vp.Canvas.Call("setAttribute", "width", winW)
+	vp.Canvas.Call("setAttribute", "height", winH)
 	vp.neecRecalc = true
 }
 
 func (vp *Viewport) Focus() {
 	vp.Canvas.Call("focus")
-}
-
-func (vp *Viewport) DrawTitle() {
-	// win := js.Global().Get("window")
-	// winW := win.Get("innerWidth").Int()
-	// winH := win.Get("innerHeight").Int()
-
 }
 
 func (vp *Viewport) Zoom(state int) {
@@ -127,4 +113,41 @@ func (vp *Viewport) Draw(tick int64) {
 	vp.calcResize()
 
 	vp.renderer.Call("render", vp.scene, vp.camera)
+}
+
+func (vp *Viewport) DrawTitle() {
+	win := js.Global().Get("window")
+	winW := win.Get("innerWidth").Int()
+	winH := win.Get("innerHeight").Int()
+
+	msgList := []string{
+		"Go 2D game",
+	}
+
+	cellW := winW / len(msgList[0])
+	cellH := winH / len(msgList)
+	if cellW > cellH {
+		cellW = cellH
+	} else {
+		cellH = cellW
+	}
+
+	cnvW := cellW * len(msgList[0])
+	cnvH := cellH * len(msgList)
+	vp.Canvas.Call("setAttribute", "width", cnvW)
+	vp.Canvas.Call("setAttribute", "height", cnvH)
+
+	// vp.context2d.Set("fillStyle", "gray")
+	// vp.context2d.Call("fillRect", 0, 0, cnvW, cnvH)
+
+	// fontH := cellH
+	// vp.context2d.Set("font", fmt.Sprintf("%dpx sans-serif", fontH))
+	// posx := cellW
+	// posy := cellH - cellH/4
+	// co := htmlcolors.Color24List[int(time.Now().UnixNano())%len(htmlcolors.Color24List)]
+	// vp.context2d.Set("fillStyle", co.ToHTMLColorString())
+	// for _, v := range msgList {
+	// 	vp.context2d.Call("fillText", v, posx, posy)
+	// 	posy += cellH
+	// }
 }
