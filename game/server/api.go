@@ -16,6 +16,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/kasworld/gowasm3dgame/config/authdata"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/lib/conndata"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_authorize"
@@ -71,7 +72,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 		panic(fmt.Sprintf("invalid me not w3d_serveconnbyte.ServeConnByte %#v", me))
 	}
 
-	if err := c2sc.GetAuthorCmdList().UpdateByAuthKey(recvBody.AuthKey); err != nil {
+	if err := authdata.UpdateByAuthKey(c2sc.GetAuthorCmdList(), recvBody.AuthKey); err != nil {
 		return sendHeader, nil, err
 	}
 	connData := c2sc.GetConnData().(*conndata.ConnData)

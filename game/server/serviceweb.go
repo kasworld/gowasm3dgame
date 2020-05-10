@@ -17,9 +17,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
+	"github.com/kasworld/gowasm3dgame/config/authdata"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/lib/conndata"
-	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_authorize"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_gob"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_serveconnbyte"
 	"github.com/kasworld/uuidstr"
@@ -65,7 +65,7 @@ func (svr *Server) serveWebSocketClient(ctx context.Context, w http.ResponseWrit
 	c2sc := w3d_serveconnbyte.NewWithStats(
 		connData,
 		gameconst.SendBufferSize,
-		w3d_authorize.NewPreLoginAuthorCmdIDList(),
+		authdata.NewPreLoginAuthorCmdIDList(),
 		svr.SendStat, svr.RecvStat,
 		svr.apiStat,
 		svr.notiStat,
