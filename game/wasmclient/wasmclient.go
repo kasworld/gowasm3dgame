@@ -71,7 +71,7 @@ func InitApp() {
 	jsdoc.Call("getElementById", "rightinfo").Set("style",
 		"color: white; position: fixed; top: 0; right: 0; overflow: hidden; text-align: right;")
 	jsdoc.Call("getElementById", "centerinfo").Set("style",
-		"color: white; position: fixed; top: 0%; left: 25%; overflow: hidden;")
+		"color: white; position: fixed; bottom: 2%; left: ; overflow: hidden;")
 
 	app.ResizeCanvas()
 	win := js.Global().Get("window")
@@ -167,5 +167,18 @@ func (app *WasmClient) GetEstServerTick() int64 {
 }
 
 func (app *WasmClient) ResizeCanvas() {
+	// if app.loginData == nil {
+	// 	app.vp.DrawTitle()
+	// } else {
+	// 	app.vp.Resized()
+	// 	ftsize := fmt.Sprintf("%vpx", app.vp.RefSize/6)
+	// 	jsdoc := js.Global().Get("document")
+	// 	jsdoc.Call("getElementById", "body").Get("style").Set("font-size", ftsize)
+	// 	jsdoc.Call("getElementById", "chattext").Get("style").Set("font-size", ftsize)
+	// 	jsdoc.Call("getElementById", "chatbutton").Get("style").Set("font-size", ftsize)
+	// 	for _, v := range gameOptions.ButtonList {
+	// 		v.JSButton().Get("style").Set("font-size", ftsize)
+	// 	}
+	// }
 	app.vp.Resize()
 }
