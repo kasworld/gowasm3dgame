@@ -141,7 +141,7 @@ func (svr *Server) bytesAPIFn_ReqChat(
 	stg := svr.stageManager.GetByUUID(connData.StageID)
 	connList := stg.Conns.GetList()
 	noti := &w3d_obj.NotiStageChat_data{
-		SenderNick: connData.UUID,
+		SenderNick: connData.Session.NickName,
 		Chat:       recvBody.Chat,
 	}
 	for _, v := range connList {
