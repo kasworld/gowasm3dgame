@@ -61,7 +61,7 @@ func InitApp() {
 		KeyboardPressedMap: jskeypressmap.New(),
 		systemMessage:      make(textncount.TextNCountList, 0),
 	}
-	app.vp = NewViewport("canvas3d")
+	app.vp = NewViewport()
 
 	clientcookie.InitNickname()
 	gameOptions = _gameopt // prevent compiler initialize loop

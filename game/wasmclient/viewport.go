@@ -36,7 +36,7 @@ type Viewport struct {
 	materialCache map[uint32]js.Value
 }
 
-func NewViewport(cnvid string) *Viewport {
+func NewViewport() *Viewport {
 	vp := &Viewport{
 		jsSceneObjs:   make(map[string]js.Value),
 		geometryCache: make(map[gameobjtype.GameObjType]js.Value),
@@ -46,7 +46,7 @@ func NewViewport(cnvid string) *Viewport {
 	vp.threejs = js.Global().Get("THREE")
 	vp.renderer = vp.ThreeJsNew("WebGLRenderer")
 	vp.Canvas = vp.renderer.Get("domElement")
-	js.Global().Get("document").Call("getElementById", "canvas3d").Call("appendChild", vp.Canvas)
+	js.Global().Get("document").Call("getElementById", "canvas3dholder").Call("appendChild", vp.Canvas)
 
 	vp.scene = vp.ThreeJsNew("Scene")
 
