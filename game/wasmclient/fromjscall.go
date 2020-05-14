@@ -184,7 +184,7 @@ func (app *WasmClient) actByKeyPressMap(kcode string) bool {
 }
 
 func (app *WasmClient) processKeyUpEvent(kcode string) bool {
-	// jslog.Errorf("keyup %v", kcode)
+	jslog.Infof("keyup %v", kcode)
 	if kcode == "Escape" {
 		// reset to default
 		app.ResizeCanvas()

@@ -47,6 +47,7 @@ func NewViewport() *Viewport {
 	vp.renderer = vp.ThreeJsNew("WebGLRenderer")
 	vp.Canvas = vp.renderer.Get("domElement")
 	js.Global().Get("document").Call("getElementById", "canvas3dholder").Call("appendChild", vp.Canvas)
+	vp.Canvas.Set("tabindex", "1")
 
 	vp.scene = vp.ThreeJsNew("Scene")
 
