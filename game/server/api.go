@@ -139,7 +139,7 @@ func (svr *Server) bytesAPIFn_ReqChat(
 		return hd, nil, fmt.Errorf("Packet type miss match %v", conn.GetConnData())
 	}
 	stg := svr.stageManager.GetByUUID(connData.StageID)
-	connList := stg.Conns.GetList()
+	connList := stg.GetConnManager().GetList()
 	noti := &w3d_obj.NotiStageChat_data{
 		SenderNick: connData.Session.NickName,
 		Chat:       recvBody.Chat,

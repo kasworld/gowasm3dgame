@@ -1,4 +1,4 @@
-// Copyright 2015,2016,2017,2018,2019,2020 SeukWon Kang (kasworld@gmail.com)
+// Copyright 2015,2016,2017,2018,2019 SeukWon Kang (kasworld@gmail.com)
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -11,21 +11,20 @@
 
 package stage
 
-const (
-	HTML_tableheader = `
-<tr>
-<th>UUID</th>
-<th>Conn</th>
-<th>Team</th>
-<th>Command</th>
-</tr>`
+import (
+	"fmt"
 
-	HTML_row = `
-<tr>
-<td>{{$v.UUID}}</td>
-<td>{{$v.Conns}}</td>
-<td>{{$v.Teams}}</td>
-<td><a href="/Del?id={{$v.UUID}}" target="_blank">[Del]</a></td>
-</tr>
-`
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"
 )
+
+func (stg *Stage) String() string {
+	return fmt.Sprintf("Team(%v)", len(stg.Teams))
+}
+
+func (stg *Stage) GetUUID() string {
+	return stg.UUID
+}
+
+func (stg *Stage) GetConnManager() *w3d_connbytemanager.Manager {
+	return stg.Conns
+}

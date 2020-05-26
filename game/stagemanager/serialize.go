@@ -15,8 +15,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"sort"
 
-	"github.com/kasworld/gowasm3dgame/game/stage"
 	"github.com/kasworld/weblib"
 )
 
@@ -36,6 +36,7 @@ func (man *Manager) ToWeb(w http.ResponseWriter, r *http.Request) {
 func (man *Manager) ToWebMid(w http.ResponseWriter, r *http.Request) {
 
 	connList := man.GetList()
+	sort.Sort(stageList(connList))
 	page := weblib.GetIntByName("page", -1, w, r)
 	if page < 0 {
 		return
@@ -58,11 +59,11 @@ func (man *Manager) ToWebMid(w http.ResponseWriter, r *http.Request) {
 
 	tplIndex, err := template.New("index").Parse(`
 	<table border=1 style="border-collapse:collapse;">` +
-		stage.HTML_tableheader +
+		HTML_tableheader +
 		`{{range $i, $v := .}}` +
-		stage.HTML_row +
+		HTML_row +
 		`{{end}}` +
-		stage.HTML_tableheader +
+		HTML_tableheader +
 		`</table>
 	<br/>
 	`)
@@ -73,3 +74,22 @@ func (man *Manager) ToWebMid(w http.ResponseWriter, r *http.Request) {
 		man.log.Error("%v", err)
 	}
 }
+
+const (
+	HTML_tableheader = `
+<tr>
+<th>UUID</th>
+<th>Conn</th>
+<th>Stage</th>
+<th>Command</th>
+</tr>`
+
+	HTML_row = `
+<tr>
+<td>{{$v.GetUUID}}</td>
+<td>{{$v.GetConnManager}}</td>
+<td>{{$v}}</td>
+<td><a href="/Del?id={{$v.GetUUID}}" target="_blank">[Del]</a></td>
+</tr>
+`
+)
