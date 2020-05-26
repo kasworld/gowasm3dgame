@@ -14,7 +14,6 @@ package stagemanager
 import (
 	"sync"
 
-	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"
 )
 
@@ -25,23 +24,27 @@ type stageI interface {
 
 type stageList []stageI
 
-func (aol stageList) Len() int { return len(aol) }
-func (aol stageList) Swap(i, j int) {
-	aol[i], aol[j] = aol[j], aol[i]
+func (stgl stageList) Len() int { return len(stgl) }
+func (stgl stageList) Swap(i, j int) {
+	stgl[i], stgl[j] = stgl[j], stgl[i]
 }
-func (aol stageList) Less(i, j int) bool {
-	ao1 := aol[i]
-	ao2 := aol[j]
+func (stgl stageList) Less(i, j int) bool {
+	ao1 := stgl[i]
+	ao2 := stgl[j]
 	return ao1.GetUUID() > ao2.GetUUID()
 }
 
+type logI interface {
+	Error(format string, v ...interface{})
+}
+
 type Manager struct {
-	log      *w3dlog.LogBase
+	log      logI
 	mutex    sync.RWMutex `prettystring:"hide"`
 	id2stage map[string]stageI
 }
 
-func New(log *w3dlog.LogBase) *Manager {
+func New(log logI) *Manager {
 	man := &Manager{
 		log:      log,
 		id2stage: make(map[string]stageI),
