@@ -102,7 +102,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 
 	// select stage to play
 	stg := svr.stageManager.GetAny()
-	connData.StageID = stg.GetUUID()
+	ss.StageID = stg.GetUUID()
 	stg.GetConnManager().Add(connData.UUID, c2sc)
 
 	// user login?
@@ -144,7 +144,7 @@ func (svr *Server) bytesAPIFn_ReqChat(
 		return hd, nil, fmt.Errorf("Packet type miss match %v", conn.GetConnData())
 	}
 
-	stg := svr.stageManager.GetByUUID(connData.StageID)
+	stg := svr.stageManager.GetByUUID(connData.Session.StageID)
 	if stg == nil {
 		svr.log.Fatal("no stage to chat %v", connData)
 		return hd, nil, fmt.Errorf("stage not ready %v", connData)

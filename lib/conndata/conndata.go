@@ -17,5 +17,4 @@ type ConnData struct {
 	UUID       string
 	RemoteAddr string
 	Session    *session.Session
-	StageID    string
 }
