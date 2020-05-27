@@ -1,4 +1,4 @@
-// Copyright 2015,2016,2017,2018,2019 SeukWon Kang (kasworld@gmail.com)
+// Copyright 2015,2016,2017,2018,2019,2020 SeukWon Kang (kasworld@gmail.com)
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -56,11 +56,10 @@ func (svr *Server) serveWebSocketClient(ctx context.Context, w http.ResponseWrit
 		return
 	}
 
-	stg := svr.stageManager.GetAny()
 	connData := &conndata.ConnData{
 		UUID:       uuidstr.New(),
 		RemoteAddr: r.RemoteAddr,
-		StageID:    stg.GetUUID(),
+		// StageID set at login
 	}
 	c2sc := w3d_serveconnbyte.NewWithStats(
 		connData,
@@ -74,7 +73,6 @@ func (svr *Server) serveWebSocketClient(ctx context.Context, w http.ResponseWrit
 
 	// add to conn manager
 	svr.connManager.Add(connData.UUID, c2sc)
-	stg.GetConnManager().Add(connData.UUID, c2sc)
 
 	// start client service
 	c2sc.StartServeWS(ctx, wsConn,
@@ -84,5 +82,9 @@ func (svr *Server) serveWebSocketClient(ctx context.Context, w http.ResponseWrit
 
 	// del from conn manager
 	svr.connManager.Del(connData.UUID)
-	stg.GetConnManager().Del(connData.UUID)
+	// stage may be changed
+	stg := svr.stageManager.GetByUUID(connData.StageID)
+	if stg != nil {
+		stg.GetConnManager().Del(connData.UUID)
+	}
 }

@@ -1,4 +1,4 @@
-// Copyright 2015,2016,2017,2018,2019 SeukWon Kang (kasworld@gmail.com)
+// Copyright 2015,2016,2017,2018,2019,2020 SeukWon Kang (kasworld@gmail.com)
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -100,6 +100,11 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 	ss.ConnUUID = connData.UUID
 	connData.Session = ss
 
+	// select stage to play
+	stg := svr.stageManager.GetAny()
+	connData.StageID = stg.GetUUID()
+	stg.GetConnManager().Add(connData.UUID, c2sc)
+
 	// user login?
 
 	if err != nil {
@@ -138,7 +143,12 @@ func (svr *Server) bytesAPIFn_ReqChat(
 	if !ok {
 		return hd, nil, fmt.Errorf("Packet type miss match %v", conn.GetConnData())
 	}
+
 	stg := svr.stageManager.GetByUUID(connData.StageID)
+	if stg == nil {
+		svr.log.Fatal("no stage to chat %v", connData)
+		return hd, nil, fmt.Errorf("stage not ready %v", connData)
+	}
 	connList := stg.GetConnManager().GetList()
 	noti := &w3d_obj.NotiStageChat_data{
 		SenderNick: connData.Session.NickName,
