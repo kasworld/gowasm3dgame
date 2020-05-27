@@ -221,20 +221,17 @@ func (bt *Team) NewGameObj(
 	return o
 }
 
-func (bt *Team) ToPacket() *w3d_obj.Team {
-	rtn := &w3d_obj.Team{
-		ID:      bt.UUID,
-		Color24: uint32(bt.Color24),
-		Objs:    make([]*w3d_obj.GameObj, 0),
-	}
-	rtn.Objs = append(rtn.Objs, bt.HomeMark.ToPacket())
-	rtn.Objs = append(rtn.Objs, bt.Ball.ToPacket())
+func (bt *Team) ToPacket() []*w3d_obj.GameObj {
+	rtn := make([]*w3d_obj.GameObj, 0)
+	co := uint32(bt.Color24)
+	rtn = append(rtn, bt.HomeMark.ToPacket(co))
+	rtn = append(rtn, bt.Ball.ToPacket(co))
 
 	for _, v := range bt.Objs {
 		if v.toDelete {
 			continue
 		}
-		rtn.Objs = append(rtn.Objs, v.ToPacket())
+		rtn = append(rtn, v.ToPacket(co))
 	}
 	return rtn
 }

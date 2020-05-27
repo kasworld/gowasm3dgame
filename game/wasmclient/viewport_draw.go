@@ -136,7 +136,7 @@ func (vp *Viewport) getMaterial(co uint32) js.Value {
 	return mat
 }
 
-func (vp *Viewport) add2Scene(o *w3d_obj.GameObj, co uint32) js.Value {
+func (vp *Viewport) add2Scene(o *w3d_obj.GameObj) js.Value {
 	if jso, exist := vp.jsSceneObjs[o.UUID]; exist {
 		jso.Get("position").Set("x", o.PosVt[0])
 		jso.Get("position").Set("y", o.PosVt[1])
@@ -147,7 +147,7 @@ func (vp *Viewport) add2Scene(o *w3d_obj.GameObj, co uint32) js.Value {
 		return jso
 	}
 	geometry := vp.getGeometry(o.GOType)
-	material := vp.getMaterial(co)
+	material := vp.getMaterial(o.Color24)
 	jso := vp.ThreeJsNew("Mesh", geometry, material)
 	jso.Get("position").Set("x", o.PosVt[0])
 	jso.Get("position").Set("y", o.PosVt[1])
@@ -161,35 +161,23 @@ func (vp *Viewport) add2Scene(o *w3d_obj.GameObj, co uint32) js.Value {
 }
 
 func (vp *Viewport) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data) {
-	setCamera := false
 	addUUID := make(map[string]bool)
-	for _, tm := range stageInfo.Teams {
-		if tm == nil {
-			continue
-		}
-		if !setCamera {
-			setCamera = true
+	vt1 := stageInfo.CameraPos
+	vp.camera.Get("position").Set("x", vt1[0])
+	vp.camera.Get("position").Set("y", vt1[1])
+	vp.camera.Get("position").Set("z", vt1[2])
 
-			vt1 := tm.Objs[0].PosVt
-			vp.camera.Get("position").Set("x", vt1[0])
-			vp.camera.Get("position").Set("y", vt1[1])
-			vp.camera.Get("position").Set("z", vt1[2])
+	vt2 := stageInfo.CameraLookAt
+	vp.camera.Call("lookAt",
+		vp.ThreeJsNew("Vector3",
+			vt2[0], vt2[1], vt2[2],
+		),
+	)
+	vp.camera.Call("updateProjectionMatrix")
 
-			vt2 := tm.Objs[1].PosVt
-			vp.camera.Call("lookAt",
-				vp.ThreeJsNew("Vector3",
-					vt2[0], vt2[1], vt2[2],
-				),
-			)
-			vp.camera.Call("updateProjectionMatrix")
-		}
-		for _, v := range tm.Objs {
-			if v == nil {
-				continue
-			}
-			vp.add2Scene(v, tm.Color24)
-			addUUID[v.UUID] = true
-		}
+	for _, o := range stageInfo.ObjList {
+		vp.add2Scene(o)
+		addUUID[o.UUID] = true
 	}
 	for id, jso := range vp.jsSceneObjs {
 		if !addUUID[id] {

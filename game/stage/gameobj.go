@@ -56,10 +56,11 @@ func (o *GameObj) IsCollision(dst *GameObj) bool {
 	)
 }
 
-func (o *GameObj) ToPacket() *w3d_obj.GameObj {
+func (o *GameObj) ToPacket(co uint32) *w3d_obj.GameObj {
 	return &w3d_obj.GameObj{
-		GOType: o.GOType,
-		UUID:   o.UUID,
+		GOType:  o.GOType,
+		UUID:    o.UUID,
+		Color24: co,
 		PosVt: [3]float32{
 			float32(o.PosVt[0]),
 			float32(o.PosVt[1]),

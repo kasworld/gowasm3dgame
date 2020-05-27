@@ -107,7 +107,7 @@ func (stg *Stage) Run(ctx context.Context) {
 		case <-ctx.Done():
 			return
 		case <-timerInfoTk.C:
-			si := stg.ToStatsInfo()
+			si := stg.ToPacket_StatsInfo()
 			conlist := stg.Conns.GetList()
 			for _, v := range conlist {
 				v.SendNotiPacket(w3d_idnoti.StatsInfo,
@@ -116,7 +116,7 @@ func (stg *Stage) Run(ctx context.Context) {
 			}
 		case <-timerTurnTk.C:
 			stg.Turn()
-			si := stg.ToStageInfo()
+			si := stg.ToPacket_StageInfo()
 			conlist := stg.Conns.GetList()
 			for _, v := range conlist {
 				v.SendNotiPacket(w3d_idnoti.StageInfo,
@@ -268,7 +268,7 @@ func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 	return toDeleteList
 }
 
-func (stg *Stage) ToStageInfo() *w3d_obj.NotiStageInfo_data {
+func (stg *Stage) ToPacket_StageInfo() *w3d_obj.NotiStageInfo_data {
 	now := time.Now().UnixNano()
 	rtn := &w3d_obj.NotiStageInfo_data{
 		Tick: now,
@@ -277,12 +277,14 @@ func (stg *Stage) ToStageInfo() *w3d_obj.NotiStageInfo_data {
 		if !bt.IsAlive {
 			continue
 		}
-		rtn.Teams = append(rtn.Teams, bt.ToPacket())
+		rtn.ObjList = append(rtn.ObjList, bt.ToPacket()...)
 	}
+	rtn.CameraPos = rtn.ObjList[0].PosVt
+	rtn.CameraLookAt = rtn.ObjList[1].PosVt
 	return rtn
 }
 
-func (stg *Stage) ToStatsInfo() *w3d_obj.NotiStatsInfo_data {
+func (stg *Stage) ToPacket_StatsInfo() *w3d_obj.NotiStatsInfo_data {
 	rtn := &w3d_obj.NotiStatsInfo_data{
 		UUID: stg.UUID,
 	}

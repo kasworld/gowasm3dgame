@@ -35,11 +35,10 @@ func (svr *Server) setFnMap() {
 	svr.DemuxReq2BytesAPIFnMap = [...]func(
 		me interface{}, hd w3d_packet.Header, rbody []byte) (
 		w3d_packet.Header, interface{}, error){
-		w3d_idcmd.Invalid:    svr.bytesAPIFn_ReqInvalid,
-		w3d_idcmd.Login:      svr.bytesAPIFn_ReqLogin,
-		w3d_idcmd.EnterStage: svr.bytesAPIFn_ReqEnterStage,
-		w3d_idcmd.Chat:       svr.bytesAPIFn_ReqChat,
-		w3d_idcmd.Heartbeat:  svr.bytesAPIFn_ReqHeartbeat,
+		w3d_idcmd.Invalid:   svr.bytesAPIFn_ReqInvalid,
+		w3d_idcmd.Login:     svr.bytesAPIFn_ReqLogin,
+		w3d_idcmd.Chat:      svr.bytesAPIFn_ReqChat,
+		w3d_idcmd.Heartbeat: svr.bytesAPIFn_ReqHeartbeat,
 	}
 }
 
@@ -186,25 +185,5 @@ func (svr *Server) bytesAPIFn_ReqHeartbeat(
 	sendBody := &w3d_obj.RspHeartbeat_data{
 		Tick: recvBody.Tick,
 	}
-	return sendHeader, sendBody, nil
-}
-
-func (svr *Server) bytesAPIFn_ReqEnterStage(
-	me interface{}, hd w3d_packet.Header, rbody []byte) (
-	w3d_packet.Header, interface{}, error) {
-	robj, err := w3d_gob.UnmarshalPacket(hd, rbody)
-	if err != nil {
-		return hd, nil, fmt.Errorf("Packet type miss match %v", rbody)
-	}
-	recvBody, ok := robj.(*w3d_obj.ReqEnterStage_data)
-	if !ok {
-		return hd, nil, fmt.Errorf("Packet type miss match %v", robj)
-	}
-	_ = recvBody
-
-	sendHeader := w3d_packet.Header{
-		ErrorCode: w3d_error.None,
-	}
-	sendBody := &w3d_obj.RspEnterStage_data{}
 	return sendHeader, sendBody, nil
 }

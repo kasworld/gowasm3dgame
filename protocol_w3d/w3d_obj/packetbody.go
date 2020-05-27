@@ -54,15 +54,6 @@ type RspChat_data struct {
 	Dummy uint8
 }
 
-type ReqEnterStage_data struct {
-	StageUUID string // may be not same to req stage
-	NickToUse string
-}
-type RspEnterStage_data struct {
-	StageUUID string // may be not same to req stage
-	NickToUse string // may be not same to req nick
-}
-
 //////////////////////////////////////////////////////////////////////////////
 
 type NotiInvalid_data struct {
@@ -70,8 +61,10 @@ type NotiInvalid_data struct {
 }
 
 type NotiStageInfo_data struct {
-	Tick  int64
-	Teams []*Team
+	Tick         int64
+	CameraPos    [3]float32
+	CameraLookAt [3]float32
+	ObjList      []*GameObj
 }
 
 type NotiStatsInfo_data struct {
@@ -105,15 +98,10 @@ type Act struct {
 	DstObjID string
 }
 
-type Team struct {
-	ID      string
-	Color24 uint32     // from htmlcolors.Color24
-	Objs    []*GameObj // 0 : homemark, 1: ball
-}
-
 type GameObj struct {
-	GOType gameobjtype.GameObjType
-	UUID   string
-	PosVt  [3]float32
-	RotVt  [3]float32
+	UUID    string
+	GOType  gameobjtype.GameObjType
+	Color24 uint32 // from htmlcolors.Color24
+	PosVt   [3]float32
+	RotVt   [3]float32
 }
