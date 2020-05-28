@@ -36,3 +36,16 @@ open admin web
 open client web
     
     http://localhost:34101/
+
+
+# 여러 종류의 게임(stage)을 지원 
+
+여러 종류의 stage를 하나의 client를 사용해 실행 가능한 형태로 업데이트중 
+
+예제 
+
+2d stage like gowasm2dclient gl
+![screenshot](2d.png)
+
+3d stage 
+![screenshot](3d.png)
