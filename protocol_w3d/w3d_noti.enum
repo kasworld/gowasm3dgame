@@ -1,4 +1,4 @@
-Invalid
-StageInfo
-StatsInfo // game stats info 
-StageChat
+Invalid not used, make empty packet error
+StageInfo for client display
+StatsInfo game stats info 
+StageChat broadcasted chat

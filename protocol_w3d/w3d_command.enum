@@ -1,4 +1,5 @@
-Invalid
-Login
-Heartbeat
-Chat
+Invalid not used, make empty packet error
+Login make session with nickname and enter stage
+Heartbeat prevent connection timeout
+Chat chat to stage 
+Act send user action

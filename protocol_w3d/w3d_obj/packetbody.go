@@ -54,6 +54,13 @@ type RspChat_data struct {
 	Dummy uint8
 }
 
+type ReqAct_data struct {
+	Dummy uint8
+}
+type RspAct_data struct {
+	Dummy uint8
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 type NotiInvalid_data struct {

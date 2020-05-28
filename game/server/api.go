@@ -35,13 +35,17 @@ func (svr *Server) setFnMap() {
 	svr.DemuxReq2BytesAPIFnMap = [...]func(
 		me interface{}, hd w3d_packet.Header, rbody []byte) (
 		w3d_packet.Header, interface{}, error){
-		w3d_idcmd.Invalid:   svr.bytesAPIFn_ReqInvalid,
-		w3d_idcmd.Login:     svr.bytesAPIFn_ReqLogin,
-		w3d_idcmd.Chat:      svr.bytesAPIFn_ReqChat,
-		w3d_idcmd.Heartbeat: svr.bytesAPIFn_ReqHeartbeat,
+
+		w3d_idcmd.Invalid:   svr.bytesAPIFn_ReqInvalid,   // Invalid not used, make empty packet error
+		w3d_idcmd.Login:     svr.bytesAPIFn_ReqLogin,     // Login make session with nickname and enter stage
+		w3d_idcmd.Heartbeat: svr.bytesAPIFn_ReqHeartbeat, // Heartbeat prevent connection timeout
+		w3d_idcmd.Chat:      svr.bytesAPIFn_ReqChat,      // Chat chat to stage
+		w3d_idcmd.Act:       svr.bytesAPIFn_ReqAct,       // Act send user action
+
 	}
 }
 
+// Invalid not used, make empty packet error
 func (svr *Server) bytesAPIFn_ReqInvalid(
 	me interface{}, hd w3d_packet.Header, rbody []byte) (
 	w3d_packet.Header, interface{}, error) {
@@ -49,6 +53,7 @@ func (svr *Server) bytesAPIFn_ReqInvalid(
 	return sendHeader, nil, fmt.Errorf("invalid packet")
 }
 
+// Login make session with nickname and enter stage
 func (svr *Server) bytesAPIFn_ReqLogin(
 	me interface{}, hd w3d_packet.Header, rbody []byte) (
 	w3d_packet.Header, interface{}, error) {
@@ -121,6 +126,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 	}
 }
 
+// Chat chat to stage
 func (svr *Server) bytesAPIFn_ReqChat(
 	me interface{}, hd w3d_packet.Header, rbody []byte) (
 	w3d_packet.Header, interface{}, error) {
@@ -166,6 +172,28 @@ func (svr *Server) bytesAPIFn_ReqChat(
 	return sendHeader, sendBody, nil
 }
 
+// Act send user action
+func (svr *Server) bytesAPIFn_ReqAct(
+	me interface{}, hd w3d_packet.Header, rbody []byte) (
+	w3d_packet.Header, interface{}, error) {
+	robj, err := w3d_gob.UnmarshalPacket(hd, rbody)
+	if err != nil {
+		return hd, nil, fmt.Errorf("Packet type miss match %v", rbody)
+	}
+	recvBody, ok := robj.(*w3d_obj.ReqAct_data)
+	if !ok {
+		return hd, nil, fmt.Errorf("Packet type miss match %v", robj)
+	}
+	_ = recvBody
+
+	sendHeader := w3d_packet.Header{
+		ErrorCode: w3d_error.None,
+	}
+	sendBody := &w3d_obj.RspAct_data{}
+	return sendHeader, sendBody, nil
+}
+
+// Heartbeat prevent connection timeout
 func (svr *Server) bytesAPIFn_ReqHeartbeat(
 	me interface{}, hd w3d_packet.Header, rbody []byte) (
 	w3d_packet.Header, interface{}, error) {
