@@ -1,4 +1,4 @@
-// Copyright 2015,2016,2017,2018,2019 SeukWon Kang (kasworld@gmail.com)
+// Copyright 2015,2016,2017,2018,2019,2020 SeukWon Kang (kasworld@gmail.com)
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -21,7 +21,7 @@ import (
 	"github.com/kasworld/actpersec"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/config/serverconfig"
-	"github.com/kasworld/gowasm3dgame/game/stage"
+	"github.com/kasworld/gowasm3dgame/game/stage3d"
 	"github.com/kasworld/gowasm3dgame/game/stagemanager"
 	"github.com/kasworld/gowasm3dgame/lib/sessionmanager"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
@@ -129,7 +129,7 @@ func (svr *Server) ServiceMain(ctx context.Context) {
 	defer timerInfoTk.Stop()
 
 	for i := 0; i < gameconst.StagePerServer; i++ {
-		stg := stage.New(svr.log, svr.config)
+		stg := stage3d.New(svr.log, svr.config)
 		svr.stageManager.Add(stg)
 		go stg.Run(ctx)
 	}
