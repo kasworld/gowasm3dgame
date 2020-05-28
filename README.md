@@ -1,9 +1,17 @@
-# gowasm3dgame
+# webgl을 사용하는 여러 종류의 게임(stage)을 지원하는 온라인 게임 프레임웍 
+
+여러 종류의 stage를 하나의 client를 사용해 실행 가능합니다. 
+
+예제 
+
+2d stage like gowasm2dclient gl
+![screenshot](2d.png)
+
+3d stage 
+![screenshot](3d.png)
 
 remake of [go4game](https://github.com/kasworld/go4game)
 
-
-[![gowasm3dgame](https://img.youtube.com/vi/xC3vTiiO6CA/0.jpg)](https://www.youtube.com/watch?v=xC3vTiiO6CA "gowasm3dgame")
 
 꽤 예전에 서버 기반 게임 프레임웍 으로 만들었던 go4game을 remake 한 프로젝트 입니다. 
 
@@ -38,14 +46,3 @@ open client web
     http://localhost:34101/
 
 
-# 여러 종류의 게임(stage)을 지원 
-
-여러 종류의 stage를 하나의 client를 사용해 실행 가능한 형태로 업데이트중 
-
-예제 
-
-2d stage like gowasm2dclient gl
-![screenshot](2d.png)
-
-3d stage 
-![screenshot](3d.png)
