@@ -66,7 +66,7 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
 		vector3f.Vector3f{
 			bt.rnd.Float64() * maxv,
 			bt.rnd.Float64() * maxv,
-			0, //bt.rnd.Float64() * maxv,
+			gameobjtype.MaxRadius,
 		}.NormalizedTo(maxv),
 	)
 
@@ -77,7 +77,7 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
 		vector3f.Vector3f{
 			bt.rnd.Float64() * maxv,
 			bt.rnd.Float64() * maxv,
-			0, //bt.rnd.Float64() * maxv,
+			gameobjtype.MaxRadius,
 		}.NormalizedTo(maxv),
 	)
 
@@ -105,7 +105,7 @@ func (bt *Team) RandPosVt() vector3f.Vector3f {
 	return vector3f.Vector3f{
 		bt.rnd.Float64() * gameconst.StageSize,
 		bt.rnd.Float64() * gameconst.StageSize,
-		0, //bt.rnd.Float64() * gameconst.StageSize,
+		gameobjtype.MaxRadius,
 	}
 }
 

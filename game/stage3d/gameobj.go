@@ -79,14 +79,14 @@ func (o *GameObj) CheckLife(now int64) bool {
 	return now-o.BirthTick < lifetick
 }
 
-func (o *GameObj) BounceNormalize(size float64) {
+func (o *GameObj) BounceNormalize(border vector3f.Cube) {
 	for i := 0; i < 3; i++ {
-		if o.PosVt[i] < 0 {
-			o.PosVt[i] = 0
+		if o.PosVt[i] < border.Min[i] {
+			o.PosVt[i] = border.Min[i]
 			o.VelVt[i] = abs.Absf(o.VelVt[i])
 		}
-		if o.PosVt[i] > size {
-			o.PosVt[i] = size
+		if o.PosVt[i] > border.Max[i] {
+			o.PosVt[i] = border.Max[i]
 			o.VelVt[i] = -abs.Absf(o.VelVt[i])
 		}
 	}

@@ -18,11 +18,14 @@ import (
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idcmd"
 )
 
+// Invalid not used, make empty packet error
 type ReqInvalid_data struct {
-	Dummy uint8
+	Dummy uint8 // change as you need
 }
+
+// Invalid not used, make empty packet error
 type RspInvalid_data struct {
-	Dummy uint8
+	Dummy uint8 // change as you need
 }
 
 type ReqLogin_data struct {
@@ -54,11 +57,14 @@ type RspChat_data struct {
 	Dummy uint8
 }
 
+// Act send user action
 type ReqAct_data struct {
-	Dummy uint8
+	Dummy uint8 // change as you need
 }
+
+// Act send user action
 type RspAct_data struct {
-	Dummy uint8
+	Dummy uint8 // change as you need
 }
 
 //////////////////////////////////////////////////////////////////////////////

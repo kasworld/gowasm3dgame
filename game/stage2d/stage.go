@@ -208,15 +208,15 @@ func (stg *Stage) handleBallKilled(now int64, gobj [2]*GameObj) {
 func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 	toDeleteList := make([]*GameObj, 0)
 	bt.Ball.Move_straight(now)
-	bt.Ball.BounceNormalize(gameconst.StageSize)
+	bt.Ball.BounceNormalize(stg.BorderBounce)
 
 	bt.HomeMark.Move_straight(now)
-	bt.HomeMark.BounceNormalize(gameconst.StageSize)
+	bt.HomeMark.BounceNormalize(stg.BorderBounce)
 	if stg.rnd.Intn(100) == 0 {
 		randvt := vector3f.Vector3f{
 			stg.rnd.Float64() * gameconst.StageSize,
 			stg.rnd.Float64() * gameconst.StageSize,
-			0, //stg.rnd.Float64() * gameconst.StageSize,
+			gameobjtype.MaxRadius,
 		}
 		bt.HomeMark.AccelTo(randvt)
 	}
@@ -283,12 +283,12 @@ func (stg *Stage) ToPacket_StageInfo() *w3d_obj.NotiStageInfo_data {
 		gameconst.StageSize / 2,
 		gameconst.StageSize / 2,
 		gameconst.StageSize,
-	} //rtn.ObjList[0].PosVt
+	}
 	rtn.CameraLookAt = [3]float32{
 		gameconst.StageSize / 2,
 		gameconst.StageSize / 2,
 		0,
-	} //rtn.ObjList[1].PosVt
+	}
 	return rtn
 }
 
