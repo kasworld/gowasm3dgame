@@ -88,7 +88,7 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 		teamcolor = append(teamcolor, co)
 	}
 	for _, v := range teamcolor {
-		wd.Teams = append(wd.Teams, NewTeam(l, v))
+		wd.Teams = append(wd.Teams, NewTeam(l, v, wd.BorderBounce))
 	}
 	return wd
 }
@@ -208,10 +208,10 @@ func (stg *Stage) handleBallKilled(now int64, gobj [2]*GameObj) {
 func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 	toDeleteList := make([]*GameObj, 0)
 	bt.Ball.Move_straight(now)
-	bt.Ball.BounceNormalize(stg.BorderBounce)
+	bt.Ball.BounceNormalize(bt.BorderBounce)
 
 	bt.HomeMark.Move_straight(now)
-	bt.HomeMark.BounceNormalize(stg.BorderBounce)
+	bt.HomeMark.BounceNormalize(bt.BorderBounce)
 	if stg.rnd.Intn(100) == 0 {
 		randvt := vector3f.Vector3f{
 			stg.rnd.Float64() * gameconst.StageSize,

@@ -31,9 +31,10 @@ type Team struct {
 	rnd *rand.Rand      `prettystring:"hide"`
 	log *w3dlog.LogBase `prettystring:"hide"`
 
-	ActStats acttype_vector.ActTypeVector
-	Color24  htmlcolors.Color24
-	UUID     string
+	ActStats     acttype_vector.ActTypeVector
+	Color24      htmlcolors.Color24
+	UUID         string
+	BorderBounce vector3f.Cube
 
 	IsAlive     bool
 	RespawnTick int64
@@ -48,15 +49,16 @@ type Team struct {
 	Death    int
 }
 
-func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
+func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24, BorderBounce vector3f.Cube) *Team {
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	bt := &Team{
-		rnd:     rnd,
-		log:     l,
-		UUID:    uuidstr.New(),
-		IsAlive: true,
-		Color24: color,
-		Objs:    make([]*GameObj, 0),
+		rnd:          rnd,
+		log:          l,
+		UUID:         uuidstr.New(),
+		BorderBounce: BorderBounce,
+		IsAlive:      true,
+		Color24:      color,
+		Objs:         make([]*GameObj, 0),
 	}
 
 	maxv := gameobjtype.Attrib[gameobjtype.HomeMark].SpeedLimit
@@ -66,7 +68,7 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
 		vector3f.Vector3f{
 			bt.rnd.Float64() * maxv,
 			bt.rnd.Float64() * maxv,
-			gameobjtype.MaxRadius,
+			0,
 		}.NormalizedTo(maxv),
 	)
 
@@ -77,7 +79,7 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24) *Team {
 		vector3f.Vector3f{
 			bt.rnd.Float64() * maxv,
 			bt.rnd.Float64() * maxv,
-			gameobjtype.MaxRadius,
+			0,
 		}.NormalizedTo(maxv),
 	)
 
@@ -101,11 +103,13 @@ func (bt *Team) RandRotVt() vector3f.Vector3f {
 		bt.rnd.Float64() * math.Pi,
 	}
 }
+
 func (bt *Team) RandPosVt() vector3f.Vector3f {
+	svt := bt.BorderBounce.SizeVector()
 	return vector3f.Vector3f{
-		bt.rnd.Float64() * gameconst.StageSize,
-		bt.rnd.Float64() * gameconst.StageSize,
-		gameobjtype.MaxRadius,
+		bt.rnd.Float64()*svt[0] + bt.BorderBounce.Min[0],
+		bt.rnd.Float64()*svt[1] + bt.BorderBounce.Min[1],
+		bt.rnd.Float64()*svt[2] + bt.BorderBounce.Min[2],
 	}
 }
 
