@@ -28,40 +28,40 @@ func (vp *Viewport) initGrid() {
 	outerStageSize := gameconst.StageSize + gameobjtype.MaxRadius*2
 	innerStageSize := gameconst.StageSize
 
-	helper := vp.ThreeJsNew("GridHelper", outerStageSize, 100, 0x0000ff, 0x404040)
+	helper := vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0x0000ff, 0x404040)
 	helper.Get("position").Set("x", innerStageSize/2)
 	helper.Get("position").Set("y", -gameobjtype.MaxRadius)
 	helper.Get("position").Set("z", innerStageSize/2)
 	vp.scene.Call("add", helper)
 
-	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 100, 0xffff00, 0x404040)
+	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0xffff00, 0x404040)
 	helper.Get("position").Set("x", innerStageSize/2)
 	helper.Get("position").Set("y", gameconst.StageSize+gameobjtype.MaxRadius)
 	helper.Get("position").Set("z", innerStageSize/2)
 	vp.scene.Call("add", helper)
 
-	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 100, 0xff0000, 0x404040)
+	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0xff0000, 0x404040)
 	helper.Get("rotation").Set("z", math.Pi/2)
 	helper.Get("position").Set("x", -gameobjtype.MaxRadius)
 	helper.Get("position").Set("y", innerStageSize/2)
 	helper.Get("position").Set("z", innerStageSize/2)
 	vp.scene.Call("add", helper)
 
-	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 100, 0x00ffff, 0x404040)
+	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0x00ffff, 0x404040)
 	helper.Get("rotation").Set("z", math.Pi/2)
 	helper.Get("position").Set("x", gameconst.StageSize+gameobjtype.MaxRadius)
 	helper.Get("position").Set("y", innerStageSize/2)
 	helper.Get("position").Set("z", innerStageSize/2)
 	vp.scene.Call("add", helper)
 
-	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 100, 0x00ff00, 0x404040)
+	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0x00ff00, 0x404040)
 	helper.Get("rotation").Set("x", math.Pi/2)
 	helper.Get("position").Set("x", innerStageSize/2)
 	helper.Get("position").Set("y", innerStageSize/2)
 	helper.Get("position").Set("z", -gameobjtype.MaxRadius)
 	vp.scene.Call("add", helper)
 
-	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 100, 0xff00ff, 0x404040)
+	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0xff00ff, 0x404040)
 	helper.Get("rotation").Set("x", math.Pi/2)
 	helper.Get("position").Set("x", innerStageSize/2)
 	helper.Get("position").Set("y", innerStageSize/2)

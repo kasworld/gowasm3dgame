@@ -7,8 +7,13 @@
 2d stage like gowasm2dclient gl
 ![screenshot](2d.png)
 
+https://www.youtube.com/watch?v=U3k1cbRbZNw
+
+
 3d stage 
 ![screenshot](3d.png)
+
+https://www.youtube.com/watch?v=Gfl7N7aNESI
 
 remake of [go4game](https://github.com/kasworld/go4game)
 
