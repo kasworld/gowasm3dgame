@@ -130,6 +130,10 @@ func (app *WasmClient) enterStage() {
 
 	app.ResizeCanvas()
 	app.vp.Focus()
+
+	app.systemMessage.Appendf("Welcome gowasm3dgame %v", app.loginData.NickName)
+	app.systemMessage.Appendf("Enter stage %v", app.loginData.StageUUID)
+
 	js.Global().Call("requestAnimationFrame", js.FuncOf(app.drawCanvas))
 
 	timerPingTk := time.NewTicker(time.Second)

@@ -32,6 +32,7 @@ type ReqLogin_data struct {
 	SessionKey string
 	NickName   string
 	AuthKey    string
+	StageNum   int
 }
 type RspLogin_data struct {
 	Version         string
@@ -39,6 +40,7 @@ type RspLogin_data struct {
 	DataVersion     string
 
 	SessionKey string
+	StageUUID  string
 	NickName   string
 	CmdList    [w3d_idcmd.CommandID_Count]bool
 }
@@ -59,7 +61,8 @@ type RspChat_data struct {
 
 // Act send user action
 type ReqAct_data struct {
-	Dummy uint8 // change as you need
+	Act acttype.ActType
+	Dir [3]float32
 }
 
 // Act send user action
