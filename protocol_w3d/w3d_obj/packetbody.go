@@ -15,6 +15,7 @@ import (
 	"github.com/kasworld/gowasm3dgame/enum/acttype"
 	"github.com/kasworld/gowasm3dgame/enum/acttype_vector"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/enum/stagetype"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idcmd"
 )
 
@@ -29,10 +30,10 @@ type RspInvalid_data struct {
 }
 
 type ReqLogin_data struct {
-	SessionKey string
-	NickName   string
-	AuthKey    string
-	StageNum   int
+	SessionKey   string
+	NickName     string
+	AuthKey      string
+	StageToEnter string // stage number or uuid, empty or unknown to random
 }
 type RspLogin_data struct {
 	Version         string
@@ -41,6 +42,7 @@ type RspLogin_data struct {
 
 	SessionKey string
 	StageUUID  string
+	StageType  stagetype.StageType
 	NickName   string
 	CmdList    [w3d_idcmd.CommandID_Count]bool
 }

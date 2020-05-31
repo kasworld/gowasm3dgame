@@ -13,11 +13,13 @@ package stagemanager
 
 import (
 	"sync"
+
+	"github.com/kasworld/gowasm3dgame/enum/stagetype"
 )
 
 type stageI interface {
 	GetUUID() string
-	// GetConnManager() *w3d_connbytemanager.Manager
+	GetStageType() stagetype.StageType
 }
 
 type stageList []stageI

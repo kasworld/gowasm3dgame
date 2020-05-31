@@ -132,7 +132,9 @@ func (app *WasmClient) enterStage() {
 	app.vp.Focus()
 
 	app.systemMessage.Appendf("Welcome gowasm3dgame %v", app.loginData.NickName)
-	app.systemMessage.Appendf("Enter stage %v", app.loginData.StageUUID)
+	app.systemMessage.Appendf("Enter %v %v",
+		app.loginData.StageType,
+		app.loginData.StageUUID)
 
 	js.Global().Call("requestAnimationFrame", js.FuncOf(app.drawCanvas))
 

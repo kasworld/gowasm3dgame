@@ -68,7 +68,8 @@ func (app *WasmClient) makeTeamStatsInfo() string {
 
 	var buf bytes.Buffer
 
-	fmt.Fprintf(&buf, "Stage %v<br/>", app.loginData.StageUUID)
+	fmt.Fprintf(&buf, "%v %v<br/>",
+		app.loginData.StageType, app.loginData.StageUUID)
 
 	buf.WriteString(`<table border=1 style="border-collapse:collapse;">`)
 	buf.WriteString(`<tr>

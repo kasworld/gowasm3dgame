@@ -121,6 +121,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 			DataVersion:     gameconst.DataVersion,
 			SessionKey:      recvBody.SessionKey,
 			StageUUID:       ss.StageID,
+			StageType:       stg.GetStageType(),
 			NickName:        recvBody.NickName,
 			CmdList:         *w3d_authorize.NewAllSet(),
 		}

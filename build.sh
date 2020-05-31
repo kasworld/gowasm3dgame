@@ -48,6 +48,7 @@ cd ..
 
 genenum -typename=ActType -packagename=acttype -basedir=enum -vectortype=int
 genenum -typename=GameObjType -packagename=gameobjtype -basedir=enum -vectortype=int
+genenum -typename=StageType -packagename=stagetype -basedir=enum -vectortype=int
 
 cd enum 
 goimports -w .

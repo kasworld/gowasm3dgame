@@ -14,6 +14,7 @@ package stage3d
 import (
 	"fmt"
 
+	"github.com/kasworld/gowasm3dgame/enum/stagetype"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 )
@@ -24,6 +25,10 @@ func (stg *Stage) String() string {
 
 func (stg *Stage) GetUUID() string {
 	return stg.UUID
+}
+
+func (stg *Stage) GetStageType() stagetype.StageType {
+	return stagetype.Stage3D
 }
 
 func (stg *Stage) GetConnManager() *w3d_connbytemanager.Manager {
