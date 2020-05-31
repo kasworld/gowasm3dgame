@@ -12,6 +12,9 @@
 package stagemanager
 
 import (
+	"sort"
+	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/kasworld/gowasm3dgame/enum/stagetype"
@@ -97,4 +100,22 @@ func (man *Manager) Del(stg stageI) stageI {
 	old := man.id2stage[stg.GetUUID()]
 	delete(man.id2stage, stg.GetUUID())
 	return old
+}
+
+// GetStageByStageToEnter return
+// random stage if empty
+// stage by number if parse as int
+// stage by uuid
+func (man *Manager) GetStageByStageToEnter(StageToEnter string) stageI {
+	StageToEnter = strings.TrimSpace(StageToEnter)
+	if StageToEnter == "" {
+		return man.GetAny()
+	}
+	if i64, err := strconv.ParseInt(StageToEnter, 0, 64); err == nil {
+		stgList := man.GetList()
+		sort.Sort(stageList(stgList))
+		i := int(i64) % len(stgList)
+		return stgList[i]
+	}
+	return man.GetByUUID(StageToEnter)
 }

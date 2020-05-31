@@ -106,7 +106,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 	connData.Session = ss
 
 	// select stage to play
-	stg := svr.stageManager.GetAny()
+	stg := svr.stageManager.GetStageByStageToEnter(recvBody.StageToEnter)
 	ss.StageID = stg.GetUUID()
 	stg.(stageApiI).GetConnManager().Add(connData.UUID, c2sc)
 

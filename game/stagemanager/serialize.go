@@ -35,27 +35,27 @@ func (man *Manager) ToWeb(w http.ResponseWriter, r *http.Request) {
 
 func (man *Manager) ToWebMid(w http.ResponseWriter, r *http.Request) {
 
-	connList := man.GetList()
-	sort.Sort(stageList(connList))
+	stgList := man.GetList()
+	sort.Sort(stageList(stgList))
 	page := weblib.GetIntByName("page", -1, w, r)
 	if page < 0 {
 		return
 	}
 	pagesize := 20
 
-	weblib.PageMid(len(connList), pagesize, "/StageManager", w, r)
+	weblib.PageMid(len(stgList), pagesize, "/StageManager", w, r)
 
 	st := page * pagesize
-	if st < 0 || st >= len(connList) {
+	if st < 0 || st >= len(stgList) {
 		st = 0
 	}
 
 	ed := st + pagesize
-	if ed > len(connList) {
-		ed = len(connList)
+	if ed > len(stgList) {
+		ed = len(stgList)
 	}
 
-	rtn := connList[st:ed]
+	rtn := stgList[st:ed]
 
 	tplIndex, err := template.New("index").Parse(`
 	<table border=1 style="border-collapse:collapse;">` +
