@@ -84,28 +84,28 @@ func InitApp() {
 		},
 	))
 
-	go func() {
-		str := loadStageListHTML()
-		js.Global().Get("document").Call("getElementById", "stagelist").Set("innerHTML", str)
-	}()
-
 	js.Global().Set("clearNickname", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		go clientcookie.ClearSession()
 		return nil
 	}))
-	js.Global().Set("enterGame", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		go app.enterStage()
+	js.Global().Set("enterStage", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		go app.enterStage(args[0].String())
 		return nil
 	}))
+
+	go func() {
+		str := loadStageListHTML()
+		js.Global().Get("document").Call("getElementById", "stagelist").Set("innerHTML", str)
+	}()
 }
 
-func (app *WasmClient) enterStage() {
+func (app *WasmClient) enterStage(stageUUID string) {
 	ctx, closeCtx := context.WithCancel(context.Background())
 	app.DoClose = closeCtx
 	defer app.DoClose()
 
 	var err error
-	if app.loginData, err = app.NetInit(ctx); err != nil {
+	if app.loginData, err = app.NetInit(ctx, stageUUID); err != nil {
 		fmt.Printf("%v\n", err)
 		return
 	}

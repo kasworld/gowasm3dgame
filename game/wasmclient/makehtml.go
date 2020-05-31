@@ -128,9 +128,10 @@ func loadStageListHTML() string {
 	for i, stg := range aol {
 		fmt.Fprintf(&buf, `
 		<tr>
-		<td>%v</td> <td>%v</td> <td>%v</td> <td>Enter Stage</td> 
+		<td>%v</td> <td>%v</td> <td>%v</td> 
+		<td><button type="button" style="font-size:20px;" onclick="enterStage('%v')">Enter Stage</button></td> 
 		</tr>`,
-			i, stg.UUID, stg.StageType,
+			i, stg.UUID, stg.StageType, stg.UUID,
 		)
 	}
 	buf.WriteString(`

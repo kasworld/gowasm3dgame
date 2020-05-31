@@ -43,7 +43,7 @@ func getConnURL() string {
 	return u.String()
 }
 
-func (app *WasmClient) NetInit(ctx context.Context) (*w3d_obj.RspLogin_data, error) {
+func (app *WasmClient) NetInit(ctx context.Context, stageUUID string) (*w3d_obj.RspLogin_data, error) {
 	app.wsConn = w3d_connwasm.New(
 		getConnURL(),
 		w3d_gob.MarshalBodyFn,
@@ -76,9 +76,10 @@ func (app *WasmClient) NetInit(ctx context.Context) (*w3d_obj.RspLogin_data, err
 	app.ReqWithRspFn(
 		w3d_idcmd.Login,
 		&w3d_obj.ReqLogin_data{
-			SessionKey: sessionkey,
-			NickName:   nick,
-			AuthKey:    authkey,
+			SessionKey:   sessionkey,
+			NickName:     nick,
+			AuthKey:      authkey,
+			StageToEnter: stageUUID,
 		},
 		func(hd w3d_packet.Header, rsp interface{}) error {
 			rtn = rsp.(*w3d_obj.RspLogin_data)
