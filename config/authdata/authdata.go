@@ -43,6 +43,7 @@ var allAuthorizationSet = map[string]*w3d_authorize.AuthorizedCmds{
 	"Login": w3d_authorize.NewByCmdIDList([]w3d_idcmd.CommandID{
 		w3d_idcmd.Heartbeat,
 		w3d_idcmd.Chat,
+		w3d_idcmd.StatsInfo,
 	}),
 	"Admin": w3d_authorize.NewByCmdIDList([]w3d_idcmd.CommandID{}),
 }

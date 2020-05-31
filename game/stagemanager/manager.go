@@ -13,13 +13,11 @@ package stagemanager
 
 import (
 	"sync"
-
-	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"
 )
 
 type stageI interface {
 	GetUUID() string
-	GetConnManager() *w3d_connbytemanager.Manager
+	// GetConnManager() *w3d_connbytemanager.Manager
 }
 
 type stageList []stageI

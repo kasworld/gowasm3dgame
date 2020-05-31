@@ -15,6 +15,7 @@ import (
 	"fmt"
 
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 )
 
 func (stg *Stage) String() string {
@@ -27,4 +28,22 @@ func (stg *Stage) GetUUID() string {
 
 func (stg *Stage) GetConnManager() *w3d_connbytemanager.Manager {
 	return stg.Conns
+}
+
+func (stg *Stage) ToPacket_StatsInfo() *w3d_obj.RspStatsInfo_data {
+	rtn := &w3d_obj.RspStatsInfo_data{}
+	for _, bt := range stg.Teams {
+		teamStats := w3d_obj.TeamStat{
+			UUID:     bt.UUID,
+			Alive:    bt.IsAlive,
+			AP:       int(bt.ActPoint),
+			Score:    int(bt.Score),
+			Kill:     bt.Kill,
+			Death:    bt.Death,
+			Color24:  uint32(bt.Color24),
+			ActStats: bt.ActStats,
+		}
+		rtn.Stats = append(rtn.Stats, teamStats)
+	}
+	return rtn
 }

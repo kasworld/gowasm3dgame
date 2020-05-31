@@ -23,7 +23,6 @@ import (
 var DemuxNoti2ObjFnMap = [...]func(me interface{}, hd w3d_packet.Header, body interface{}) error{
 	w3d_idnoti.Invalid:   objRecvNotiFn_Invalid,
 	w3d_idnoti.StageInfo: objRecvNotiFn_StageInfo,
-	w3d_idnoti.StatsInfo: objRecvNotiFn_StatsInfo,
 	w3d_idnoti.StageChat: objRecvNotiFn_StageChat,
 }
 
@@ -48,20 +47,6 @@ func objRecvNotiFn_StageInfo(me interface{}, hd w3d_packet.Header, body interfac
 
 	app.ServerClientTictDiff = robj.Tick - time.Now().UnixNano()
 	app.updateLeftInfo()
-	return nil
-}
-
-func objRecvNotiFn_StatsInfo(me interface{}, hd w3d_packet.Header, body interface{}) error {
-	robj, ok := body.(*w3d_obj.NotiStatsInfo_data)
-	if !ok {
-		return fmt.Errorf("packet mismatch %v", body)
-	}
-	app, ok := me.(*WasmClient)
-	if !ok {
-		return fmt.Errorf("packet mismatch %v", body)
-	}
-	app.statsInfo = robj
-	app.updateCenterInfo()
 	return nil
 }
 

@@ -70,6 +70,16 @@ type RspAct_data struct {
 	Dummy uint8 // change as you need
 }
 
+// StatsInfo game stats info
+type ReqStatsInfo_data struct {
+	Dummy uint8 // change as you need
+}
+
+// StatsInfo game stats info
+type RspStatsInfo_data struct {
+	Stats []TeamStat
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 type NotiInvalid_data struct {
@@ -81,11 +91,6 @@ type NotiStageInfo_data struct {
 	CameraPos    [3]float32
 	CameraLookAt [3]float32
 	ObjList      []*GameObj
-}
-
-type NotiStatsInfo_data struct {
-	UUID  string
-	Stats []TeamStat
 }
 
 type NotiStageChat_data struct {

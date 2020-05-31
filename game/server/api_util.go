@@ -9,41 +9,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package stage3d
+package server
 
 import (
 	"fmt"
 
+	"github.com/kasworld/gowasm3dgame/lib/conndata"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
+	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_serveconnbyte"
 )
 
-func (stg *Stage) String() string {
-	return fmt.Sprintf("Team(%v)", len(stg.Teams))
-}
-
-func (stg *Stage) GetUUID() string {
-	return stg.UUID
-}
-
-func (stg *Stage) GetConnManager() *w3d_connbytemanager.Manager {
-	return stg.Conns
-}
-
-func (stg *Stage) ToPacket_StatsInfo() *w3d_obj.RspStatsInfo_data {
-	rtn := &w3d_obj.RspStatsInfo_data{}
-	for _, bt := range stg.Teams {
-		teamStats := w3d_obj.TeamStat{
-			UUID:     bt.UUID,
-			Alive:    bt.IsAlive,
-			AP:       int(bt.ActPoint),
-			Score:    int(bt.Score),
-			Kill:     bt.Kill,
-			Death:    bt.Death,
-			Color24:  uint32(bt.Color24),
-			ActStats: bt.ActStats,
-		}
-		rtn.Stats = append(rtn.Stats, teamStats)
+func (svr *Server) api_me2conndata(me interface{}) (*conndata.ConnData, error) {
+	conn, ok := me.(*w3d_serveconnbyte.ServeConnByte)
+	if !ok {
+		return nil, fmt.Errorf("Packet type miss match %v", me)
 	}
-	return rtn
+	connData, ok := conn.GetConnData().(*conndata.ConnData)
+	if !ok {
+		return nil, fmt.Errorf("Packet type miss match %v", conn.GetConnData())
+	}
+	return connData, nil
+}
+
+type stageApiI interface {
+	GetConnManager() *w3d_connbytemanager.Manager
+	ToPacket_StatsInfo() *w3d_obj.RspStatsInfo_data
 }

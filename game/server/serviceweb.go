@@ -86,7 +86,7 @@ func (svr *Server) serveWebSocketClient(ctx context.Context, w http.ResponseWrit
 	if ss := connData.Session; ss != nil {
 		stg := svr.stageManager.GetByUUID(ss.StageID)
 		if stg != nil {
-			stg.GetConnManager().Del(connData.UUID)
+			stg.(stageApiI).GetConnManager().Del(connData.UUID)
 		}
 	}
 }

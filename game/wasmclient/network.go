@@ -178,3 +178,16 @@ func (app *WasmClient) sendPacket(cmd w3d_idcmd.CommandID, arg interface{}) {
 		},
 	)
 }
+
+func (app *WasmClient) reqStatsInfo() error {
+	return app.ReqWithRspFn(
+		w3d_idcmd.StatsInfo,
+		&w3d_obj.ReqStatsInfo_data{},
+		func(hd w3d_packet.Header, rsp interface{}) error {
+			rpk := rsp.(*w3d_obj.RspStatsInfo_data)
+			app.statsInfo = rpk
+			app.updateCenterInfo()
+			return nil
+		},
+	)
+}

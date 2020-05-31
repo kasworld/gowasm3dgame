@@ -48,7 +48,7 @@ type WasmClient struct {
 	vp                 *Viewport
 
 	loginData *w3d_obj.RspLogin_data
-	statsInfo *w3d_obj.NotiStatsInfo_data
+	statsInfo *w3d_obj.RspStatsInfo_data
 }
 
 func InitApp() {
@@ -149,6 +149,9 @@ loop:
 			app.systemMessage.Appendf("%.1fFPS",
 				1.0/app.DispInterDur.GetInterval().GetLastDuration().Seconds())
 			app.updateRightInfo()
+			if gameOptions.GetByIDBase("CenterInfo").State == 1 {
+				go app.reqStatsInfo()
+			}
 		}
 	}
 }

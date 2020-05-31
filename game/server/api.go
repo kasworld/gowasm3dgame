@@ -41,6 +41,7 @@ func (svr *Server) setFnMap() {
 		w3d_idcmd.Heartbeat: svr.bytesAPIFn_ReqHeartbeat, // Heartbeat prevent connection timeout
 		w3d_idcmd.Chat:      svr.bytesAPIFn_ReqChat,      // Chat chat to stage
 		w3d_idcmd.Act:       svr.bytesAPIFn_ReqAct,       // Act send user action
+		w3d_idcmd.StatsInfo: svr.bytesAPIFn_ReqStatsInfo, // StatsInfo game stats info
 
 	}
 }
@@ -107,7 +108,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 	// select stage to play
 	stg := svr.stageManager.GetAny()
 	ss.StageID = stg.GetUUID()
-	stg.GetConnManager().Add(connData.UUID, c2sc)
+	stg.(stageApiI).GetConnManager().Add(connData.UUID, c2sc)
 
 	// user login?
 
@@ -141,13 +142,9 @@ func (svr *Server) bytesAPIFn_ReqChat(
 	}
 	_ = recvBody
 
-	conn, ok := me.(*w3d_serveconnbyte.ServeConnByte)
-	if !ok {
-		return hd, nil, fmt.Errorf("Packet type miss match %v", me)
-	}
-	connData, ok := conn.GetConnData().(*conndata.ConnData)
-	if !ok {
-		return hd, nil, fmt.Errorf("Packet type miss match %v", conn.GetConnData())
+	connData, err := svr.api_me2conndata(me)
+	if err != nil {
+		return hd, nil, err
 	}
 
 	stg := svr.stageManager.GetByUUID(connData.Session.StageID)
@@ -155,7 +152,7 @@ func (svr *Server) bytesAPIFn_ReqChat(
 		svr.log.Fatal("no stage to chat %v", connData)
 		return hd, nil, fmt.Errorf("stage not ready %v", connData)
 	}
-	connList := stg.GetConnManager().GetList()
+	connList := stg.(stageApiI).GetConnManager().GetList()
 	noti := &w3d_obj.NotiStageChat_data{
 		SenderNick: connData.Session.NickName,
 		Chat:       recvBody.Chat,
@@ -214,5 +211,37 @@ func (svr *Server) bytesAPIFn_ReqHeartbeat(
 	sendBody := &w3d_obj.RspHeartbeat_data{
 		Tick: recvBody.Tick,
 	}
+	return sendHeader, sendBody, nil
+}
+
+// StatsInfo game stats info
+func (svr *Server) bytesAPIFn_ReqStatsInfo(
+	me interface{}, hd w3d_packet.Header, rbody []byte) (
+	w3d_packet.Header, interface{}, error) {
+	robj, err := w3d_gob.UnmarshalPacket(hd, rbody)
+	if err != nil {
+		return hd, nil, fmt.Errorf("Packet type miss match %v", rbody)
+	}
+	recvBody, ok := robj.(*w3d_obj.ReqStatsInfo_data)
+	if !ok {
+		return hd, nil, fmt.Errorf("Packet type miss match %v", robj)
+	}
+	_ = recvBody
+
+	connData, err := svr.api_me2conndata(me)
+	if err != nil {
+		return hd, nil, err
+	}
+
+	stg := svr.stageManager.GetByUUID(connData.Session.StageID)
+	if stg == nil {
+		svr.log.Fatal("no stage to chat %v", connData)
+		return hd, nil, fmt.Errorf("stage not ready %v", connData)
+	}
+
+	sendHeader := w3d_packet.Header{
+		ErrorCode: w3d_error.None,
+	}
+	sendBody := stg.(stageApiI).ToPacket_StatsInfo()
 	return sendHeader, sendBody, nil
 }

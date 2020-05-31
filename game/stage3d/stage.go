@@ -107,13 +107,7 @@ func (stg *Stage) Run(ctx context.Context) {
 		case <-ctx.Done():
 			return
 		case <-timerInfoTk.C:
-			si := stg.ToPacket_StatsInfo()
-			conlist := stg.Conns.GetList()
-			for _, v := range conlist {
-				v.SendNotiPacket(w3d_idnoti.StatsInfo,
-					si,
-				)
-			}
+
 		case <-timerTurnTk.C:
 			stg.Turn()
 			si := stg.ToPacket_StageInfo()
@@ -281,25 +275,5 @@ func (stg *Stage) ToPacket_StageInfo() *w3d_obj.NotiStageInfo_data {
 	}
 	rtn.CameraPos = rtn.ObjList[0].PosVt
 	rtn.CameraLookAt = rtn.ObjList[1].PosVt
-	return rtn
-}
-
-func (stg *Stage) ToPacket_StatsInfo() *w3d_obj.NotiStatsInfo_data {
-	rtn := &w3d_obj.NotiStatsInfo_data{
-		UUID: stg.UUID,
-	}
-	for _, bt := range stg.Teams {
-		teamStats := w3d_obj.TeamStat{
-			UUID:     bt.UUID,
-			Alive:    bt.IsAlive,
-			AP:       int(bt.ActPoint),
-			Score:    int(bt.Score),
-			Kill:     bt.Kill,
-			Death:    bt.Death,
-			Color24:  uint32(bt.Color24),
-			ActStats: bt.ActStats,
-		}
-		rtn.Stats = append(rtn.Stats, teamStats)
-	}
 	return rtn
 }
