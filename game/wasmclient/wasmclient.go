@@ -84,6 +84,11 @@ func InitApp() {
 		},
 	))
 
+	go func() {
+		str := loadStageListHTML()
+		js.Global().Get("document").Call("getElementById", "stagelist").Set("innerHTML", str)
+	}()
+
 	js.Global().Set("clearNickname", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		go clientcookie.ClearSession()
 		return nil

@@ -14,10 +14,14 @@ package wasmclient
 import (
 	"bytes"
 	"fmt"
+	"net/url"
+	"syscall/js"
 
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/enum/acttype"
+	"github.com/kasworld/gowasm3dgame/game/stagelist4client"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_version"
+	"github.com/kasworld/gowasmlib/jslog"
 )
 
 func (app *WasmClient) makeButtons() string {
@@ -104,4 +108,47 @@ func (app *WasmClient) makeTeamStatsInfo() string {
 	buf.WriteString(`</table>`)
 
 	return buf.String()
+}
+
+func loadStageListHTML() string {
+	tlurl := ReplacePathFromHref("stagelist.json")
+	aol, err := stagelist4client.LoadFromURL(tlurl)
+	if err != nil {
+		jslog.Errorf("highsstagelistcore load fail %v", err)
+		return "fail to load stagelist"
+	}
+	var buf bytes.Buffer
+	buf.WriteString(`
+		stage list in server
+		<table border=2>
+		<tr>
+		<th>Number</th> <th>UUID</th> <th>Type</th> <th>Command</th> 
+		</tr>	
+		`)
+	for i, stg := range aol {
+		fmt.Fprintf(&buf, `
+		<tr>
+		<td>%v</td> <td>%v</td> <td>%v</td> <td>Enter Stage</td> 
+		</tr>`,
+			i, stg.UUID, stg.StageType,
+		)
+	}
+	buf.WriteString(`
+		<tr>
+		<th>Number</th> <th>UUID</th> <th>Type</th> <th>Command</th> 
+		</tr>
+		</table>
+		`)
+	return buf.String()
+}
+
+func ReplacePathFromHref(s string) string {
+	loc := js.Global().Get("window").Get("location").Get("href")
+	u, err := url.Parse(loc.String())
+	if err != nil {
+		jslog.Errorf("%v", err)
+		return ""
+	}
+	u.Path = s
+	return u.String()
 }

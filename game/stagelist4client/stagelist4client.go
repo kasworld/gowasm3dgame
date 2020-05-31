@@ -12,6 +12,9 @@
 package stagelist4client
 
 import (
+	"encoding/json"
+	"net/http"
+
 	"github.com/kasworld/gowasm3dgame/enum/stagetype"
 )
 
@@ -20,4 +23,19 @@ type StageList []Stage
 type Stage struct {
 	UUID      string
 	StageType stagetype.StageType
+}
+
+func LoadFromURL(u string) (StageList, error) {
+	rdata := make(StageList, 0)
+	resp, err := http.Get(u)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	dec := json.NewDecoder(resp.Body)
+	err = dec.Decode(&rdata)
+	if err != nil {
+		return nil, err
+	}
+	return rdata, nil
 }
