@@ -114,7 +114,7 @@ func loadStageListHTML() string {
 	tlurl := ReplacePathFromHref("stagelist.json")
 	aol, err := stagelist4client.LoadFromURL(tlurl)
 	if err != nil {
-		jslog.Errorf("highsstagelistcore load fail %v", err)
+		jslog.Errorf("stagelist load fail %v", err)
 		return "fail to load stagelist"
 	}
 	var buf bytes.Buffer
