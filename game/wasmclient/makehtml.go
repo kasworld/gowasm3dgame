@@ -120,7 +120,7 @@ func loadStageListHTML() string {
 	var buf bytes.Buffer
 	buf.WriteString(`
 		stage list in server
-		<table border=2>
+		<table border=1 style="border-collapse:collapse;">
 		<tr>
 		<th>Number</th> <th>UUID</th> <th>Type</th> <th>Command</th> 
 		</tr>	
