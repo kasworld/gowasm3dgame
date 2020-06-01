@@ -19,7 +19,6 @@ import (
 )
 
 type Viewport struct {
-	neecRecalc bool
 	ViewWidth  int
 	ViewHeight int
 	RefSize    int
@@ -64,7 +63,6 @@ func (vp *Viewport) Hide() {
 	vp.Canvas.Get("style").Set("display", "none")
 }
 func (vp *Viewport) Show() {
-	vp.neecRecalc = true
 	vp.Canvas.Get("style").Set("display", "initial")
 }
 
@@ -93,7 +91,6 @@ func (vp *Viewport) Focus() {
 }
 
 func (vp *Viewport) Zoom(state int) {
-	vp.neecRecalc = true
 }
 
 func (vp *Viewport) AddEventListener(evt string, fn func(this js.Value, args []js.Value) interface{}) {
