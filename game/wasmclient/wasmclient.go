@@ -1,4 +1,4 @@
-// Copyright 2015,2016,2017,2018,2019 SeukWon Kang (kasworld@gmail.com)
+// Copyright 2015,2016,2017,2018,2019,2020 SeukWon Kang (kasworld@gmail.com)
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -97,6 +97,9 @@ func InitApp() {
 		str := loadStageListHTML()
 		js.Global().Get("document").Call("getElementById", "stagelist").Set("innerHTML", str)
 	}()
+
+	js.Global().Call("requestAnimationFrame", js.FuncOf(app.drawCanvas))
+
 }
 
 func (app *WasmClient) enterStage(stageUUID string) {
@@ -141,8 +144,6 @@ func (app *WasmClient) enterStage(stageUUID string) {
 		app.loginData.StageType,
 		app.loginData.StageUUID)
 
-	js.Global().Call("requestAnimationFrame", js.FuncOf(app.drawCanvas))
-
 	timerPingTk := time.NewTicker(time.Second)
 	defer timerPingTk.Stop()
 loop:
@@ -167,13 +168,10 @@ func (app *WasmClient) drawCanvas(this js.Value, args []js.Value) interface{} {
 	defer func() {
 		js.Global().Call("requestAnimationFrame", js.FuncOf(app.drawCanvas))
 	}()
-	dispCount := app.DispInterDur.GetCount()
-	_ = dispCount
 	act := app.DispInterDur.BeginAct()
 	defer act.End()
 
-	now := app.GetEstServerTick()
-	app.vp.Draw(now)
+	app.vp.Draw()
 
 	return nil
 }
@@ -184,9 +182,10 @@ func (app *WasmClient) GetEstServerTick() int64 {
 
 func (app *WasmClient) ResizeCanvas() {
 	if app.loginData == nil {
-		app.vp.DrawTitle()
+		app.vp.ResizeCanvas(true)
+		app.vp.setTitleCamera()
 	} else {
-		app.vp.Resized()
+		app.vp.ResizeCanvas(false)
 		win := js.Global().Get("window")
 		winH := win.Get("innerHeight").Int()
 		ftsize := fmt.Sprintf("%vpx", winH/100)
@@ -198,5 +197,4 @@ func (app *WasmClient) ResizeCanvas() {
 			v.JSButton().Get("style").Set("font-size", ftsize)
 		}
 	}
-	// app.vp.Resize()
 }
