@@ -52,7 +52,7 @@ func (svr *Server) json_StageList(w http.ResponseWriter, r *http.Request) {
 	for _, v := range stgList {
 		jdata = append(jdata, stagelist4client.Stage{
 			UUID:      v.GetUUID(),
-			StageType: v.GetStageType(),
+			StageType: v.(stageApiI).GetStageType(),
 		})
 	}
 	weblib.ServeJSON2HTTP(jdata, w)

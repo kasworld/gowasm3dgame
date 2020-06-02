@@ -15,6 +15,7 @@ import (
 	"fmt"
 
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/enum/stagetype"
 	"github.com/kasworld/gowasm3dgame/lib/conndata"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
@@ -34,6 +35,7 @@ func (svr *Server) api_me2conndata(me interface{}) (*conndata.ConnData, error) {
 }
 
 type stageApiI interface {
+	GetStageType() stagetype.StageType
 	MakeType2Radius() [gameobjtype.GameObjType_Count]float64
 	GetConnManager() *w3d_connbytemanager.Manager
 	ToPacket_StatsInfo() *w3d_obj.RspStatsInfo_data

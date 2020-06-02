@@ -16,13 +16,10 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-
-	"github.com/kasworld/gowasm3dgame/enum/stagetype"
 )
 
 type stageI interface {
 	GetUUID() string
-	GetStageType() stagetype.StageType
 }
 
 type stageList []stageI
