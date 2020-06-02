@@ -135,7 +135,9 @@ func (o *GameObj) Move_straight(now int64) {
 func (o *GameObj) Move_circular(now int64, dstObj *GameObj) {
 	lifedur := float64(now-o.BirthTick) / float64(time.Second)
 	orbitR := gameobjtype.Attrib[gameobjtype.Ball].Radius * 4
-	rotAxis := dstObj.VelVt
+
+	rotAxis := dstObj.VelVt.NormalizedTo(1).Add(o.RotVt.NormalizedTo(1))
+	o.RotVt = rotAxis
 	refPos := rotAxis.Cross(o.VelVt).NormalizedTo(orbitR)
 	shieldPosDiff := refPos.RotateAround(rotAxis, lifedur)
 	dstPos := shieldPosDiff.Add(dstObj.PosVt)
