@@ -66,7 +66,7 @@ func (stg *Stage) TryEvade(me *Team, now int64, dsto *GameObj) *w3d_obj.Act {
 	if !me.CanAct(actt) {
 		return nil
 	}
-	maxv := gameobjtype.Attrib[objt].SpeedLimit
+	maxv := Attrib[objt].SpeedLimit
 	return &w3d_obj.Act{
 		Act: actt,
 		Vt:  dsto.VelVt.NormalizedTo(maxv),
@@ -100,7 +100,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 			break
 		}
 		_, estpos, _ := stg.calcAims(me, dstteam.Ball,
-			gameobjtype.Attrib[objt].SpeedLimit)
+			Attrib[objt].SpeedLimit)
 		vt := stg.AimAdjedIntoCube(me, estpos, dstteam.Ball, objt)
 		return &w3d_obj.Act{
 			Act: actt,
@@ -132,7 +132,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 			break
 		}
 		_, estpos, _ := stg.calcAims(me, dstteam.Ball,
-			gameobjtype.Attrib[objt].SpeedLimit)
+			Attrib[objt].SpeedLimit)
 		vt := stg.AimAdjedIntoCube(me, estpos, dstteam.Ball, objt)
 		return &w3d_obj.Act{
 			Act: actt,
@@ -151,7 +151,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		if dstteam == nil {
 			break
 		}
-		maxv := gameobjtype.Attrib[objt].SpeedLimit
+		maxv := Attrib[objt].SpeedLimit
 		if dstteam != me && dstteam.IsAlive {
 			return &w3d_obj.Act{
 				Act:      actt,
@@ -172,7 +172,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		if !dstteam.IsAlive {
 			break
 		}
-		maxv := gameobjtype.Attrib[objt].SpeedLimit
+		maxv := Attrib[objt].SpeedLimit
 		return &w3d_obj.Act{
 			Act: actt,
 			Vt:  me.Ball.VelVt.NormalizedTo(maxv).Neg(),
@@ -184,7 +184,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		if !me.CanAct(actt) {
 			break
 		}
-		// maxv := gameobjtype.Attrib[objt].SpeedLimit
+		// maxv := Attrib[objt].SpeedLimit
 		return &w3d_obj.Act{
 			Act: actt,
 			Vt: vector3f.Vector3f{
@@ -237,7 +237,7 @@ func (stg *Stage) AimAdjedIntoCube(
 	lennew := tm.Ball.PosVt.LenTo(estpos)
 	lenrate := lennew / lenori
 	vt := estpos.Sub(tm.Ball.PosVt).NormalizedTo(
-		gameobjtype.Attrib[bulletType].SpeedLimit).MulF(lenrate)
+		Attrib[bulletType].SpeedLimit).MulF(lenrate)
 	return vt
 }
 

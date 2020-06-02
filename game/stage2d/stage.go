@@ -63,19 +63,19 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 		Max: vector3f.Vector3f{
 			gameconst.StageSize,
 			gameconst.StageSize,
-			gameobjtype.MaxRadius,
+			gameconst.MaxRadius,
 		},
 	}
 	wd.BorderOctree = vector3f.Cube{
 		Min: vector3f.Vector3f{
-			-gameobjtype.MaxRadius,
-			-gameobjtype.MaxRadius,
-			-gameobjtype.MaxRadius,
+			-gameconst.MaxRadius,
+			-gameconst.MaxRadius,
+			-gameconst.MaxRadius,
 		},
 		Max: vector3f.Vector3f{
-			gameconst.StageSize + gameobjtype.MaxRadius,
-			gameconst.StageSize + gameobjtype.MaxRadius,
-			gameobjtype.MaxRadius + gameobjtype.MaxRadius,
+			gameconst.StageSize + gameconst.MaxRadius,
+			gameconst.StageSize + gameconst.MaxRadius,
+			gameconst.MaxRadius + gameconst.MaxRadius,
 		},
 	}
 	teamcolor := make([]htmlcolors.Color24, 0)
@@ -210,7 +210,7 @@ func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 		randvt := vector3f.Vector3f{
 			stg.rnd.Float64() * gameconst.StageSize,
 			stg.rnd.Float64() * gameconst.StageSize,
-			gameobjtype.MaxRadius,
+			gameconst.MaxRadius,
 		}
 		bt.HomeMark.AccelTo(randvt)
 	}

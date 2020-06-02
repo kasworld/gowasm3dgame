@@ -122,6 +122,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 			SessionKey:      recvBody.SessionKey,
 			StageUUID:       ss.StageID,
 			StageType:       stg.GetStageType(),
+			Type2Radius:     stg.(stageApiI).MakeType2Radius(),
 			NickName:        recvBody.NickName,
 			CmdList:         *w3d_authorize.NewAllSet(),
 		}

@@ -40,11 +40,12 @@ type RspLogin_data struct {
 	ProtocolVersion string
 	DataVersion     string
 
-	SessionKey string
-	StageUUID  string
-	StageType  stagetype.StageType
-	NickName   string
-	CmdList    [w3d_idcmd.CommandID_Count]bool
+	SessionKey  string
+	StageUUID   string
+	StageType   stagetype.StageType
+	Type2Radius [gameobjtype.GameObjType_Count]float64
+	NickName    string
+	CmdList     [w3d_idcmd.CommandID_Count]bool
 }
 
 type ReqHeartbeat_data struct {

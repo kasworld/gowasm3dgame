@@ -30,6 +30,7 @@ type Viewport struct {
 	renderer js.Value
 	light    js.Value
 
+	Type2Radius   [gameobjtype.GameObjType_Count]float64
 	jsSceneObjs   map[string]js.Value
 	geometryCache map[gameobjtype.GameObjType]js.Value
 	materialCache map[uint32]js.Value
@@ -50,7 +51,7 @@ func NewViewport() *Viewport {
 
 	vp.scene = vp.ThreeJsNew("Scene")
 
-	vp.camera = vp.ThreeJsNew("PerspectiveCamera", 75, 1, gameobjtype.MaxRadius,
+	vp.camera = vp.ThreeJsNew("PerspectiveCamera", 75, 1, gameconst.MaxRadius,
 		gameconst.StageSize*10)
 
 	vp.initGrid()

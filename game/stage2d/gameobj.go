@@ -43,16 +43,9 @@ func (o *GameObj) Pos() vector3f.Vector3f {
 }
 
 func (o *GameObj) GetCube() vector3f.Cube {
-	r := gameobjtype.Attrib[o.GOType].Radius
+	r := Attrib[o.GOType].Radius
 	return vector3f.NewCubeByCR(
 		o.PosVt, r,
-	)
-}
-
-func (o *GameObj) IsCollision(dst *GameObj) bool {
-	return gameobjtype.CollisionTo(
-		o.GOType, dst.GOType,
-		dst.PosVt.Sqd(o.PosVt),
 	)
 }
 
@@ -75,7 +68,7 @@ func (o *GameObj) ToPacket(co uint32) *w3d_obj.GameObj {
 }
 
 func (o *GameObj) CheckLife(now int64) bool {
-	lifetick := gameobjtype.Attrib[o.GOType].LifeTick
+	lifetick := Attrib[o.GOType].LifeTick
 	return now-o.BirthTick < lifetick
 }
 
@@ -96,8 +89,8 @@ func (o *GameObj) BounceNormalize(border vector3f.Cube) {
 // return current len , len change with time
 // currentlen adjust with obj size
 func (o *GameObj) CalcLenChange(dsto *GameObj) (float64, float64) {
-	r1 := gameobjtype.Attrib[o.GOType].Radius / 2
-	r2 := gameobjtype.Attrib[dsto.GOType].Radius / 2
+	r1 := Attrib[o.GOType].Radius / 2
+	r2 := Attrib[dsto.GOType].Radius / 2
 	curLen := dsto.PosVt.Sub(o.PosVt).Abs()
 	nextLen := dsto.PosVt.Add(dsto.VelVt).Sub(
 		o.PosVt.Add(o.VelVt),
@@ -109,7 +102,7 @@ func (o *GameObj) CalcLenChange(dsto *GameObj) (float64, float64) {
 /////////////////
 
 func (o *GameObj) AccelTo(dstPosVt vector3f.Vector3f) {
-	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
+	mvLimit := Attrib[o.GOType].SpeedLimit
 	diff := dstPosVt.Sub(o.PosVt)
 	if diff.Abs() > mvLimit {
 		diff = diff.NormalizedTo(mvLimit)
@@ -125,7 +118,7 @@ func (o *GameObj) Move_straight(now int64) {
 	o.RotVt = o.RotVt.Add(o.RotVelVt.MulF(dur))
 	o.LastMoveTick = now
 
-	mvLimit := gameobjtype.Attrib[o.GOType].SpeedLimit
+	mvLimit := Attrib[o.GOType].SpeedLimit
 	if o.VelVt.Abs() > mvLimit {
 		o.VelVt = o.VelVt.NormalizedTo(mvLimit)
 	}
@@ -134,14 +127,14 @@ func (o *GameObj) Move_straight(now int64) {
 
 func (o *GameObj) Move_circular(now int64, dstObj *GameObj) {
 	lifedur := float64(now-o.BirthTick) / float64(time.Second)
-	orbitR := gameobjtype.Attrib[gameobjtype.Ball].Radius * 4
+	orbitR := Attrib[gameobjtype.Ball].Radius * 4
 	dstPos := vector3f.VtUnitX.MulF(orbitR).RotateAround(vector3f.VtUnitZ, lifedur).Add(dstObj.PosVt)
 	o.PosVt = dstPos
 }
 
 func (o *GameObj) Move_hommingshield(now int64, dstObj *GameObj) {
 	lifedur := float64(now-o.BirthTick) / float64(time.Second)
-	orbitR := gameobjtype.Attrib[gameobjtype.Ball].Radius * 4
+	orbitR := Attrib[gameobjtype.Ball].Radius * 4
 	p := dstObj.VelVt.Cross(o.VelVt).NormalizedTo(orbitR)
 	axis := dstObj.VelVt
 	diffVt := p.RotateAround(axis, lifedur)

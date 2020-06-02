@@ -61,7 +61,7 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24, BorderBounce vector3f.
 		Objs:         make([]*GameObj, 0),
 	}
 
-	maxv := gameobjtype.Attrib[gameobjtype.HomeMark].SpeedLimit
+	maxv := Attrib[gameobjtype.HomeMark].SpeedLimit
 	bt.HomeMark = bt.NewGameObj(
 		gameobjtype.HomeMark,
 		bt.RandPosVt(),
@@ -72,7 +72,7 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24, BorderBounce vector3f.
 		}.NormalizedTo(maxv),
 	)
 
-	maxv = gameobjtype.Attrib[gameobjtype.Ball].SpeedLimit
+	maxv = Attrib[gameobjtype.Ball].SpeedLimit
 	bt.Ball = bt.NewGameObj(
 		gameobjtype.Ball,
 		bt.RandPosVt(),
@@ -140,7 +140,7 @@ func (bt *Team) CanAct(act acttype.ActType) bool {
 }
 
 func (bt *Team) CanHave(objt gameobjtype.GameObjType) bool {
-	return bt.CountByGOType(objt) <= gameobjtype.Attrib[objt].MaxInTeam
+	return bt.CountByGOType(objt) <= Attrib[objt].MaxInTeam
 }
 
 func (bt *Team) ApplyAct(actObj *w3d_obj.Act) {

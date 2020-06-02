@@ -15,6 +15,9 @@ const (
 	// StageSize w,h,d
 	StageSize = 1000.0
 
+	// MaxRadius need oct tree boundary
+	MaxRadius = 15
+
 	StagePerServer = 10
 	TeamPerStage   = 8
 

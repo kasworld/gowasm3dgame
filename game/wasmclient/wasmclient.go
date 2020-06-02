@@ -113,6 +113,7 @@ func (app *WasmClient) enterStage(stageUUID string) {
 		return
 	}
 	defer app.Cleanup()
+	app.vp.Type2Radius = app.loginData.Type2Radius
 
 	if gameconst.DataVersion != app.loginData.DataVersion {
 		jslog.Errorf("DataVersion mismatch client %v server %v",

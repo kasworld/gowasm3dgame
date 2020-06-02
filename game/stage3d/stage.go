@@ -68,14 +68,14 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 	}
 	wd.BorderOctree = vector3f.Cube{
 		Min: vector3f.Vector3f{
-			-gameobjtype.MaxRadius,
-			-gameobjtype.MaxRadius,
-			-gameobjtype.MaxRadius,
+			-gameconst.MaxRadius,
+			-gameconst.MaxRadius,
+			-gameconst.MaxRadius,
 		},
 		Max: vector3f.Vector3f{
-			gameconst.StageSize + gameobjtype.MaxRadius,
-			gameconst.StageSize + gameobjtype.MaxRadius,
-			gameconst.StageSize + gameobjtype.MaxRadius,
+			gameconst.StageSize + gameconst.MaxRadius,
+			gameconst.StageSize + gameconst.MaxRadius,
+			gameconst.StageSize + gameconst.MaxRadius,
 		},
 	}
 	teamcolor := make([]htmlcolors.Color24, 0)
