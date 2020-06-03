@@ -17,6 +17,7 @@ const (
 
 	// MaxRadius need oct tree boundary
 	MaxRadius = 15
+	LongLife  = 3600 * 24 * 365
 
 	StagePerServer = 10
 	TeamPerStage   = 8

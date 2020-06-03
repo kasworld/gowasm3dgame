@@ -9,16 +9,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package stage3d
+package stage2d
 
 import (
 	"time"
 
+	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/lib/octree"
 )
-
-const LongLife = 3600 * 24 * 365
 
 var Attrib = [gameobjtype.GameObjType_Count]struct {
 	SpeedLimit float64
@@ -27,17 +26,17 @@ var Attrib = [gameobjtype.GameObjType_Count]struct {
 	AddOctree  bool
 	LifeTick   int64
 }{
-	gameobjtype.Ball:          {300, 10, 1, true, int64(time.Second) * LongLife},
-	gameobjtype.Shield:        {400, 5, 32, true, int64(time.Second) * LongLife},
+	gameobjtype.Ball:          {300, 10, 1, true, int64(time.Second) * gameconst.LongLife},
+	gameobjtype.Shield:        {400, 5, 32, true, int64(time.Second) * gameconst.LongLife},
 	gameobjtype.HommingShield: {400, 7, 16, true, int64(time.Second) * 60},
 	gameobjtype.Bullet:        {300, 5, 100, true, int64(time.Second) * 10},
 	gameobjtype.HommingBullet: {300, 7, 10, true, int64(time.Second) * 60},
 	gameobjtype.SuperBullet:   {600, 15, 10, true, int64(time.Second) * 10},
 	gameobjtype.BurstBullet:   {300, 5, 100, true, int64(time.Second) * 10},
-	gameobjtype.HomeMark:      {100, 3, 1, false, int64(time.Second) * LongLife},
-	gameobjtype.Deco:          {600, 3, 100, false, int64(time.Second) * LongLife},
-	gameobjtype.Hard:          {0, 3, 1, false, int64(time.Second) * LongLife},
-	gameobjtype.Food:          {0, 3, 1, true, int64(time.Second) * LongLife},
+	gameobjtype.HomeMark:      {100, 3, 1, false, int64(time.Second) * gameconst.LongLife},
+	gameobjtype.Deco:          {600, 3, 100, false, int64(time.Second) * gameconst.LongLife},
+	gameobjtype.Hard:          {0, 3, 1, false, int64(time.Second) * gameconst.LongLife},
+	gameobjtype.Food:          {0, 3, 1, true, int64(time.Second) * gameconst.LongLife},
 }
 
 // for client
