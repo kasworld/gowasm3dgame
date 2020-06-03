@@ -26,44 +26,58 @@ func (vp *Viewport) initGrid() {
 	outerStageSize := gameconst.StageSize + gameconst.MaxRadius*2
 	innerStageSize := gameconst.StageSize
 
+	center := vp.ThreeJsNew("Vector3",
+		gameconst.StageSize/2,
+		gameconst.StageSize/2,
+		gameconst.StageSize/2,
+	)
+
 	helper := vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0x0000ff, 0x404040)
 	helper.Get("position").Set("x", innerStageSize/2)
 	helper.Get("position").Set("y", -gameconst.MaxRadius)
 	helper.Get("position").Set("z", innerStageSize/2)
+	helper.Get("geometry").Call("rotateX", math.Pi/2)
+	helper.Call("lookAt", center)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0xffff00, 0x404040)
 	helper.Get("position").Set("x", innerStageSize/2)
 	helper.Get("position").Set("y", gameconst.StageSize+gameconst.MaxRadius)
 	helper.Get("position").Set("z", innerStageSize/2)
+	helper.Get("geometry").Call("rotateX", math.Pi/2)
+	helper.Call("lookAt", center)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0xff0000, 0x404040)
-	helper.Get("rotation").Set("z", math.Pi/2)
 	helper.Get("position").Set("x", -gameconst.MaxRadius)
 	helper.Get("position").Set("y", innerStageSize/2)
 	helper.Get("position").Set("z", innerStageSize/2)
+	helper.Get("geometry").Call("rotateX", math.Pi/2)
+	helper.Call("lookAt", center)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0x00ffff, 0x404040)
-	helper.Get("rotation").Set("z", math.Pi/2)
 	helper.Get("position").Set("x", gameconst.StageSize+gameconst.MaxRadius)
 	helper.Get("position").Set("y", innerStageSize/2)
 	helper.Get("position").Set("z", innerStageSize/2)
+	helper.Get("geometry").Call("rotateX", math.Pi/2)
+	helper.Call("lookAt", center)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0x00ff00, 0x404040)
-	helper.Get("rotation").Set("x", math.Pi/2)
 	helper.Get("position").Set("x", innerStageSize/2)
 	helper.Get("position").Set("y", innerStageSize/2)
 	helper.Get("position").Set("z", -gameconst.MaxRadius)
+	helper.Get("geometry").Call("rotateX", math.Pi/2)
+	helper.Call("lookAt", center)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0xff00ff, 0x404040)
-	helper.Get("rotation").Set("x", math.Pi/2)
 	helper.Get("position").Set("x", innerStageSize/2)
 	helper.Get("position").Set("y", innerStageSize/2)
 	helper.Get("position").Set("z", gameconst.StageSize+gameconst.MaxRadius)
+	helper.Get("geometry").Call("rotateX", math.Pi/2)
+	helper.Call("lookAt", center)
 	vp.scene.Call("add", helper)
 
 	box3 := vp.ThreeJsNew("Box3",
@@ -79,13 +93,30 @@ func (vp *Viewport) initGrid() {
 
 func (vp *Viewport) initBackground() {
 	bgMap := vp.ThreeJsNew("TextureLoader").Call("load", "/resource/background.png")
+	bgMap.Set("wrapS", vp.threejs.Get("RepeatWrapping"))
+	bgMap.Set("wrapT", vp.threejs.Get("RepeatWrapping"))
+	bgMap.Get("repeat").Set("x", 25)
+	bgMap.Get("repeat").Set("y", 25)
+	// var groundTexture = loader.load( 'textures/terrain/grasslight-big.jpg' );
+	// groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+	// groundTexture.repeat.set( 25, 25 );
+	// groundTexture.anisotropy = 16;
+	// groundTexture.encoding = THREE.sRGBEncoding;
+
+	// var groundMaterial = new THREE.MeshLambertMaterial( { map: groundTexture } );
+
+	// var mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20000, 20000 ), groundMaterial );
+	// mesh.position.y = - 250;
+	// mesh.rotation.x = - Math.PI / 2;
+	// mesh.receiveShadow = true;
+	// scene.add( mesh );
 	bgMaterial := vp.ThreeJsNew("MeshBasicMaterial",
 		map[string]interface{}{
 			"map": bgMap,
 		},
 	)
-	bgGeo := vp.ThreeJsNew("PlaneGeometry",
-		gameconst.StageSize, gameconst.StageSize)
+	bgGeo := vp.ThreeJsNew("PlaneBufferGeometry",
+		gameconst.StageSize*25, gameconst.StageSize*25)
 	vp.background = vp.ThreeJsNew("Mesh", bgGeo, bgMaterial)
 	jslog.Info(vp.background)
 	// vp.background = vp.ThreeJsNew("Sprite", bgMaterial)
