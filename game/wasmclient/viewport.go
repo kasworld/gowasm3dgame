@@ -28,11 +28,12 @@ type Viewport struct {
 	ViewHeight int
 	RefSize    int
 
-	Canvas   js.Value
-	threejs  js.Value
-	scene    js.Value
-	camera   js.Value
-	renderer js.Value
+	Canvas     js.Value
+	threejs    js.Value
+	scene      js.Value
+	camera     js.Value
+	renderer   js.Value
+	background js.Value
 
 	Type2Radius [gameobjtype.GameObjType_Count]float64
 
@@ -63,6 +64,7 @@ func NewViewport() *Viewport {
 		gameconst.StageSize*10)
 
 	vp.initGrid()
+	vp.initBackground()
 	return vp
 }
 
@@ -121,4 +123,8 @@ func (vp *Viewport) setTitleCamera() {
 		),
 	)
 	vp.camera.Call("updateProjectionMatrix")
+}
+
+func (vp *Viewport) ThreeJsNew(name string, args ...interface{}) js.Value {
+	return vp.threejs.Get(name).New(args...)
 }

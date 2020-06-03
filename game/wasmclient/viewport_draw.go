@@ -15,14 +15,12 @@ import (
 	"math"
 	"syscall/js"
 
+	"github.com/kasworld/gowasmlib/jslog"
+
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 )
-
-func (vp *Viewport) ThreeJsNew(name string, args ...interface{}) js.Value {
-	return vp.threejs.Get(name).New(args...)
-}
 
 func (vp *Viewport) initGrid() {
 	outerStageSize := gameconst.StageSize + gameconst.MaxRadius*2
@@ -77,6 +75,27 @@ func (vp *Viewport) initGrid() {
 
 	// axisHelper := vp.ThreeJsNew("AxesHelper", gameconst.StageSize)
 	// vp.scene.Call("add", axisHelper)
+}
+
+func (vp *Viewport) initBackground() {
+	bgMap := vp.ThreeJsNew("TextureLoader").Call("load", "/resource/background.png")
+	bgMaterial := vp.ThreeJsNew("MeshBasicMaterial",
+		map[string]interface{}{
+			"map": bgMap,
+		},
+	)
+	bgGeo := vp.ThreeJsNew("PlaneGeometry",
+		gameconst.StageSize, gameconst.StageSize)
+	vp.background = vp.ThreeJsNew("Mesh", bgGeo, bgMaterial)
+	jslog.Info(vp.background)
+	// vp.background = vp.ThreeJsNew("Sprite", bgMaterial)
+	// vp.background.Get("scale").Set("x", gameconst.StageSize)
+	// vp.background.Get("scale").Set("y", gameconst.StageSize)
+	// vp.background.Get("scale").Set("z", 1)
+	vp.background.Get("position").Set("x", gameconst.StageSize/2)
+	vp.background.Get("position").Set("y", gameconst.StageSize/2)
+	vp.background.Get("position").Set("z", -gameconst.MaxRadius)
+	vp.scene.Call("add", vp.background)
 }
 
 func (vp *Viewport) getGeometry(gotype gameobjtype.GameObjType) js.Value {
