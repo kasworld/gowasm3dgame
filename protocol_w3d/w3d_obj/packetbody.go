@@ -93,6 +93,7 @@ type NotiStageInfo_data struct {
 	Tick         int64
 	CameraPos    [3]float32
 	CameraLookAt [3]float32
+	Lights       []*Light
 	ObjList      []*GameObj
 }
 
@@ -102,6 +103,12 @@ type NotiStageChat_data struct {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+type Light struct {
+	UUID  string
+	PosVt [3]float32
+	Color uint32
+}
 
 type TeamStat struct {
 	UUID  string

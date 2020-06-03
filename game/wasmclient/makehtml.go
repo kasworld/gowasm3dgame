@@ -54,11 +54,17 @@ func (app *WasmClient) makeDebugInfo() string {
 		"%v<br/>Ping %v<br/>ServerClientTickDiff %v<br/>",
 		app.DispInterDur, app.PingDur, app.ServerClientTictDiff,
 	)
-	fmt.Fprintf(&buf,
-		"scene obj count %v<br/>geomatry cache count %v<br/>material cache count %v<br/>",
+	fmt.Fprintf(&buf, "scene obj count %v<br/>",
 		len(app.vp.jsSceneObjs),
+	)
+	fmt.Fprintf(&buf, "geomatry cache count %v<br/>",
 		len(app.vp.geometryCache),
+	)
+	fmt.Fprintf(&buf, "material cache count %v<br/>",
 		len(app.vp.materialCache),
+	)
+	fmt.Fprintf(&buf, "lighthelp cache count %v<br/>",
+		len(app.vp.lightCache),
 	)
 
 	return buf.String()

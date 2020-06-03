@@ -228,9 +228,10 @@ func (bt *Team) NewGameObj(
 func (bt *Team) ToPacket() []*w3d_obj.GameObj {
 	rtn := make([]*w3d_obj.GameObj, 0)
 	co := uint32(bt.Color24)
-	rtn = append(rtn, bt.HomeMark.ToPacket(co))
-	rtn = append(rtn, bt.Ball.ToPacket(co))
 
+	// replaced by lighthelper
+	// rtn = append(rtn, bt.HomeMark.ToPacket(co))
+	rtn = append(rtn, bt.Ball.ToPacket(co))
 	for _, v := range bt.Objs {
 		if v.toDelete {
 			continue

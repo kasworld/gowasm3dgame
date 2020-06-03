@@ -78,13 +78,6 @@ func (vp *Viewport) initGrid() {
 	// axisHelper := vp.ThreeJsNew("AxesHelper", gameconst.StageSize)
 	// vp.scene.Call("add", axisHelper)
 }
-func (vp *Viewport) initLight() {
-	vp.light = vp.ThreeJsNew("PointLight", 0x808080, 1)
-	vp.scene.Call("add", vp.light)
-	// vp.light.Get("position").Set("x", vt[0])
-	// vp.light.Get("position").Set("y", vt[1])
-	// vp.light.Get("position").Set("z", vt[2])
-}
 
 func (vp *Viewport) getGeometry(gotype gameobjtype.GameObjType) js.Value {
 	geo, exist := vp.geometryCache[gotype]
@@ -136,6 +129,33 @@ func (vp *Viewport) getMaterial(co uint32) js.Value {
 	return mat
 }
 
+func (vp *Viewport) getLightNHelper(o *w3d_obj.Light) *LightNHelper {
+	lt, exist := vp.lightCache[o.UUID]
+	if !exist {
+		lt = &LightNHelper{}
+		lt.Light = vp.ThreeJsNew("PointLight", o.Color, 1)
+		lt.Helper = vp.ThreeJsNew("PointLightHelper", lt.Light, 1)
+		vp.lightCache[o.UUID] = lt
+	}
+	return lt
+}
+
+func (vp *Viewport) addLight2Scene(o *w3d_obj.Light) {
+	if jso, exist := vp.jsSceneObjs[o.UUID]; exist {
+		jso.Get("position").Set("x", o.PosVt[0])
+		jso.Get("position").Set("y", o.PosVt[1])
+		jso.Get("position").Set("z", o.PosVt[2])
+		return
+	}
+	lt := vp.getLightNHelper(o)
+	lt.Light.Get("position").Set("x", o.PosVt[0])
+	lt.Light.Get("position").Set("y", o.PosVt[1])
+	lt.Light.Get("position").Set("z", o.PosVt[2])
+	vp.scene.Call("add", lt.Light)
+	vp.scene.Call("add", lt.Helper)
+	vp.jsSceneObjs[o.UUID] = lt.Light
+}
+
 func (vp *Viewport) add2Scene(o *w3d_obj.GameObj) js.Value {
 	if jso, exist := vp.jsSceneObjs[o.UUID]; exist {
 		jso.Get("position").Set("x", o.PosVt[0])
@@ -175,6 +195,11 @@ func (vp *Viewport) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data) 
 	)
 	vp.camera.Call("updateProjectionMatrix")
 
+	for _, o := range stageInfo.Lights {
+		vp.addLight2Scene(o)
+		addUUID[o.UUID] = true
+	}
+
 	for _, o := range stageInfo.ObjList {
 		vp.add2Scene(o)
 		addUUID[o.UUID] = true
@@ -183,6 +208,9 @@ func (vp *Viewport) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data) 
 		if !addUUID[id] {
 			vp.scene.Call("remove", jso)
 			delete(vp.jsSceneObjs, id)
+			if lt, exist := vp.lightCache[id]; exist {
+				vp.scene.Call("remove", lt.Helper)
+			}
 		}
 	}
 }

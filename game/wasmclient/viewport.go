@@ -18,6 +18,11 @@ import (
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 )
 
+type LightNHelper struct {
+	Light  js.Value
+	Helper js.Value
+}
+
 type Viewport struct {
 	ViewWidth  int
 	ViewHeight int
@@ -28,12 +33,14 @@ type Viewport struct {
 	scene    js.Value
 	camera   js.Value
 	renderer js.Value
-	light    js.Value
 
-	Type2Radius   [gameobjtype.GameObjType_Count]float64
+	Type2Radius [gameobjtype.GameObjType_Count]float64
+
 	jsSceneObjs   map[string]js.Value
 	geometryCache map[gameobjtype.GameObjType]js.Value
 	materialCache map[uint32]js.Value
+
+	lightCache map[string]*LightNHelper
 }
 
 func NewViewport() *Viewport {
@@ -41,6 +48,7 @@ func NewViewport() *Viewport {
 		jsSceneObjs:   make(map[string]js.Value),
 		geometryCache: make(map[gameobjtype.GameObjType]js.Value),
 		materialCache: make(map[uint32]js.Value),
+		lightCache:    make(map[string]*LightNHelper),
 	}
 
 	vp.threejs = js.Global().Get("THREE")
@@ -55,8 +63,6 @@ func NewViewport() *Viewport {
 		gameconst.StageSize*10)
 
 	vp.initGrid()
-	vp.initLight()
-
 	return vp
 }
 

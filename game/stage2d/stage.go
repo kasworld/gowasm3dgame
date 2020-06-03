@@ -272,6 +272,16 @@ func (stg *Stage) ToPacket_StageInfo() *w3d_obj.NotiStageInfo_data {
 			continue
 		}
 		rtn.ObjList = append(rtn.ObjList, bt.ToPacket()...)
+		ltPos := bt.HomeMark.PosVt
+		rtn.Lights = append(rtn.Lights, &w3d_obj.Light{
+			UUID: bt.UUID,
+			PosVt: [3]float32{
+				float32(ltPos[0]),
+				float32(ltPos[1]),
+				float32(ltPos[2]),
+			},
+			Color: uint32(bt.Color24),
+		})
 	}
 	rtn.CameraPos = [3]float32{
 		gameconst.StageSize / 2,
