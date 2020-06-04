@@ -90,11 +90,12 @@ type NotiInvalid_data struct {
 }
 
 type NotiStageInfo_data struct {
-	Tick         int64
-	CameraPos    [3]float32
-	CameraLookAt [3]float32
-	Lights       []*Light
-	ObjList      []*GameObj
+	Tick          int64
+	CameraPos     [3]float32
+	CameraLookAt  [3]float32
+	Lights        []*Light
+	BackgroundPos [2]float32
+	ObjList       []*GameObj
 }
 
 type NotiStageChat_data struct {

@@ -19,6 +19,8 @@ import (
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/config/serverconfig"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/game/background"
+	"github.com/kasworld/gowasm3dgame/lib/vector2f"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_connbytemanager"
@@ -39,14 +41,12 @@ type Stage struct {
 	BorderBounce vector3f.Cube
 	BorderOctree vector3f.Cube
 
-	Teams   []*Team
-	Deco    []*GameObj
-	Food    []*GameObj
-	Terrain []*GameObj
+	Teams      []*Team
+	Background *background.Background
 }
 
 func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
-	wd := &Stage{
+	stg := &Stage{
 		UUID:   uuidstr.New(),
 		config: config,
 		log:    l,
@@ -54,7 +54,7 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 		Conns:  w3d_connbytemanager.New(),
 	}
 
-	wd.BorderBounce = vector3f.Cube{
+	stg.BorderBounce = vector3f.Cube{
 		Min: vector3f.Vector3f{
 			0,
 			0,
@@ -66,7 +66,7 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 			gameconst.MaxRadius,
 		},
 	}
-	wd.BorderOctree = vector3f.Cube{
+	stg.BorderOctree = vector3f.Cube{
 		Min: vector3f.Vector3f{
 			-gameconst.MaxRadius,
 			-gameconst.MaxRadius,
@@ -81,16 +81,26 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 	teamcolor := make([]htmlcolors.Color24, 0)
 	for i := 0; i < gameconst.TeamPerStage; i++ {
 		co := htmlcolors.NewColor24(
-			uint8(wd.rnd.Intn(256)),
-			uint8(wd.rnd.Intn(256)),
-			uint8(wd.rnd.Intn(256)),
+			uint8(stg.rnd.Intn(256)),
+			uint8(stg.rnd.Intn(256)),
+			uint8(stg.rnd.Intn(256)),
 		)
 		teamcolor = append(teamcolor, co)
 	}
 	for _, v := range teamcolor {
-		wd.Teams = append(wd.Teams, NewTeam(l, v, wd.BorderBounce))
+		stg.Teams = append(stg.Teams, NewTeam(l, v, stg.BorderBounce))
 	}
-	return wd
+	stg.Background = background.New(
+		time.Now().UnixNano(),
+		vector2f.NewVectorLenAngle(
+			stg.rnd.Float64()*300,
+			stg.rnd.Float64()*360,
+		),
+		vector2f.Rect{
+			vector2f.Vector2f{0, 0},
+			vector2f.Vector2f{gameconst.StageSize, gameconst.StageSize},
+		})
+	return stg
 }
 
 func (stg *Stage) Run(ctx context.Context) {
@@ -125,6 +135,7 @@ func (stg *Stage) Turn() {
 	now := time.Now().UnixNano()
 	diag := stg.BorderBounce.DiagLen()
 
+	stg.Background.Move(now)
 	// respawn dead team
 	for _, bt := range stg.Teams {
 		if !bt.IsAlive && bt.RespawnTick < now {
@@ -292,6 +303,10 @@ func (stg *Stage) ToPacket_StageInfo() *w3d_obj.NotiStageInfo_data {
 		gameconst.StageSize / 2,
 		gameconst.StageSize / 2,
 		0,
+	}
+	rtn.BackgroundPos = [2]float32{
+		float32(stg.Background.PosVt[0]),
+		float32(stg.Background.PosVt[1]),
 	}
 	return rtn
 }
