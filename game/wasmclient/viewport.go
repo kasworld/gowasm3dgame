@@ -28,12 +28,15 @@ type Viewport struct {
 	ViewHeight int
 	RefSize    int
 
-	Canvas     js.Value
-	threejs    js.Value
-	scene      js.Value
-	camera     js.Value
-	renderer   js.Value
-	background js.Value
+	Canvas        js.Value
+	threejs       js.Value
+	scene         js.Value
+	camera        js.Value
+	renderer      js.Value
+	textureLoader js.Value
+	fontLoader    js.Value
+	fontTitle     js.Value
+	background    js.Value
 
 	Type2Radius [gameobjtype.GameObjType_Count]float64
 
@@ -63,8 +66,11 @@ func NewViewport() *Viewport {
 	vp.camera = vp.ThreeJsNew("PerspectiveCamera", 75, 1, gameconst.MaxRadius,
 		gameconst.StageSize*10)
 
+	vp.textureLoader = vp.ThreeJsNew("TextureLoader")
+	vp.fontLoader = vp.ThreeJsNew("FontLoader")
 	vp.initGrid()
 	vp.initBackground()
+	vp.initTitle()
 	return vp
 }
 

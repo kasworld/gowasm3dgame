@@ -91,8 +91,38 @@ func (vp *Viewport) initGrid() {
 	// vp.scene.Call("add", axisHelper)
 }
 
+func (vp *Viewport) initTitle() {
+	vp.fontLoader.Call("load", "/fonts/helvetiker_regular.typeface.json",
+		js.FuncOf(vp.fontLoaded),
+	)
+}
+
+func (vp *Viewport) fontLoaded(this js.Value, args []js.Value) interface{} {
+	vp.fontTitle = args[0]
+	jslog.Info(vp.fontLoader, vp.fontTitle)
+	str := "gowasm3dgame"
+	ftGeo := vp.ThreeJsNew("TextGeometry", str, map[string]interface{}{
+		"font":           vp.fontTitle,
+		"size":           80,
+		"height":         5,
+		"curveSegments":  12,
+		"bevelEnabled":   true,
+		"bevelThickness": 10,
+		"bevelSize":      8,
+		"bevelOffset":    0,
+		"bevelSegments":  5,
+	})
+	ftMat := vp.getMaterial(0xffffff)
+	jso := vp.ThreeJsNew("Mesh", ftGeo, ftMat)
+	jso.Get("position").Set("x", gameconst.StageSize/2)
+	jso.Get("position").Set("y", gameconst.StageSize/2)
+	jso.Get("position").Set("z", gameconst.MaxRadius)
+	vp.scene.Call("add", jso)
+	return nil
+}
+
 func (vp *Viewport) initBackground() {
-	bgMap := vp.ThreeJsNew("TextureLoader").Call("load", "/resource/background.png")
+	bgMap := vp.textureLoader.Call("load", "/resource/background.png")
 	bgMap.Set("wrapS", vp.threejs.Get("RepeatWrapping"))
 	bgMap.Set("wrapT", vp.threejs.Get("RepeatWrapping"))
 	bgMap.Get("repeat").Set("x", 25)
@@ -102,9 +132,7 @@ func (vp *Viewport) initBackground() {
 	// groundTexture.repeat.set( 25, 25 );
 	// groundTexture.anisotropy = 16;
 	// groundTexture.encoding = THREE.sRGBEncoding;
-
 	// var groundMaterial = new THREE.MeshLambertMaterial( { map: groundTexture } );
-
 	// var mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20000, 20000 ), groundMaterial );
 	// mesh.position.y = - 250;
 	// mesh.rotation.x = - Math.PI / 2;
@@ -118,7 +146,7 @@ func (vp *Viewport) initBackground() {
 	bgGeo := vp.ThreeJsNew("PlaneBufferGeometry",
 		gameconst.StageSize*25, gameconst.StageSize*25)
 	vp.background = vp.ThreeJsNew("Mesh", bgGeo, bgMaterial)
-	jslog.Info(vp.background)
+	// jslog.Info(vp.background)
 	// vp.background = vp.ThreeJsNew("Sprite", bgMaterial)
 	// vp.background.Get("scale").Set("x", gameconst.StageSize)
 	// vp.background.Get("scale").Set("y", gameconst.StageSize)
