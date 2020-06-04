@@ -230,8 +230,13 @@ func (vp *Viewport) add2Scene(o *w3d_obj.GameObj) js.Value {
 	return jso
 }
 
-func (vp *Viewport) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data) {
-	addUUID := make(map[string]bool)
+func (vp *Viewport) processRecvStageInfo(
+	stageInfo *w3d_obj.NotiStageInfo_data) {
+
+	bgPos := stageInfo.BackgroundPos
+	vp.background.Get("position").Set("x", bgPos[0])
+	vp.background.Get("position").Set("y", bgPos[1])
+
 	vt1 := stageInfo.CameraPos
 	vp.camera.Get("position").Set("x", vt1[0])
 	vp.camera.Get("position").Set("y", vt1[1])
@@ -245,6 +250,7 @@ func (vp *Viewport) processRecvStageInfo(stageInfo *w3d_obj.NotiStageInfo_data) 
 	)
 	vp.camera.Call("updateProjectionMatrix")
 
+	addUUID := make(map[string]bool)
 	for _, o := range stageInfo.Lights {
 		vp.addLight2Scene(o)
 		addUUID[o.UUID] = true
