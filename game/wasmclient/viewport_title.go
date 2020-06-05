@@ -12,7 +12,9 @@
 package wasmclient
 
 import (
+	"math/rand"
 	"syscall/js"
+	"time"
 
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasmlib/jslog"
@@ -62,9 +64,11 @@ func (vp *Viewport) fontLoaded(this js.Value, args []js.Value) interface{} {
 	ftGeo.Call("computeBoundingBox")
 	geoMax := ftGeo.Get("boundingBox").Get("max").Get("x").Float()
 	geoMin := ftGeo.Get("boundingBox").Get("min").Get("x").Float()
+	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	co := rnd.Uint32() & 0x00ffffff
 	ftMat := vp.ThreeJsNew("MeshPhongMaterial",
 		map[string]interface{}{
-			"color": 0xf0f0f0,
+			"color": co,
 			// "flatShading": true,
 		},
 	)
