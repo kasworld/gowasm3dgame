@@ -15,8 +15,6 @@ import (
 	"math"
 	"syscall/js"
 
-	"github.com/kasworld/gowasmlib/jslog"
-
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
@@ -89,36 +87,6 @@ func (vp *Viewport) initGrid() {
 
 	// axisHelper := vp.ThreeJsNew("AxesHelper", gameconst.StageSize)
 	// vp.scene.Call("add", axisHelper)
-}
-
-func (vp *Viewport) initTitle() {
-	vp.fontLoader.Call("load", "/fonts/helvetiker_regular.typeface.json",
-		js.FuncOf(vp.fontLoaded),
-	)
-}
-
-func (vp *Viewport) fontLoaded(this js.Value, args []js.Value) interface{} {
-	vp.fontTitle = args[0]
-	jslog.Info(vp.fontLoader, vp.fontTitle)
-	str := "gowasm3dgame"
-	ftGeo := vp.ThreeJsNew("TextGeometry", str, map[string]interface{}{
-		"font":           vp.fontTitle,
-		"size":           80,
-		"height":         5,
-		"curveSegments":  12,
-		"bevelEnabled":   true,
-		"bevelThickness": 10,
-		"bevelSize":      8,
-		"bevelOffset":    0,
-		"bevelSegments":  5,
-	})
-	ftMat := vp.getMaterial(0xffffff)
-	jso := vp.ThreeJsNew("Mesh", ftGeo, ftMat)
-	jso.Get("position").Set("x", gameconst.StageSize/2)
-	jso.Get("position").Set("y", gameconst.StageSize/2)
-	jso.Get("position").Set("z", gameconst.MaxRadius)
-	vp.scene.Call("add", jso)
-	return nil
 }
 
 func (vp *Viewport) initBackground() {
@@ -198,10 +166,12 @@ func (vp *Viewport) getGeometry(gotype gameobjtype.GameObjType) js.Value {
 func (vp *Viewport) getMaterial(co uint32) js.Value {
 	mat, exist := vp.materialCache[co]
 	if !exist {
-		mat = vp.ThreeJsNew("MeshStandardMaterial")
-		// material.Set("color", vp.ToThColor(htmlcolors.Gray))
-		mat.Set("emissive", vp.ThreeJsNew("Color", co))
-		mat.Set("shininess", 30)
+		mat = vp.ThreeJsNew("MeshPhongMaterial",
+			map[string]interface{}{
+				"color": co,
+				// "flatShading": true,
+			},
+		)
 		vp.materialCache[co] = mat
 	}
 	return mat

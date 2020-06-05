@@ -28,14 +28,20 @@ type Viewport struct {
 	ViewHeight int
 	RefSize    int
 
-	Canvas        js.Value
-	threejs       js.Value
-	scene         js.Value
-	camera        js.Value
-	renderer      js.Value
+	Canvas   js.Value
+	threejs  js.Value
+	scene    js.Value
+	camera   js.Value
+	renderer js.Value
+
+	// title
+	fontLoader js.Value
+	fontTitle  js.Value
+	jsoTitle   js.Value
+	lightTitle js.Value
+
+	// background
 	textureLoader js.Value
-	fontLoader    js.Value
-	fontTitle     js.Value
 	background    js.Value
 
 	Type2Radius [gameobjtype.GameObjType_Count]float64
@@ -114,21 +120,6 @@ func (vp *Viewport) AddEventListener(evt string, fn func(this js.Value, args []j
 
 func (vp *Viewport) Draw() {
 	vp.renderer.Call("render", vp.scene, vp.camera)
-}
-
-func (vp *Viewport) setTitleCamera() {
-	// set title camera pos
-	vp.camera.Get("position").Set("x", gameconst.StageSize/2)
-	vp.camera.Get("position").Set("y", gameconst.StageSize/2)
-	vp.camera.Get("position").Set("z", gameconst.StageSize)
-	vp.camera.Call("lookAt",
-		vp.ThreeJsNew("Vector3",
-			gameconst.StageSize/2,
-			gameconst.StageSize/2,
-			0,
-		),
-	)
-	vp.camera.Call("updateProjectionMatrix")
 }
 
 func (vp *Viewport) ThreeJsNew(name string, args ...interface{}) js.Value {

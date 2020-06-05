@@ -128,6 +128,7 @@ func (app *WasmClient) enterStage(stageUUID string) {
 	jsdoc := js.Global().Get("document")
 	jsobj.Hide(jsdoc.Call("getElementById", "titleform"))
 	jsobj.Show(jsdoc.Call("getElementById", "cmdrow"))
+	app.vp.hideTitle()
 
 	gameOptions.RegisterJSFn(app)
 	if err := gameOptions.SetFromURLArg(); err != nil {
