@@ -185,7 +185,6 @@ func (app *WasmClient) GetEstServerTick() int64 {
 func (app *WasmClient) ResizeCanvas() {
 	if app.loginData == nil {
 		app.vp.ResizeCanvas(true)
-		app.vp.setTitleCamera()
 	} else {
 		app.vp.ResizeCanvas(false)
 		win := js.Global().Get("window")

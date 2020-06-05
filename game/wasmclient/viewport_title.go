@@ -35,15 +35,21 @@ func (vp *Viewport) setTitleCamera() {
 	vp.camera.Call("updateProjectionMatrix")
 }
 
-func (vp *Viewport) initTitle() {
-	vp.fontLoader.Call("load", "/fonts/helvetiker_regular.typeface.json",
-		js.FuncOf(vp.fontLoaded),
-	)
-}
-
 func (vp *Viewport) hideTitle() {
 	vp.scene.Call("remove", vp.jsoTitle)
 	vp.scene.Call("remove", vp.lightTitle)
+}
+
+func (vp *Viewport) initTitle() {
+	vp.lightTitle = vp.ThreeJsNew("PointLight", 0xffffff, 1)
+	vp.lightTitle.Get("position").Set("x", gameconst.StageSize)
+	vp.lightTitle.Get("position").Set("y", gameconst.StageSize)
+	vp.lightTitle.Get("position").Set("z", gameconst.StageSize)
+	vp.scene.Call("add", vp.lightTitle)
+	vp.setTitleCamera()
+	vp.fontLoader.Call("load", "/fonts/helvetiker_regular.typeface.json",
+		js.FuncOf(vp.fontLoaded),
+	)
 }
 
 func (vp *Viewport) fontLoaded(this js.Value, args []js.Value) interface{} {
@@ -77,12 +83,6 @@ func (vp *Viewport) fontLoaded(this js.Value, args []js.Value) interface{} {
 	vp.jsoTitle.Get("position").Set("y", gameconst.StageSize/2)
 	vp.jsoTitle.Get("position").Set("z", gameconst.StageSize/2)
 	vp.scene.Call("add", vp.jsoTitle)
-
-	vp.lightTitle = vp.ThreeJsNew("PointLight", 0xffffff, 1)
-	vp.lightTitle.Get("position").Set("x", gameconst.StageSize)
-	vp.lightTitle.Get("position").Set("y", gameconst.StageSize)
-	vp.lightTitle.Get("position").Set("z", gameconst.StageSize)
-	vp.scene.Call("add", vp.lightTitle)
 
 	return nil
 }
