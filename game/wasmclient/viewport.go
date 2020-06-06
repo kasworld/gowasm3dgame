@@ -12,7 +12,9 @@
 package wasmclient
 
 import (
+	"math/rand"
 	"syscall/js"
+	"time"
 
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
@@ -24,6 +26,7 @@ type LightNHelper struct {
 }
 
 type Viewport struct {
+	rnd        *rand.Rand
 	ViewWidth  int
 	ViewHeight int
 	RefSize    int
@@ -35,10 +38,10 @@ type Viewport struct {
 	renderer js.Value
 
 	// title
-	fontLoader js.Value
-	fontTitle  js.Value
-	jsoTitle   js.Value
-	lightTitle js.Value
+	fontLoader              js.Value
+	font_helvetiker_regular js.Value
+	jsoTitle                js.Value
+	lightTitle              js.Value
 
 	// background
 	textureLoader js.Value
@@ -55,6 +58,7 @@ type Viewport struct {
 
 func NewViewport() *Viewport {
 	vp := &Viewport{
+		rnd:           rand.New(rand.NewSource(time.Now().UnixNano())),
 		jsSceneObjs:   make(map[string]js.Value),
 		geometryCache: make(map[gameobjtype.GameObjType]js.Value),
 		materialCache: make(map[uint32]js.Value),

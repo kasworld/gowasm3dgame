@@ -12,12 +12,9 @@
 package wasmclient
 
 import (
-	"math/rand"
 	"syscall/js"
-	"time"
 
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
-	"github.com/kasworld/gowasmlib/jslog"
 )
 
 func (vp *Viewport) setTitleCamera() {
@@ -53,11 +50,11 @@ func (vp *Viewport) initTitle() {
 }
 
 func (vp *Viewport) fontLoaded(this js.Value, args []js.Value) interface{} {
-	vp.fontTitle = args[0]
-	jslog.Info(vp.fontLoader, vp.fontTitle)
+	vp.font_helvetiker_regular = args[0]
 	str := "gowasm3dgame"
+
 	ftGeo := vp.ThreeJsNew("TextGeometry", str, map[string]interface{}{
-		"font":           vp.fontTitle,
+		"font":           vp.font_helvetiker_regular,
 		"size":           80,
 		"height":         5,
 		"curveSegments":  12,
@@ -70,14 +67,10 @@ func (vp *Viewport) fontLoaded(this js.Value, args []js.Value) interface{} {
 	ftGeo.Call("computeBoundingBox")
 	geoMax := ftGeo.Get("boundingBox").Get("max").Get("x").Float()
 	geoMin := ftGeo.Get("boundingBox").Get("min").Get("x").Float()
-	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
-	co := rnd.Uint32() & 0x00ffffff
-	ftMat := vp.ThreeJsNew("MeshPhongMaterial",
-		map[string]interface{}{
-			"color": co,
-			// "flatShading": true,
-		},
-	)
+
+	co := vp.rnd.Uint32() & 0x00ffffff
+	ftMat := vp.getColorMaterial(co)
+
 	vp.jsoTitle = vp.ThreeJsNew("Mesh", ftGeo, ftMat)
 	vp.jsoTitle.Get("position").Set("x", gameconst.StageSize/2-(geoMax-geoMin)/2)
 	vp.jsoTitle.Get("position").Set("y", gameconst.StageSize/2)
