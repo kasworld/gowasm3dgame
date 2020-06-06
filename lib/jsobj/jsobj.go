@@ -33,16 +33,3 @@ func GetTextValueFromInputText(jsobjid string) string {
 	jsobj := js.Global().Get("document").Call("getElementById", jsobjid).Get("value")
 	return jsobj.String()
 }
-
-func SetPosition(jso js.Value, pos ...interface{}) {
-	po := jso.Get("position")
-	if len(pos) >= 1 {
-		po.Set("x", pos[0])
-	}
-	if len(pos) >= 2 {
-		po.Set("y", pos[1])
-	}
-	if len(pos) >= 3 {
-		po.Set("z", pos[2])
-	}
-}

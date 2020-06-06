@@ -16,7 +16,6 @@ import (
 	"syscall/js"
 
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
-	"github.com/kasworld/gowasm3dgame/lib/jsobj"
 )
 
 func (vp *Viewport) makeGridHelper(
@@ -127,7 +126,7 @@ func (vp *Viewport) initBackground() {
 	// vp.background.Get("scale").Set("x", gameconst.StageSize)
 	// vp.background.Get("scale").Set("y", gameconst.StageSize)
 	// vp.background.Get("scale").Set("z", 1)
-	jsobj.SetPosition(vp.background,
+	SetPosition(vp.background,
 		gameconst.StageSize/2,
 		gameconst.StageSize/2,
 		-gameconst.MaxRadius,

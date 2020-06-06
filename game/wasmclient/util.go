@@ -33,3 +33,16 @@ func getImgWH(srcImageID string) (js.Value, float64, float64) {
 	srch := img.Get("naturalHeight").Float()
 	return img, srcw, srch
 }
+
+func SetPosition(jso js.Value, pos ...interface{}) {
+	po := jso.Get("position")
+	if len(pos) >= 1 {
+		po.Set("x", pos[0])
+	}
+	if len(pos) >= 2 {
+		po.Set("y", pos[1])
+	}
+	if len(pos) >= 3 {
+		po.Set("z", pos[2])
+	}
+}

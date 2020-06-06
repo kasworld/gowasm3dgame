@@ -15,12 +15,11 @@ import (
 	"syscall/js"
 
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
-	"github.com/kasworld/gowasm3dgame/lib/jsobj"
 )
 
 func (vp *Viewport) setTitleCamera() {
 	// set title camera pos
-	jsobj.SetPosition(vp.camera,
+	SetPosition(vp.camera,
 		gameconst.StageSize/2,
 		gameconst.StageSize/2,
 		gameconst.StageSize,
@@ -42,7 +41,7 @@ func (vp *Viewport) hideTitle() {
 
 func (vp *Viewport) initTitle() {
 	vp.lightTitle = vp.ThreeJsNew("PointLight", 0xffffff, 1)
-	jsobj.SetPosition(vp.lightTitle,
+	SetPosition(vp.lightTitle,
 		gameconst.StageSize,
 		gameconst.StageSize,
 		gameconst.StageSize,
@@ -77,7 +76,7 @@ func (vp *Viewport) fontLoaded(this js.Value, args []js.Value) interface{} {
 	ftMat := vp.getColorMaterial(co)
 
 	vp.jsoTitle = vp.ThreeJsNew("Mesh", ftGeo, ftMat)
-	jsobj.SetPosition(vp.jsoTitle,
+	SetPosition(vp.jsoTitle,
 		gameconst.StageSize/2-(geoMax-geoMin)/2,
 		gameconst.StageSize/2,
 		gameconst.StageSize/2,

@@ -14,17 +14,16 @@ package wasmclient
 import (
 	"syscall/js"
 
-	"github.com/kasworld/gowasm3dgame/lib/jsobj"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 )
 
 func (vp *Viewport) addLight2Scene(o *w3d_obj.Light) {
 	if jso, exist := vp.jsSceneObjs[o.UUID]; exist {
-		jsobj.SetPosition(jso, o.PosVt[0], o.PosVt[1], o.PosVt[2])
+		SetPosition(jso, o.PosVt[0], o.PosVt[1], o.PosVt[2])
 		return
 	}
 	lt := vp.getLightNHelper(o)
-	jsobj.SetPosition(lt.Light, o.PosVt[0], o.PosVt[1], o.PosVt[2])
+	SetPosition(lt.Light, o.PosVt[0], o.PosVt[1], o.PosVt[2])
 	vp.scene.Call("add", lt.Light)
 	vp.scene.Call("add", lt.Helper)
 	vp.jsSceneObjs[o.UUID] = lt.Light
@@ -32,7 +31,7 @@ func (vp *Viewport) addLight2Scene(o *w3d_obj.Light) {
 
 func (vp *Viewport) add2Scene(o *w3d_obj.GameObj) js.Value {
 	if jso, exist := vp.jsSceneObjs[o.UUID]; exist {
-		jsobj.SetPosition(jso, o.PosVt[0], o.PosVt[1], o.PosVt[2])
+		SetPosition(jso, o.PosVt[0], o.PosVt[1], o.PosVt[2])
 		jso.Get("rotation").Set("x", o.RotVt[0])
 		jso.Get("rotation").Set("y", o.RotVt[1])
 		jso.Get("rotation").Set("z", o.RotVt[2])
@@ -41,7 +40,7 @@ func (vp *Viewport) add2Scene(o *w3d_obj.GameObj) js.Value {
 	geometry := vp.getObjGeometry(o.GOType)
 	material := vp.getColorMaterial(o.Color24)
 	jso := vp.ThreeJsNew("Mesh", geometry, material)
-	jsobj.SetPosition(jso, o.PosVt[0], o.PosVt[1], o.PosVt[2])
+	SetPosition(jso, o.PosVt[0], o.PosVt[1], o.PosVt[2])
 	jso.Get("rotation").Set("x", o.RotVt[0])
 	jso.Get("rotation").Set("y", o.RotVt[1])
 	jso.Get("rotation").Set("z", o.RotVt[2])
@@ -58,7 +57,7 @@ func (vp *Viewport) processRecvStageInfo(
 	vp.background.Get("position").Set("y", bgPos[1])
 
 	vt1 := stageInfo.CameraPos
-	jsobj.SetPosition(vp.camera, vt1[0], vt1[1], vt1[2])
+	SetPosition(vp.camera, vt1[0], vt1[1], vt1[2])
 
 	vt2 := stageInfo.CameraLookAt
 	vp.camera.Call("lookAt",
