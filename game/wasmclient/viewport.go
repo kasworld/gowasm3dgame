@@ -49,11 +49,12 @@ type Viewport struct {
 
 	Type2Radius [gameobjtype.GameObjType_Count]float64
 
-	jsSceneObjs   map[string]js.Value
+	jsSceneObjs map[string]js.Value
+
+	// cache
 	geometryCache map[gameobjtype.GameObjType]js.Value
 	materialCache map[uint32]js.Value
-
-	lightCache map[string]*LightNHelper
+	lightCache    map[string]*LightNHelper
 }
 
 func NewViewport() *Viewport {

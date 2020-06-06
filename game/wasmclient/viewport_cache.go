@@ -18,7 +18,7 @@ import (
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 )
 
-func (vp *Viewport) getGeometry(gotype gameobjtype.GameObjType) js.Value {
+func (vp *Viewport) getObjGeometry(gotype gameobjtype.GameObjType) js.Value {
 	geo, exist := vp.geometryCache[gotype]
 	if !exist {
 		radius := vp.Type2Radius[gotype]

@@ -43,7 +43,7 @@ func (vp *Viewport) add2Scene(o *w3d_obj.GameObj) js.Value {
 		jso.Get("rotation").Set("z", o.RotVt[2])
 		return jso
 	}
-	geometry := vp.getGeometry(o.GOType)
+	geometry := vp.getObjGeometry(o.GOType)
 	material := vp.getColorMaterial(o.Color24)
 	jso := vp.ThreeJsNew("Mesh", geometry, material)
 	jso.Get("position").Set("x", o.PosVt[0])
