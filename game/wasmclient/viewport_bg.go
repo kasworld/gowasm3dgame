@@ -15,6 +15,7 @@ import (
 	"math"
 
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
+	"github.com/kasworld/gowasm3dgame/lib/jsobj"
 )
 
 func (vp *Viewport) initGrid() {
@@ -28,49 +29,61 @@ func (vp *Viewport) initGrid() {
 	)
 
 	helper := vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0x0000ff, 0x404040)
-	helper.Get("position").Set("x", innerStageSize/2)
-	helper.Get("position").Set("y", -gameconst.MaxRadius)
-	helper.Get("position").Set("z", innerStageSize/2)
+	jsobj.SetPosition(helper,
+		innerStageSize/2,
+		-gameconst.MaxRadius,
+		innerStageSize/2,
+	)
 	helper.Get("geometry").Call("rotateX", math.Pi/2)
 	helper.Call("lookAt", center)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0xffff00, 0x404040)
-	helper.Get("position").Set("x", innerStageSize/2)
-	helper.Get("position").Set("y", gameconst.StageSize+gameconst.MaxRadius)
-	helper.Get("position").Set("z", innerStageSize/2)
+	jsobj.SetPosition(helper,
+		innerStageSize/2,
+		gameconst.StageSize+gameconst.MaxRadius,
+		innerStageSize/2,
+	)
 	helper.Get("geometry").Call("rotateX", math.Pi/2)
 	helper.Call("lookAt", center)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0xff0000, 0x404040)
-	helper.Get("position").Set("x", -gameconst.MaxRadius)
-	helper.Get("position").Set("y", innerStageSize/2)
-	helper.Get("position").Set("z", innerStageSize/2)
+	jsobj.SetPosition(helper,
+		-gameconst.MaxRadius,
+		innerStageSize/2,
+		innerStageSize/2,
+	)
 	helper.Get("geometry").Call("rotateX", math.Pi/2)
 	helper.Call("lookAt", center)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0x00ffff, 0x404040)
-	helper.Get("position").Set("x", gameconst.StageSize+gameconst.MaxRadius)
-	helper.Get("position").Set("y", innerStageSize/2)
-	helper.Get("position").Set("z", innerStageSize/2)
+	jsobj.SetPosition(helper,
+		gameconst.StageSize+gameconst.MaxRadius,
+		innerStageSize/2,
+		innerStageSize/2,
+	)
 	helper.Get("geometry").Call("rotateX", math.Pi/2)
 	helper.Call("lookAt", center)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0x00ff00, 0x404040)
-	helper.Get("position").Set("x", innerStageSize/2)
-	helper.Get("position").Set("y", innerStageSize/2)
-	helper.Get("position").Set("z", -gameconst.MaxRadius)
+	jsobj.SetPosition(helper,
+		innerStageSize/2,
+		innerStageSize/2,
+		-gameconst.MaxRadius,
+	)
 	helper.Get("geometry").Call("rotateX", math.Pi/2)
 	helper.Call("lookAt", center)
 	vp.scene.Call("add", helper)
 
 	helper = vp.ThreeJsNew("GridHelper", outerStageSize, 10, 0xff00ff, 0x404040)
-	helper.Get("position").Set("x", innerStageSize/2)
-	helper.Get("position").Set("y", innerStageSize/2)
-	helper.Get("position").Set("z", gameconst.StageSize+gameconst.MaxRadius)
+	jsobj.SetPosition(helper,
+		innerStageSize/2,
+		innerStageSize/2,
+		gameconst.StageSize+gameconst.MaxRadius,
+	)
 	helper.Get("geometry").Call("rotateX", math.Pi/2)
 	helper.Call("lookAt", center)
 	vp.scene.Call("add", helper)
@@ -116,8 +129,10 @@ func (vp *Viewport) initBackground() {
 	// vp.background.Get("scale").Set("x", gameconst.StageSize)
 	// vp.background.Get("scale").Set("y", gameconst.StageSize)
 	// vp.background.Get("scale").Set("z", 1)
-	vp.background.Get("position").Set("x", gameconst.StageSize/2)
-	vp.background.Get("position").Set("y", gameconst.StageSize/2)
-	vp.background.Get("position").Set("z", -gameconst.MaxRadius)
+	jsobj.SetPosition(vp.background,
+		gameconst.StageSize/2,
+		gameconst.StageSize/2,
+		-gameconst.MaxRadius,
+	)
 	vp.scene.Call("add", vp.background)
 }

@@ -15,13 +15,16 @@ import (
 	"syscall/js"
 
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
+	"github.com/kasworld/gowasm3dgame/lib/jsobj"
 )
 
 func (vp *Viewport) setTitleCamera() {
 	// set title camera pos
-	vp.camera.Get("position").Set("x", gameconst.StageSize/2)
-	vp.camera.Get("position").Set("y", gameconst.StageSize/2)
-	vp.camera.Get("position").Set("z", gameconst.StageSize)
+	jsobj.SetPosition(vp.camera,
+		gameconst.StageSize/2,
+		gameconst.StageSize/2,
+		gameconst.StageSize,
+	)
 	vp.camera.Call("lookAt",
 		vp.ThreeJsNew("Vector3",
 			gameconst.StageSize/2,
@@ -39,9 +42,11 @@ func (vp *Viewport) hideTitle() {
 
 func (vp *Viewport) initTitle() {
 	vp.lightTitle = vp.ThreeJsNew("PointLight", 0xffffff, 1)
-	vp.lightTitle.Get("position").Set("x", gameconst.StageSize)
-	vp.lightTitle.Get("position").Set("y", gameconst.StageSize)
-	vp.lightTitle.Get("position").Set("z", gameconst.StageSize)
+	jsobj.SetPosition(vp.lightTitle,
+		gameconst.StageSize,
+		gameconst.StageSize,
+		gameconst.StageSize,
+	)
 	vp.scene.Call("add", vp.lightTitle)
 	vp.setTitleCamera()
 	vp.fontLoader.Call("load", "/fonts/helvetiker_regular.typeface.json",
@@ -72,9 +77,11 @@ func (vp *Viewport) fontLoaded(this js.Value, args []js.Value) interface{} {
 	ftMat := vp.getColorMaterial(co)
 
 	vp.jsoTitle = vp.ThreeJsNew("Mesh", ftGeo, ftMat)
-	vp.jsoTitle.Get("position").Set("x", gameconst.StageSize/2-(geoMax-geoMin)/2)
-	vp.jsoTitle.Get("position").Set("y", gameconst.StageSize/2)
-	vp.jsoTitle.Get("position").Set("z", gameconst.StageSize/2)
+	jsobj.SetPosition(vp.jsoTitle,
+		gameconst.StageSize/2-(geoMax-geoMin)/2,
+		gameconst.StageSize/2,
+		gameconst.StageSize/2,
+	)
 	vp.scene.Call("add", vp.jsoTitle)
 
 	return nil
