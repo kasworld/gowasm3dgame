@@ -43,28 +43,34 @@ func (vp *Viewport) initGrid() {
 		mid, mid, mid,
 	)
 
-	vp.scene.Call("add", vp.makeGridHelper(0x0000ff,
-		mid, min, mid, center,
+	// y min
+	vp.scene.Call("add", vp.makeGridHelper(
+		0x0000ff, mid, min, mid, center,
 	))
 
-	vp.scene.Call("add", vp.makeGridHelper(0xffff00,
-		mid, max, mid, center,
+	// y max
+	vp.scene.Call("add", vp.makeGridHelper(
+		0xffff00, mid, max, mid, center,
 	))
 
-	vp.scene.Call("add", vp.makeGridHelper(0xff0000,
-		min, mid, mid, center,
+	// x min
+	vp.scene.Call("add", vp.makeGridHelper(
+		0xff0000, min, mid, mid, center,
 	))
 
-	vp.scene.Call("add", vp.makeGridHelper(0x00ffff,
-		max, mid, mid, center,
+	// x max
+	vp.scene.Call("add", vp.makeGridHelper(
+		0x00ffff, max, mid, mid, center,
 	))
 
-	vp.scene.Call("add", vp.makeGridHelper(0x00ff00,
-		mid, mid, min, center,
+	// z min
+	vp.scene.Call("add", vp.makeGridHelper(
+		0x00ff00, mid, mid, min, center,
 	))
 
-	vp.scene.Call("add", vp.makeGridHelper(0xff00ff,
-		mid, mid, max, center,
+	// z max
+	vp.scene.Call("add", vp.makeGridHelper(
+		0xff00ff, mid, mid, max, center,
 	))
 
 	box3 := vp.ThreeJsNew("Box3",
