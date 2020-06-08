@@ -36,53 +36,35 @@ func (vp *Viewport) makeGridHelper(
 
 func (vp *Viewport) initGrid() {
 	innerStageSize := gameconst.StageSize
-
+	min := -gameconst.MaxRadius
+	max := gameconst.StageSize + gameconst.MaxRadius
+	mid := innerStageSize / 2
 	center := vp.ThreeJsNew("Vector3",
-		gameconst.StageSize/2,
-		gameconst.StageSize/2,
-		gameconst.StageSize/2,
+		mid, mid, mid,
 	)
 
 	vp.scene.Call("add", vp.makeGridHelper(0x0000ff,
-		innerStageSize/2,
-		-gameconst.MaxRadius,
-		innerStageSize/2,
-		center,
+		mid, min, mid, center,
 	))
 
 	vp.scene.Call("add", vp.makeGridHelper(0xffff00,
-		innerStageSize/2,
-		gameconst.StageSize+gameconst.MaxRadius,
-		innerStageSize/2,
-		center,
+		mid, max, mid, center,
 	))
 
 	vp.scene.Call("add", vp.makeGridHelper(0xff0000,
-		-gameconst.MaxRadius,
-		innerStageSize/2,
-		innerStageSize/2,
-		center,
+		min, mid, mid, center,
 	))
 
 	vp.scene.Call("add", vp.makeGridHelper(0x00ffff,
-		gameconst.StageSize+gameconst.MaxRadius,
-		innerStageSize/2,
-		innerStageSize/2,
-		center,
+		max, mid, mid, center,
 	))
 
 	vp.scene.Call("add", vp.makeGridHelper(0x00ff00,
-		innerStageSize/2,
-		innerStageSize/2,
-		-gameconst.MaxRadius,
-		center,
+		mid, mid, min, center,
 	))
 
 	vp.scene.Call("add", vp.makeGridHelper(0xff00ff,
-		innerStageSize/2,
-		innerStageSize/2,
-		gameconst.StageSize+gameconst.MaxRadius,
-		center,
+		mid, mid, max, center,
 	))
 
 	box3 := vp.ThreeJsNew("Box3",

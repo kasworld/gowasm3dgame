@@ -16,7 +16,7 @@ const (
 	StageSize = 1000.0
 
 	// MaxRadius need oct tree boundary
-	MaxRadius = 15
+	MaxRadius = 15.0
 	LongLife  = 3600 * 24 * 365
 
 	StagePerServer = 10
@@ -28,8 +28,6 @@ const (
 	// not used
 	ScorePerKill      = 1
 	BallRespawnDurSec = 5
-
-	AIPerStage = 1000
 
 	MaxChatLen = 80
 )
