@@ -31,7 +31,7 @@ type Viewport struct {
 	ViewHeight int
 	RefSize    int
 
-	Canvas   js.Value
+	CanvasGL js.Value
 	threejs  js.Value
 	scene    js.Value
 	camera   js.Value
@@ -68,9 +68,9 @@ func NewViewport() *Viewport {
 
 	vp.threejs = js.Global().Get("THREE")
 	vp.renderer = vp.ThreeJsNew("WebGLRenderer")
-	vp.Canvas = vp.renderer.Get("domElement")
-	js.Global().Get("document").Call("getElementById", "canvas3dholder").Call("appendChild", vp.Canvas)
-	vp.Canvas.Set("tabindex", "1")
+	vp.CanvasGL = vp.renderer.Get("domElement")
+	js.Global().Get("document").Call("getElementById", "canvasglholder").Call("appendChild", vp.CanvasGL)
+	vp.CanvasGL.Set("tabindex", "1")
 
 	vp.scene = vp.ThreeJsNew("Scene")
 
@@ -86,10 +86,10 @@ func NewViewport() *Viewport {
 }
 
 func (vp *Viewport) Hide() {
-	vp.Canvas.Get("style").Set("display", "none")
+	vp.CanvasGL.Get("style").Set("display", "none")
 }
 func (vp *Viewport) Show() {
-	vp.Canvas.Get("style").Set("display", "initial")
+	vp.CanvasGL.Get("style").Set("display", "initial")
 }
 
 func (vp *Viewport) ResizeCanvas(title bool) {
@@ -99,28 +99,28 @@ func (vp *Viewport) ResizeCanvas(title bool) {
 	if title {
 		winH /= 3
 	}
-	vp.Canvas.Call("setAttribute", "width", winW)
-	vp.Canvas.Call("setAttribute", "height", winH)
+	vp.CanvasGL.Call("setAttribute", "width", winW)
+	vp.CanvasGL.Call("setAttribute", "height", winH)
 	vp.ViewWidth = winW
 	vp.ViewHeight = winH
 
 	vp.camera.Set("aspect", float64(winW)/float64(winH))
 	vp.camera.Call("updateProjectionMatrix")
 
-	vp.Canvas.Call("setAttribute", "width", vp.ViewWidth)
-	vp.Canvas.Call("setAttribute", "height", vp.ViewHeight)
+	vp.CanvasGL.Call("setAttribute", "width", vp.ViewWidth)
+	vp.CanvasGL.Call("setAttribute", "height", vp.ViewHeight)
 	vp.renderer.Call("setSize", vp.ViewWidth, vp.ViewHeight)
 }
 
 func (vp *Viewport) Focus() {
-	vp.Canvas.Call("focus")
+	vp.CanvasGL.Call("focus")
 }
 
 func (vp *Viewport) Zoom(state int) {
 }
 
 func (vp *Viewport) AddEventListener(evt string, fn func(this js.Value, args []js.Value) interface{}) {
-	vp.Canvas.Call("addEventListener", evt, js.FuncOf(fn))
+	vp.CanvasGL.Call("addEventListener", evt, js.FuncOf(fn))
 }
 
 func (vp *Viewport) Draw() {

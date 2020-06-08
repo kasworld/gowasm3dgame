@@ -135,7 +135,7 @@ func (app *WasmClient) jsHandleMouseMove(this js.Value, args []js.Value) interfa
 func (app *WasmClient) jsHandleKeyDown(this js.Value, args []js.Value) interface{} {
 	// jslog.Info("jsHandleKeyDownVP")
 	evt := args[0]
-	if evt.Get("target").Equal(app.vp.Canvas) {
+	if evt.Get("target").Equal(app.vp.CanvasGL) {
 		evt.Call("stopPropagation")
 		evt.Call("preventDefault")
 
@@ -151,7 +151,7 @@ func (app *WasmClient) jsHandleKeyDown(this js.Value, args []js.Value) interface
 func (app *WasmClient) jsHandleKeyPress(this js.Value, args []js.Value) interface{} {
 	// jslog.Info("jsHandleKeyPressVP")
 	evt := args[0]
-	if evt.Get("target").Equal(app.vp.Canvas) {
+	if evt.Get("target").Equal(app.vp.CanvasGL) {
 		evt.Call("stopPropagation")
 		evt.Call("preventDefault")
 
@@ -162,7 +162,7 @@ func (app *WasmClient) jsHandleKeyPress(this js.Value, args []js.Value) interfac
 }
 func (app *WasmClient) jsHandleKeyUp(this js.Value, args []js.Value) interface{} {
 	evt := args[0]
-	if evt.Get("target").Equal(app.vp.Canvas) {
+	if evt.Get("target").Equal(app.vp.CanvasGL) {
 		evt.Call("stopPropagation")
 		evt.Call("preventDefault")
 
