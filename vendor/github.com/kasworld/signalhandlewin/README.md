@@ -1,6 +1,7 @@
-# golang signal handler for server/service for linux   
+# golang signal handler for server/service for windows   
 
-리눅스용 서버/서비스를 만드는데 사용하는 signal handler 입니다. 
+signalhandle (리눅스용) 을 수정한 
+윈도우용 서버/서비스를 만드는데 사용하는 signal handler 입니다. 
 
 # 기능 
 
@@ -15,11 +16,6 @@ pid lockfile을 사용해서 서비스의 제어를 가능하게 해줍니다.
     -service=stop
 
 
-로그 로테이트 : 서비스 실행중에 로그 파일의 교체가 가능합니다. 
-
-    -service=logreopen
-
-
 서비스 재시작 : 실행중인 서비스를 종료하고 다시 시작 합니다. 
 
     -service=restart 
@@ -32,7 +28,7 @@ pid lockfile을 사용해서 서비스의 제어를 가능하게 해줍니다.
 # 사용시 추가 되는 인자 
 
     -service string
-    	start,stop,restart,forcestart,logreopen (default "start")
+    	start,stop,restart,forcestart (default "start")
 
 # 사용자 프로그램에서 구현 해야 하는 interface
 

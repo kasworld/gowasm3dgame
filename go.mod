@@ -15,18 +15,17 @@ require (
 	github.com/kasworld/gowasmlib v0.0.0-20200306023233-6d534fae80d1
 	github.com/kasworld/htmlcolors v0.0.0-20200329020336-66b48ba18ef9
 	github.com/kasworld/intervalduration v0.0.0-20191119062840-82a720a6b837
-	github.com/kasworld/launcherlib v0.0.0-20190513092519-5ce52b882f53 // indirect
 	github.com/kasworld/log v0.0.0-20191101013826-9bd2997eac10
 	github.com/kasworld/multirun v0.0.0-20191216055936-decb66787001
 	github.com/kasworld/prettystring v0.0.0-20200313054137-8305061037e7
 	github.com/kasworld/rangestat v0.0.0-20190508031937-d4380fb43f7a
-	github.com/kasworld/signalhandle v0.0.0-20200408024356-5eb43fdac632
+	github.com/kasworld/signalhandle v0.0.0-20200822033537-32b4da0b570d
+	github.com/kasworld/signalhandlewin v0.0.0-20200822033615-47a1af25ab63
 	github.com/kasworld/uuidstr v0.0.0-20190503034528-2edffd24297a
 	github.com/kasworld/version v0.0.0-20190507052028-3d2e657a23f8
 	github.com/kasworld/way9type v0.0.0-20200404022030-f34f2327f7d3
 	github.com/kasworld/weblib v0.0.0-20200408024824-4b4f01a6be3f
 	github.com/kasworld/wrapper v0.0.0-20190506073115-622d5083ea62
-	github.com/nightlyone/lockfile v1.0.0 // indirect
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/tinylib/msgp v1.1.2

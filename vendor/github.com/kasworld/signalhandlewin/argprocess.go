@@ -9,13 +9,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package signalhandle
+package signalhandlewin
 
 import (
 	"flag"
 	"fmt"
 	"os"
-	"syscall"
 	"time"
 
 	"github.com/kasworld/launcherlib"
@@ -28,7 +27,7 @@ var (
 
 func AddArgs() {
 	signalhandle_ArgAdded = true
-	signalhandle_service = flag.String("service", "start", "start,stop,restart,forcestart,logreopen")
+	signalhandle_service = flag.String("service", "start", "start,stop,restart,forcestart")
 }
 
 func StartByArgs(svr ServiceI) error {
@@ -67,10 +66,10 @@ func StartByArgs(svr ServiceI) error {
 	case "stop":
 		svr.GetLogger().(LoggerI).Debug("Service Stop %v", svr)
 		return SignalToStopAndWaitServiceEnd(svr)
-	case "logreopen":
-		svr.GetLogger().(LoggerI).Debug("Service log reopen %v", svr)
-		launcherlib.SignalByPidFile(svr.GetServiceLockFilename(), syscall.SIGUSR1)
-		return nil
+		// case "logreopen":
+		// 	svr.GetLogger().(LoggerI).Debug("Service log reopen %v", svr)
+		// 	launcherlib.SignalByPidFile(svr.GetServiceLockFilename(), syscall.SIGUSR1)
+		// 	return nil
 	}
 	return nil
 }

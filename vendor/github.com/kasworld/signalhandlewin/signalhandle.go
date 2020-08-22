@@ -9,7 +9,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package signalhandle
+package signalhandlewin
 
 import (
 	"context"
@@ -84,8 +84,8 @@ func RunWithSignalHandle(svr ServiceI) error {
 
 	// signal handle
 	// kill -s SIGUSR1 `cat pidfilename`
-	sigUsr1Ch := make(chan os.Signal, 10)
-	signal.Notify(sigUsr1Ch, syscall.SIGUSR1) // for logrotate
+	// sigUsr1Ch := make(chan os.Signal, 10)
+	// signal.Notify(sigUsr1Ch, syscall.SIGUSR1) // for logrotate
 
 	signalTermIntCh := make(chan os.Signal, 1)
 	signal.Notify(signalTermIntCh, os.Interrupt, syscall.SIGTERM)
@@ -103,9 +103,9 @@ loop:
 			signal.Stop(signalTermIntCh)
 			endService()
 
-		case <-sigUsr1Ch:
-			fmt.Println("Catch sigusr1, reopen logfile")
-			svr.GetLogger().(LoggerI).Reload()
+			// case <-sigUsr1Ch:
+			// 	fmt.Println("Catch sigusr1, reopen logfile")
+			// 	svr.GetLogger().(LoggerI).Reload()
 		}
 	}
 	return nil

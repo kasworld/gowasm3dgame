@@ -37,7 +37,6 @@ github.com/kasworld/htmlcolors
 ## explicit
 github.com/kasworld/intervalduration
 # github.com/kasworld/launcherlib v0.0.0-20190513092519-5ce52b882f53
-## explicit
 github.com/kasworld/launcherlib
 # github.com/kasworld/log v0.0.0-20191101013826-9bd2997eac10
 ## explicit
@@ -56,9 +55,12 @@ github.com/kasworld/prettystring
 # github.com/kasworld/rangestat v0.0.0-20190508031937-d4380fb43f7a
 ## explicit
 github.com/kasworld/rangestat
-# github.com/kasworld/signalhandle v0.0.0-20200408024356-5eb43fdac632
+# github.com/kasworld/signalhandle v0.0.0-20200822033537-32b4da0b570d
 ## explicit
 github.com/kasworld/signalhandle
+# github.com/kasworld/signalhandlewin v0.0.0-20200822033615-47a1af25ab63
+## explicit
+github.com/kasworld/signalhandlewin
 # github.com/kasworld/uuidstr v0.0.0-20190503034528-2edffd24297a
 ## explicit
 github.com/kasworld/uuidstr
@@ -77,7 +79,6 @@ github.com/kasworld/weblib/webprofile
 ## explicit
 github.com/kasworld/wrapper
 # github.com/nightlyone/lockfile v1.0.0
-## explicit
 github.com/nightlyone/lockfile
 # github.com/philhofer/fwd v1.0.0
 ## explicit

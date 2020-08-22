@@ -36,8 +36,10 @@ github.com/kasworld/prettystring v0.0.0-20200313054137-8305061037e7 h1:c0l48LIAZ
 github.com/kasworld/prettystring v0.0.0-20200313054137-8305061037e7/go.mod h1:49hU/4Tzyzz8E4oIo6hZtjqO9LaM1LgXOvY+VG1EWtI=
 github.com/kasworld/rangestat v0.0.0-20190508031937-d4380fb43f7a h1:2C0tc01SY9C4W7fZj9G7kETkQC6coqb+j1bzEq4UxgI=
 github.com/kasworld/rangestat v0.0.0-20190508031937-d4380fb43f7a/go.mod h1:h6K7dvA2STMPa7uqgf43kf+0Ah1mWoGihRHVXGVbV18=
-github.com/kasworld/signalhandle v0.0.0-20200408024356-5eb43fdac632 h1:5fTbYtAkRsaH0PtB22/K7qBbkQv0ApHb2qu9bJ7gTco=
-github.com/kasworld/signalhandle v0.0.0-20200408024356-5eb43fdac632/go.mod h1:kqr1uEa2r29JYirqJBrIa/eCwBvH6iEzHCx11OuUX/0=
+github.com/kasworld/signalhandle v0.0.0-20200822033537-32b4da0b570d h1:SxYd0srXbsjL82VMVu5ZXt1pcm+oL5OVMC/jyTUrbrE=
+github.com/kasworld/signalhandle v0.0.0-20200822033537-32b4da0b570d/go.mod h1:xhD6vu7DcPv1MB/BdQYK0vr3DN8Un5agHcd9ndB09zI=
+github.com/kasworld/signalhandlewin v0.0.0-20200822033615-47a1af25ab63 h1:8BvG3mhYkvUgrZ+PJatECNbzzz1cFkYs4tM2q4IaSJk=
+github.com/kasworld/signalhandlewin v0.0.0-20200822033615-47a1af25ab63/go.mod h1:OT78W3x3cbKAHzCjlnK/UOuFp4IowsFFleOp6WqlEI0=
 github.com/kasworld/uuidstr v0.0.0-20190503034528-2edffd24297a h1:zB+eA5R/ffX2bI6nz/rrviKLOOPJq5nDjLbNHfthm+w=
 github.com/kasworld/uuidstr v0.0.0-20190503034528-2edffd24297a/go.mod h1:3Unt++NR6Watw5y+3TymsoCVwJrd0ofAkQ1zU251HSM=
 github.com/kasworld/version v0.0.0-20190507052028-3d2e657a23f8 h1:IE+DyRvObPl3hkWkUHMdq7BPFCFO3qmKMCpwqXi8CuA=

@@ -33,7 +33,6 @@ import (
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_statnoti"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_statserveapi"
 	"github.com/kasworld/prettystring"
-	"github.com/kasworld/signalhandle"
 	"github.com/kasworld/weblib/retrylistenandserve"
 )
 
@@ -95,7 +94,8 @@ func (svr *Server) GetServiceLockFilename() string {
 }
 
 // called from signal handler
-func (svr *Server) GetLogger() signalhandle.LoggerI {
+// return implement signalhandle.LoggerI
+func (svr *Server) GetLogger() interface{} {
 	return w3dlog.GlobalLogger
 }
 

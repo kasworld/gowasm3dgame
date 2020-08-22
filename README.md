@@ -51,3 +51,6 @@ open client web
     http://localhost:34101/
 
 
+# windows 에서 작동시키려면?
+
+signalhandlewin을 사용하는 rundriver/serverwin.go 를 사용하시면 됩니다. 
