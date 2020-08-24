@@ -18,7 +18,7 @@ import (
 	"github.com/kasworld/argdefault"
 	"github.com/kasworld/configutil"
 	"github.com/kasworld/go-profile"
-	"github.com/kasworld/gowasm3dgame/config/gameconst"
+	"github.com/kasworld/gowasm3dgame/config/dataversion"
 	"github.com/kasworld/gowasm3dgame/config/serverconfig"
 	"github.com/kasworld/gowasm3dgame/game/server"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
@@ -37,7 +37,7 @@ func init() {
 func printVersion() {
 	fmt.Println("gowasm3dgame")
 	fmt.Println("Build     ", version.GetVersion())
-	fmt.Println("Data      ", gameconst.DataVersion)
+	fmt.Println("Data      ", dataversion.DataVersion)
 	fmt.Println("Protocol  ", w3d_version.ProtocolVersion)
 	fmt.Println()
 }

@@ -62,12 +62,12 @@ enum/*.enum \
 "
 Data_VERSION=`cat ${GameDataFiles}| sha256sum | awk '{print $1}'`
 echo "Data Version:" ${Data_VERSION}
-
+mkdir -p config/dataversion
 echo "
-package gameconst
+package dataversion
 
 const DataVersion = \"${Data_VERSION}\"
-" > config/gameconst/dataversion_gen.go 
+" > config/dataversion/dataversion_gen.go 
 
 # build bin
 

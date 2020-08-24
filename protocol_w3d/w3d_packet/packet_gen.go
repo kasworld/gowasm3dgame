@@ -268,19 +268,19 @@ type Buffer []byte
 type Pool struct {
 	mutex    sync.Mutex
 	buffPool []Buffer
-	count    int
+	size     int
 }
 
-func NewPool(count int) *Pool {
+func NewPool(size int) *Pool {
 	return &Pool{
-		buffPool: make([]Buffer, 0, count),
-		count:    count,
+		buffPool: make([]Buffer, 0, size),
+		size:     size,
 	}
 }
 
 func (p *Pool) String() string {
-	return fmt.Sprintf("PacketPool[%v %v/%v]",
-		len(p.buffPool), p.count,
+	return fmt.Sprintf("PacketPool[%v/%v]",
+		len(p.buffPool), p.size,
 	)
 }
 
@@ -300,7 +300,7 @@ func (p *Pool) Get() Buffer {
 func (p *Pool) Put(pb Buffer) {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
-	if len(p.buffPool) < p.count {
+	if len(p.buffPool) < p.size {
 		p.buffPool = append(p.buffPool, pb[:HeaderLen])
 	}
 }

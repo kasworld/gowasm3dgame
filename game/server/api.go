@@ -17,7 +17,7 @@ import (
 	"time"
 
 	"github.com/kasworld/gowasm3dgame/config/authdata"
-	"github.com/kasworld/gowasm3dgame/config/gameconst"
+	"github.com/kasworld/gowasm3dgame/config/dataversion"
 	"github.com/kasworld/gowasm3dgame/lib/conndata"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_authorize"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_error"
@@ -118,7 +118,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 		sendBody := &w3d_obj.RspLogin_data{
 			Version:         version.GetVersion(),
 			ProtocolVersion: w3d_version.ProtocolVersion,
-			DataVersion:     gameconst.DataVersion,
+			DataVersion:     dataversion.DataVersion,
 			SessionKey:      recvBody.SessionKey,
 			StageUUID:       ss.StageID,
 			StageType:       stg.(stageApiI).GetStageType(),

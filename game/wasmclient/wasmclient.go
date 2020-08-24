@@ -18,7 +18,7 @@ import (
 	"time"
 
 	"github.com/kasworld/actjitter"
-	"github.com/kasworld/gowasm3dgame/config/gameconst"
+	"github.com/kasworld/gowasm3dgame/config/dataversion"
 	"github.com/kasworld/gowasm3dgame/lib/clientcookie"
 	"github.com/kasworld/gowasm3dgame/lib/jskeypressmap"
 	"github.com/kasworld/gowasm3dgame/lib/jsobj"
@@ -115,9 +115,9 @@ func (app *WasmClient) enterStage(stageUUID string) {
 	defer app.Cleanup()
 	app.vp.Type2Radius = app.loginData.Type2Radius
 
-	if gameconst.DataVersion != app.loginData.DataVersion {
+	if dataversion.DataVersion != app.loginData.DataVersion {
 		jslog.Errorf("DataVersion mismatch client %v server %v",
-			gameconst.DataVersion, app.loginData.DataVersion)
+			dataversion.DataVersion, app.loginData.DataVersion)
 	}
 	if w3d_version.ProtocolVersion != app.loginData.ProtocolVersion {
 		jslog.Errorf("ProtocolVersion mismatch client %v server %v",

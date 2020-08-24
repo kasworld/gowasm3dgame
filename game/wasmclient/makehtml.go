@@ -17,7 +17,7 @@ import (
 	"net/url"
 	"syscall/js"
 
-	"github.com/kasworld/gowasm3dgame/config/gameconst"
+	"github.com/kasworld/gowasm3dgame/config/dataversion"
 	"github.com/kasworld/gowasm3dgame/enum/acttype"
 	"github.com/kasworld/gowasm3dgame/game/stagelist4client"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_version"
@@ -43,7 +43,7 @@ func (app *WasmClient) makeServiceInfo() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "gowasm3dgame webclient<br/>")
 	fmt.Fprintf(&buf, "Protocol %v<br/>", w3d_version.ProtocolVersion)
-	fmt.Fprintf(&buf, "Data %v<br/>", gameconst.DataVersion)
+	fmt.Fprintf(&buf, "Data %v<br/>", dataversion.DataVersion)
 	fmt.Fprintf(&buf, "%v<br/>", msgCopyright)
 	return buf.String()
 }
