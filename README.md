@@ -1,5 +1,33 @@
 # webgl을 사용하는 여러 종류의 게임(stage)을 지원하는 온라인 게임 프레임웍 
 
+
+# 사전 준비 사항 ( goguelike 의 INSTALL.md 참고)
+
+준비물 : linux(debian,ubuntu,mint) , chrome web brower , golang 
+
+goimports : 소스 코드 정리, import 해결
+
+    go get golang.org/x/tools/cmd/goimports
+
+버전 string 생성시 사용 : windows, linux 간에 같은 string생성
+
+    go get github.com/kasworld/makesha256sum
+
+프로토콜 생성기 : https://github.com/kasworld/genprotocol
+
+    go get github.com/kasworld/genprotocol
+
+Enum 생성기 : https://github.com/kasworld/genenum
+
+    go get github.com/kasworld/genenum
+
+Log 패키지 및 커스텀 로그레벨 로거 생성기 : https://github.com/kasworld/log
+
+    go get github.com/kasworld/log
+    install.sh 실행해서 genlog 생성 
+
+# 개요
+
 여러 종류의 stage를 하나의 client를 사용해 실행 가능합니다. 
 
 예제 
