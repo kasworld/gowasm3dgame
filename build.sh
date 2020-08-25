@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 ################################################################################
+echo "genlog -leveldatafile ./w3dlog/w3dlog.data -packagename w3dlog "
 cd lib
 genlog -leveldatafile ./w3dlog/w3dlog.data -packagename w3dlog 
 cd ..
@@ -29,9 +30,7 @@ GameDataFiles="config/gameconst/*.go config/gamedata/*.go enum/*.enum"
 Data_VERSION=`makesha256sum ${GameDataFiles}`
 echo "Data Version: ${Data_VERSION}"
 mkdir -p config/dataversion
-echo "
-package dataversion
-
+echo "package dataversion
 const DataVersion = \"${Data_VERSION}\"
 " > config/dataversion/dataversion_gen.go 
 
