@@ -31,3 +31,6 @@ core
 *~
 *.map
 bin/*
+
+*_gen.go 
+*_gen_test.go

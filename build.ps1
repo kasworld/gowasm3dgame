@@ -1,4 +1,11 @@
 
+
+# del generated code 
+# Get-ChildItem .\enum\ -Recurse -Include *_gen.go | Remove-Item
+# Get-ChildItem .\protocol_w3d\ -Recurse -Include *_gen.go | Remove-Item
+# Remove-Item lib\w3dlog\log_gen.go
+# Remove-Item config/dataversion/dataversion_gen.go 
+
 ################################################################################
 Set-Location lib
 Write-Output "genlog -leveldatafile ./w3dlog/w3dlog.data -packagename w3dlog "
