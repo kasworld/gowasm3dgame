@@ -63,6 +63,7 @@ echo "Build version: ${BUILD_VER}"
 BIN_DIR="bin"
 SRC_DIR="rundriver"
 
+mkdir -p ${BIN_DIR}
 echo ${BUILD_VER} > ${BIN_DIR}/BUILD_linux
 
 BuildBin ${SRC_DIR}/server.go ${BIN_DIR} server
