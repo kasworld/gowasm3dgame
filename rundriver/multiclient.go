@@ -104,7 +104,7 @@ type AppArg struct {
 type App struct {
 	config            AppArg
 	c2scWS            *w3d_connwsgorilla.Connection
-	EnqueueSendPacket func(pk w3d_packet.Packet) error
+	EnqueueSendPacket func(pk *w3d_packet.Packet) error
 	runResult         error
 
 	sendRecvStop func()
@@ -140,12 +140,7 @@ func (app *App) Run(mainctx context.Context) {
 	app.sendRecvStop = stopFn
 	defer app.sendRecvStop()
 
-	app.c2scWS = w3d_connwsgorilla.New(
-		readTimeoutSec, writeTimeoutSec,
-		w3d_gob.MarshalBodyFn,
-		app.handleRecvPacket,
-		app.handleSentPacket,
-	)
+	app.c2scWS = w3d_connwsgorilla.New(10)
 	if err := app.c2scWS.ConnectTo(app.config.ConnectToServer); err != nil {
 		fmt.Printf("%v\n", err)
 		app.sendRecvStop()
@@ -154,7 +149,12 @@ func (app *App) Run(mainctx context.Context) {
 	}
 	app.EnqueueSendPacket = app.c2scWS.EnqueueSendPacket
 	go func(ctx context.Context) {
-		app.runResult = app.c2scWS.Run(ctx)
+		app.runResult = app.c2scWS.Run(ctx,
+			readTimeoutSec, writeTimeoutSec,
+			w3d_gob.MarshalBodyFn,
+			app.handleRecvPacket,
+			app.handleSentPacket,
+		)
 	}(ctx)
 
 	timerPingTk := time.NewTicker(time.Second)
@@ -186,8 +186,8 @@ func (app *App) reqHeartbeat() error {
 	)
 }
 
-func (app *App) handleSentPacket(header w3d_packet.Header) error {
-	if err := app.apistat.AfterSendReq(header); err != nil {
+func (app *App) handleSentPacket(pk *w3d_packet.Packet) error {
+	if err := app.apistat.AfterSendReq(pk.Header); err != nil {
 		return err
 	}
 	return nil
@@ -246,7 +246,7 @@ func (app *App) ReqWithRspFn(cmd w3d_idcmd.CommandID, body interface{},
 	}
 	app.pid2statobj.Add(spk.Header.ID, psobj)
 
-	if err := app.EnqueueSendPacket(spk); err != nil {
+	if err := app.EnqueueSendPacket(&spk); err != nil {
 		fmt.Printf("End %v %v %v\n", app, spk, err)
 		app.sendRecvStop()
 		return fmt.Errorf("Send fail %v %v", app, err)
