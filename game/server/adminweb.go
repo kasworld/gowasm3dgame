@@ -12,6 +12,7 @@
 package server
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 
@@ -26,7 +27,7 @@ func (svr *Server) web_FaviconIco(w http.ResponseWriter, r *http.Request) {
 func (svr *Server) initAdminWeb() {
 	authdata := weblib.NewAuthData("server")
 	authdata.ReLoadUserData([][2]string{
-		{"root", "password"},
+		{svr.config.WebAdminID, svr.config.WebAdminPass},
 	})
 	webMux := weblib.NewAuthMux(authdata, svr.log)
 
@@ -43,11 +44,11 @@ func (svr *Server) initAdminWeb() {
 	webMux.HandleFuncAuth("/ConnectionManager", svr.web_ConnMan)
 	webMux.HandleFuncAuth("/StageManager", svr.web_StageMan)
 
-	authdata.AddAllActionName("root")
+	authdata.AddAllActionName(svr.config.WebAdminID)
 
 	svr.adminWeb = &http.Server{
 		Handler: webMux,
-		Addr:    svr.config.AdminPort,
+		Addr:    fmt.Sprintf(":%v", svr.config.AdminPort),
 	}
 }
 

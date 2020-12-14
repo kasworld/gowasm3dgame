@@ -38,7 +38,7 @@ func (svr *Server) initServiceWeb(ctx context.Context) {
 	})
 	svr.clientWeb = &http.Server{
 		Handler: webMux,
-		Addr:    svr.config.ServicePort,
+		Addr:    fmt.Sprintf(":%v", svr.config.ServicePort),
 	}
 	svr.marshalBodyFn = w3d_gob.MarshalBodyFn
 	svr.unmarshalPacketFn = w3d_gob.UnmarshalPacket

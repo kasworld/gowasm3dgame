@@ -143,8 +143,9 @@ func (svr *Server) ServiceMain(ctx context.Context) {
 	svr.initAdminWeb()
 	svr.initServiceWeb(ctx)
 
-	fmt.Printf("open admin web\nhttp://localhost%v/\n", svr.config.AdminPort)
-	fmt.Printf("open client web\nhttp://localhost%v/\n", svr.config.ServicePort)
+	fmt.Printf("WebAdmin  : %v:%v id:%v pass:%v\n",
+		svr.config.ServiceHostBase, svr.config.AdminPort, svr.config.WebAdminID, svr.config.WebAdminPass)
+	fmt.Printf("WebClient : %v:%v/\n", svr.config.ServiceHostBase, svr.config.ServicePort)
 
 	go retrylistenandserve.RetryListenAndServe(svr.adminWeb, svr.log, "serveAdminWeb")
 	go retrylistenandserve.RetryListenAndServe(svr.clientWeb, svr.log, "serveServiceWeb")
