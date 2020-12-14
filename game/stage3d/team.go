@@ -13,9 +13,9 @@ package stage3d
 
 import (
 	"math"
-	"math/rand"
 	"time"
 
+	"github.com/kasworld/g2rand"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/enum/acttype"
 	"github.com/kasworld/gowasm3dgame/enum/acttype_vector"
@@ -31,7 +31,7 @@ var G_Team3DID = idu64str.New("Team3D")
 var G_GameObj3DID = idu64str.New("GameObj3D")
 
 type Team struct {
-	rnd *rand.Rand      `prettystring:"hide"`
+	rnd *g2rand.G2Rand  `prettystring:"hide"`
 	log *w3dlog.LogBase `prettystring:"hide"`
 
 	ActStats     acttype_vector.ActTypeVector
@@ -52,10 +52,13 @@ type Team struct {
 	Death    int
 }
 
-func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24, BorderBounce vector3f.Cube) *Team {
-	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+func NewTeam(
+	l *w3dlog.LogBase,
+	color htmlcolors.Color24,
+	BorderBounce vector3f.Cube,
+	seed int64) *Team {
 	bt := &Team{
-		rnd:          rnd,
+		rnd:          g2rand.NewWithSeed(seed),
 		log:          l,
 		UUID:         G_Team3DID.New(),
 		BorderBounce: BorderBounce,

@@ -14,11 +14,11 @@ package server
 import (
 	"context"
 	"fmt"
-	"math/rand"
 	"net/http"
 	"time"
 
 	"github.com/kasworld/actpersec"
+	"github.com/kasworld/g2rand"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/config/serverconfig"
 	"github.com/kasworld/gowasm3dgame/game/stage2d"
@@ -37,7 +37,7 @@ import (
 )
 
 type Server struct {
-	rnd       *rand.Rand      `prettystring:"hide"`
+	rnd       *g2rand.G2Rand  `prettystring:"hide"`
 	log       *w3dlog.LogBase `prettystring:"hide"`
 	config    serverconfig.Config
 	adminWeb  *http.Server `prettystring:"simple"`
@@ -93,7 +93,7 @@ func New(config serverconfig.Config) *Server {
 	svr := &Server{
 		config: config,
 		log:    w3dlog.GlobalLogger,
-		rnd:    rand.New(rand.NewSource(time.Now().UnixNano())),
+		rnd:    g2rand.New(),
 
 		SendStat: actpersec.New(),
 		RecvStat: actpersec.New(),
@@ -153,11 +153,11 @@ func (svr *Server) ServiceMain(ctx context.Context) {
 	timerInfoTk := time.NewTicker(1 * time.Second)
 	defer timerInfoTk.Stop()
 
-	for i := 0; i < gameconst.StagePerServer/2; i++ {
-		stg3d := stage3d.New(svr.log, svr.config)
+	for i := 0; i < gameconst.StagePerServer; i++ {
+		stg3d := stage3d.New(svr.log, svr.config, svr.rnd.Int63())
 		svr.stageManager.Add(stg3d)
 		go stg3d.Run(ctx)
-		stg2d := stage2d.New(svr.log, svr.config)
+		stg2d := stage2d.New(svr.log, svr.config, svr.rnd.Int63())
 		svr.stageManager.Add(stg2d)
 		go stg2d.Run(ctx)
 	}

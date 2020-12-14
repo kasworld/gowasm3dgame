@@ -13,9 +13,9 @@ package stage3d
 
 import (
 	"context"
-	"math/rand"
 	"time"
 
+	"github.com/kasworld/g2rand"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/config/serverconfig"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
@@ -33,7 +33,7 @@ import (
 var G_Stage3DID = idu64str.New("Stage3D")
 
 type Stage struct {
-	rnd    *rand.Rand      `prettystring:"hide"`
+	rnd    *g2rand.G2Rand  `prettystring:"hide"`
 	log    *w3dlog.LogBase `prettystring:"hide"`
 	config serverconfig.Config
 
@@ -47,12 +47,12 @@ type Stage struct {
 	Background *background.Background
 }
 
-func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
+func New(l *w3dlog.LogBase, config serverconfig.Config, seed int64) *Stage {
 	stg := &Stage{
 		UUID:   G_Stage3DID.New(),
 		config: config,
 		log:    l,
-		rnd:    rand.New(rand.NewSource(time.Now().UnixNano())),
+		rnd:    g2rand.NewWithSeed(seed),
 		Conns:  w3d_connbytemanager.New(),
 	}
 
@@ -90,7 +90,7 @@ func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 		teamcolor = append(teamcolor, co)
 	}
 	for _, v := range teamcolor {
-		stg.Teams = append(stg.Teams, NewTeam(l, v, stg.BorderBounce))
+		stg.Teams = append(stg.Teams, NewTeam(l, v, stg.BorderBounce, stg.rnd.Int63()))
 	}
 	stg.Background = background.New(
 		time.Now().UnixNano(),

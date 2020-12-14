@@ -183,7 +183,13 @@ func (stg *Stage) checkCollision() ([][2]*GameObj, *octree.Octree) {
 			v.GetCube(),
 		)
 	}
-	// fmt.Printf("obj check len %v, del %v\n",
-	// 	len(obj2check), len(collisionList))
+	// if len(collisionList) > 0 {
+	// 	fmt.Printf("obj check len %v, del %v\n",
+	// 		len(obj2check), len(collisionList))
+	// 	for _, v := range collisionList {
+	// 		fmt.Printf("%v", v)
+	// 	}
+	// 	fmt.Println()
+	// }
 	return collisionList, ot
 }
