@@ -294,8 +294,12 @@ func (stg *Stage) ToPacket_StageInfo() *w3d_obj.NotiStageInfo_data {
 			Color: uint32(bt.Color24),
 		})
 	}
-	rtn.CameraPos = rtn.Lights[0].PosVt
-	rtn.CameraLookAt = rtn.ObjList[0].PosVt
+	if len(rtn.Lights) > 0 {
+		rtn.CameraPos = rtn.Lights[0].PosVt
+	}
+	if len(rtn.ObjList) > 0 {
+		rtn.CameraLookAt = rtn.ObjList[0].PosVt
+	}
 	rtn.BackgroundPos = [2]float32{
 		float32(stg.Background.PosVt[0]),
 		float32(stg.Background.PosVt[1]),
