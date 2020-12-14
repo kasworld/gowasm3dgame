@@ -20,6 +20,7 @@ import (
 	"github.com/kasworld/gowasm3dgame/config/serverconfig"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/game/background"
+	"github.com/kasworld/gowasm3dgame/lib/idu64str"
 	"github.com/kasworld/gowasm3dgame/lib/vector2f"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
@@ -27,8 +28,9 @@ import (
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_idnoti"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/htmlcolors"
-	"github.com/kasworld/uuidstr"
 )
+
+var G_Stage3DID = idu64str.New("Stage3D")
 
 type Stage struct {
 	rnd    *rand.Rand      `prettystring:"hide"`
@@ -47,7 +49,7 @@ type Stage struct {
 
 func New(l *w3dlog.LogBase, config serverconfig.Config) *Stage {
 	stg := &Stage{
-		UUID:   uuidstr.New(),
+		UUID:   G_Stage3DID.New(),
 		config: config,
 		log:    l,
 		rnd:    rand.New(rand.NewSource(time.Now().UnixNano())),
@@ -185,6 +187,7 @@ func (stg *Stage) getTeamByUUID(id string) *Team {
 	return nil
 }
 func (stg *Stage) handleBallKilled(now int64, gobj [2]*GameObj) {
+	stg.log.Debug("ball killed %v", gobj)
 	bt := stg.getTeamByUUID(gobj[0].TeamUUID)
 	if bt == nil {
 		stg.log.Fatal("invalid team uuid %v", gobj)

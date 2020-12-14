@@ -11,7 +11,7 @@ import (
 )
 
 type Config struct {
-	LogLevel              w3dlog.LL_Type `default:"7" argname:""`
+	LogLevel              w3dlog.LL_Type `default:"31" argname:""`
 	SplitLogLevel         w3dlog.LL_Type `default:"0" argname:""`
 	BaseLogDir            string         `default:""  argname:""`
 	ServerDataFolder      string         `default:"./serverdata" argname:""`

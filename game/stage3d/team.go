@@ -20,12 +20,15 @@ import (
 	"github.com/kasworld/gowasm3dgame/enum/acttype"
 	"github.com/kasworld/gowasm3dgame/enum/acttype_vector"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/lib/idu64str"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 	"github.com/kasworld/htmlcolors"
-	"github.com/kasworld/uuidstr"
 )
+
+var G_Team3DID = idu64str.New("Team3D")
+var G_GameObj3DID = idu64str.New("GameObj3D")
 
 type Team struct {
 	rnd *rand.Rand      `prettystring:"hide"`
@@ -54,7 +57,7 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24, BorderBounce vector3f.
 	bt := &Team{
 		rnd:          rnd,
 		log:          l,
-		UUID:         uuidstr.New(),
+		UUID:         G_Team3DID.New(),
 		BorderBounce: BorderBounce,
 		IsAlive:      true,
 		Color24:      color,
@@ -87,6 +90,7 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24, BorderBounce vector3f.
 }
 
 func (bt *Team) RespawnBall(now int64) {
+	bt.log.Debug("ball respawned %v", bt)
 	bt.IsAlive = true
 	bt.Ball.toDelete = false
 	bt.Ball.PosVt = bt.RandPosVt()
@@ -215,7 +219,7 @@ func (bt *Team) NewGameObj(
 	o := &GameObj{
 		TeamUUID:     bt.UUID,
 		GOType:       gotype,
-		UUID:         uuidstr.New(),
+		UUID:         G_GameObj3DID.New(),
 		BirthTick:    nowtick,
 		LastMoveTick: nowtick,
 		PosVt:        at,
