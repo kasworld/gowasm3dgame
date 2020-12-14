@@ -17,9 +17,7 @@ $PROTOCOL_W3D_VERSION=makesha256sum protocol_w3d/*.enum protocol_w3d/w3d_obj/pro
 Write-Output "Protocol W3D Version: ${PROTOCOL_W3D_VERSION}"
 Write-Output "genprotocol -ver=${PROTOCOL_W3D_VERSION} -basedir=protocol_w3d -prefix=w3d -statstype=int"
 genprotocol -ver="${PROTOCOL_W3D_VERSION}" -basedir=protocol_w3d -prefix=w3d -statstype=int
-Set-Location protocol_w3d
-goimports -w .
-Set-Location ..
+goimports -w protocol_w3d
 
 ################################################################################
 # generate enum
@@ -28,9 +26,7 @@ genenum -typename=ActType -packagename=acttype -basedir=enum -vectortype=int
 genenum -typename=GameObjType -packagename=gameobjtype -basedir=enum -vectortype=int
 genenum -typename=StageType -packagename=stagetype -basedir=enum -vectortype=int
 
-Set-Location enum
-goimports -w .
-Set-Location ..
+goimports -w enum
 
 $Data_VERSION=makesha256sum config/gameconst/*.go config/gamedata/*.go enum/*.enum
 Write-Output "Data Version: ${Data_VERSION}"
