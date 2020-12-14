@@ -187,7 +187,6 @@ func (stg *Stage) getTeamByUUID(id string) *Team {
 	return nil
 }
 func (stg *Stage) handleBallKilled(now int64, gobj [2]*GameObj) {
-	stg.log.Debug("ball killed %v", gobj)
 	bt := stg.getTeamByUUID(gobj[0].TeamUUID)
 	if bt == nil {
 		stg.log.Fatal("invalid team uuid %v", gobj)

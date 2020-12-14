@@ -90,7 +90,6 @@ func NewTeam(l *w3dlog.LogBase, color htmlcolors.Color24, BorderBounce vector3f.
 }
 
 func (bt *Team) RespawnBall(now int64) {
-	bt.log.Debug("ball respawned %v", bt)
 	bt.IsAlive = true
 	bt.Ball.toDelete = false
 	bt.Ball.PosVt = bt.RandPosVt()

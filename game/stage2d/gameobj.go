@@ -12,6 +12,7 @@
 package stage2d
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/kasworld/go-abs"
@@ -36,6 +37,10 @@ type GameObj struct {
 	toDelete     bool
 
 	DstUUID string
+}
+
+func (o *GameObj) String() string {
+	return fmt.Sprintf("GameObj[%v %v %v", o.GOType, o.UUID, o.TeamUUID)
 }
 
 func (o *GameObj) Pos() vector3f.Vector3f {
