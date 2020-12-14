@@ -32,7 +32,7 @@ import (
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_statapierror"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_statnoti"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_statserveapi"
-	"github.com/kasworld/prettystring"
+	"github.com/kasworld/log/logflags"
 	"github.com/kasworld/weblib/retrylistenandserve"
 )
 
@@ -65,10 +65,34 @@ type Server struct {
 }
 
 func New(config serverconfig.Config) *Server {
-	l := w3dlog.GlobalLogger
+	fmt.Printf("%v\n", config.StringForm())
+
+	if config.BaseLogDir != "" {
+		log, err := w3dlog.NewWithDstDir(
+			"",
+			config.MakeLogDir(),
+			logflags.DefaultValue(false).BitClear(logflags.LF_functionname),
+			config.LogLevel,
+			config.SplitLogLevel,
+		)
+		if err == nil {
+			w3dlog.GlobalLogger = log
+		} else {
+			fmt.Printf("%v\n", err)
+			w3dlog.GlobalLogger.SetFlags(
+				w3dlog.GlobalLogger.GetFlags().BitClear(logflags.LF_functionname))
+			w3dlog.GlobalLogger.SetLevel(
+				config.LogLevel)
+		}
+	} else {
+		w3dlog.GlobalLogger.SetFlags(
+			w3dlog.GlobalLogger.GetFlags().BitClear(logflags.LF_functionname))
+		w3dlog.GlobalLogger.SetLevel(
+			config.LogLevel)
+	}
 	svr := &Server{
 		config: config,
-		log:    l,
+		log:    w3dlog.GlobalLogger,
 		rnd:    rand.New(rand.NewSource(time.Now().UnixNano())),
 
 		SendStat: actpersec.New(),
@@ -78,9 +102,9 @@ func New(config serverconfig.Config) *Server {
 		notiStat:       w3d_statnoti.New(),
 		errorStat:      w3d_statapierror.New(),
 		connManager:    w3d_connbytemanager.New(),
-		sessionManager: sessionmanager.New("", 100, l),
+		sessionManager: sessionmanager.New("", 100, w3dlog.GlobalLogger),
 
-		stageManager: stagemanager.New(l),
+		stageManager: stagemanager.New(w3dlog.GlobalLogger),
 	}
 	svr.sendRecvStop = func() {
 		fmt.Printf("Too early sendRecvStop call\n")
@@ -110,7 +134,6 @@ func (svr *Server) ServiceCleanup() {
 
 // called from signal handler
 func (svr *Server) ServiceMain(ctx context.Context) {
-	fmt.Println(prettystring.PrettyString(svr.config, 4))
 	svr.startTime = time.Now()
 
 	ctx, stopFn := context.WithCancel(ctx)

@@ -21,9 +21,7 @@ import (
 	"github.com/kasworld/gowasm3dgame/config/dataversion"
 	"github.com/kasworld/gowasm3dgame/config/serverconfig"
 	"github.com/kasworld/gowasm3dgame/game/server"
-	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_version"
-	"github.com/kasworld/log/logflags"
 	"github.com/kasworld/signalhandlewin"
 	"github.com/kasworld/version"
 )
@@ -52,14 +50,11 @@ func main() {
 	ads := argdefault.New(&serverconfig.Config{})
 	ads.RegisterFlag()
 	flag.Parse()
-	config := &serverconfig.Config{
-		LogLevel:      w3dlog.LL_All,
-		SplitLogLevel: 0,
-	}
+	config := &serverconfig.Config{}
 	ads.SetDefaultToNonZeroField(config)
 	if *configurl != "" {
 		if err := configutil.LoadIni(*configurl, &config); err != nil {
-			w3dlog.Fatal("%v", err)
+			fmt.Printf("%v\n", err)
 		}
 	}
 	ads.ApplyFlagTo(config)
@@ -71,22 +66,9 @@ func main() {
 		defer fn()
 	}
 
-	l, err := w3dlog.NewWithDstDir(
-		"",
-		config.MakeLogDir(),
-		logflags.DefaultValue(false).BitClear(logflags.LF_functionname),
-		config.LogLevel,
-		config.SplitLogLevel,
-	)
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		return
-	}
-	w3dlog.GlobalLogger = l
-
 	svr := server.New(*config)
 	if err := signalhandlewin.StartByArgs(svr); err != nil {
-		w3dlog.Error("%v", err)
+		fmt.Printf("%v\n", err)
 	}
 
 	if profile.IsMem() {
