@@ -153,7 +153,7 @@ func (svr *Server) ServiceMain(ctx context.Context) {
 	timerInfoTk := time.NewTicker(1 * time.Second)
 	defer timerInfoTk.Stop()
 
-	for i := 0; i < gameconst.StagePerServer; i++ {
+	for i := 0; i < gameconst.StagePerServer/2; i++ {
 		stg3d := stage3d.New(svr.log, svr.config, svr.rnd.Int63())
 		svr.stageManager.Add(stg3d)
 		go stg3d.Run(ctx)
