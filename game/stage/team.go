@@ -9,7 +9,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package stage2d
+package stage
 
 import (
 	"math"
@@ -20,6 +20,7 @@ import (
 	"github.com/kasworld/gowasm3dgame/enum/acttype"
 	"github.com/kasworld/gowasm3dgame/enum/acttype_vector"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/enum/stagetype"
 	"github.com/kasworld/gowasm3dgame/lib/idu64str"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
@@ -27,12 +28,13 @@ import (
 	"github.com/kasworld/htmlcolors"
 )
 
-var G_Team2ID = idu64str.New("Team2D")
-var G_GameObj2DID = idu64str.New("GameObj2D")
+var G_TeamID = idu64str.New("Team")
+var G_GameObjID = idu64str.New("GameObj")
 
 type Team struct {
-	rnd *g2rand.G2Rand  `prettystring:"hide"`
-	log *w3dlog.LogBase `prettystring:"hide"`
+	rnd       *g2rand.G2Rand  `prettystring:"hide"`
+	log       *w3dlog.LogBase `prettystring:"hide"`
+	StageType stagetype.StageType
 
 	ActStats     acttype_vector.ActTypeVector
 	Color24      htmlcolors.Color24
@@ -57,38 +59,65 @@ func NewTeam(
 	color htmlcolors.Color24,
 	BorderBounce vector3f.Cube,
 	seed int64,
+	StageType stagetype.StageType,
 ) *Team {
 	bt := &Team{
+		StageType:    StageType,
 		rnd:          g2rand.NewWithSeed(seed),
 		log:          l,
-		UUID:         G_Team2ID.New(),
+		UUID:         G_TeamID.New(),
 		BorderBounce: BorderBounce,
 		IsAlive:      true,
 		Color24:      color,
 		Objs:         make([]*GameObj, 0),
 	}
 
-	maxv := Attrib[gameobjtype.HomeMark].SpeedLimit
-	bt.HomeMark = bt.NewGameObj(
-		gameobjtype.HomeMark,
-		bt.RandPosVt(),
-		vector3f.Vector3f{
-			bt.rnd.Float64() * maxv,
-			bt.rnd.Float64() * maxv,
-			0,
-		}.NormalizedTo(maxv),
-	)
+	switch bt.StageType {
+	case stagetype.Stage2D:
+		maxv := gameobjtype.Attrib[gameobjtype.HomeMark].SpeedLimit
+		bt.HomeMark = bt.NewGameObj(
+			gameobjtype.HomeMark,
+			bt.RandPosVt(),
+			vector3f.Vector3f{
+				bt.rnd.Float64() * maxv,
+				bt.rnd.Float64() * maxv,
+				0,
+			}.NormalizedTo(maxv),
+		)
 
-	maxv = Attrib[gameobjtype.Ball].SpeedLimit
-	bt.Ball = bt.NewGameObj(
-		gameobjtype.Ball,
-		bt.RandPosVt(),
-		vector3f.Vector3f{
-			bt.rnd.Float64() * maxv,
-			bt.rnd.Float64() * maxv,
-			0,
-		}.NormalizedTo(maxv),
-	)
+		maxv = gameobjtype.Attrib[gameobjtype.Ball].SpeedLimit
+		bt.Ball = bt.NewGameObj(
+			gameobjtype.Ball,
+			bt.RandPosVt(),
+			vector3f.Vector3f{
+				bt.rnd.Float64() * maxv,
+				bt.rnd.Float64() * maxv,
+				0,
+			}.NormalizedTo(maxv),
+		)
+	case stagetype.Stage3D:
+		maxv := gameobjtype.Attrib[gameobjtype.HomeMark].SpeedLimit
+		bt.HomeMark = bt.NewGameObj(
+			gameobjtype.HomeMark,
+			bt.RandPosVt(),
+			vector3f.Vector3f{
+				bt.rnd.Float64() * maxv,
+				bt.rnd.Float64() * maxv,
+				bt.rnd.Float64() * maxv,
+			}.NormalizedTo(maxv),
+		)
+
+		maxv = gameobjtype.Attrib[gameobjtype.Ball].SpeedLimit
+		bt.Ball = bt.NewGameObj(
+			gameobjtype.Ball,
+			bt.RandPosVt(),
+			vector3f.Vector3f{
+				bt.rnd.Float64() * maxv,
+				bt.rnd.Float64() * maxv,
+				bt.rnd.Float64() * maxv,
+			}.NormalizedTo(maxv),
+		)
+	}
 
 	return bt
 }
@@ -147,7 +176,7 @@ func (bt *Team) CanAct(act acttype.ActType) bool {
 }
 
 func (bt *Team) CanHave(objt gameobjtype.GameObjType) bool {
-	return bt.CountByGOType(objt) <= Attrib[objt].MaxInTeam
+	return bt.CountByGOType(objt) <= gameobjtype.Attrib[objt].MaxInTeam
 }
 
 func (bt *Team) ApplyAct(actObj *w3d_obj.Act) {
@@ -220,9 +249,10 @@ func (bt *Team) NewGameObj(
 ) *GameObj {
 	nowtick := time.Now().UnixNano()
 	o := &GameObj{
+		StageType:    bt.StageType,
 		TeamUUID:     bt.UUID,
 		GOType:       gotype,
-		UUID:         G_GameObj2DID.New(),
+		UUID:         G_GameObjID.New(),
 		BirthTick:    nowtick,
 		LastMoveTick: nowtick,
 		PosVt:        at,
@@ -235,9 +265,8 @@ func (bt *Team) NewGameObj(
 func (bt *Team) ToPacket() []*w3d_obj.GameObj {
 	rtn := make([]*w3d_obj.GameObj, 0)
 	co := uint32(bt.Color24)
-	// rtn = append(rtn, bt.HomeMark.ToPacket(co))
-	rtn = append(rtn, bt.Ball.ToPacket(co))
 
+	rtn = append(rtn, bt.Ball.ToPacket(co))
 	for _, v := range bt.Objs {
 		if v.toDelete {
 			continue

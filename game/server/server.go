@@ -21,8 +21,8 @@ import (
 	"github.com/kasworld/g2rand"
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/config/serverconfig"
-	"github.com/kasworld/gowasm3dgame/game/stage2d"
-	"github.com/kasworld/gowasm3dgame/game/stage3d"
+	"github.com/kasworld/gowasm3dgame/enum/stagetype"
+	"github.com/kasworld/gowasm3dgame/game/stage"
 	"github.com/kasworld/gowasm3dgame/game/stagemanager"
 	"github.com/kasworld/gowasm3dgame/lib/sessionmanager"
 	"github.com/kasworld/gowasm3dgame/lib/w3dlog"
@@ -154,10 +154,10 @@ func (svr *Server) ServiceMain(ctx context.Context) {
 	defer timerInfoTk.Stop()
 
 	for i := 0; i < gameconst.StagePerServer/2; i++ {
-		stg3d := stage3d.New(svr.log, svr.config, svr.rnd.Int63())
+		stg3d := stage.New(svr.log, svr.config, svr.rnd.Int63(), stagetype.Stage3D)
 		svr.stageManager.Add(stg3d)
 		go stg3d.Run(ctx)
-		stg2d := stage2d.New(svr.log, svr.config, svr.rnd.Int63())
+		stg2d := stage.New(svr.log, svr.config, svr.rnd.Int63(), stagetype.Stage2D)
 		svr.stageManager.Add(stg2d)
 		go stg2d.Run(ctx)
 	}

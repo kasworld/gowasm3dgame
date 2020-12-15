@@ -9,7 +9,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package stage3d
+package stage
 
 import (
 	"math"
@@ -17,6 +17,7 @@ import (
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/enum/acttype"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
+	"github.com/kasworld/gowasm3dgame/enum/stagetype"
 	"github.com/kasworld/gowasm3dgame/lib/octree"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
@@ -66,7 +67,7 @@ func (stg *Stage) TryEvade(me *Team, now int64, dsto *GameObj) *w3d_obj.Act {
 	if !me.CanAct(actt) {
 		return nil
 	}
-	maxv := Attrib[objt].SpeedLimit
+	maxv := gameobjtype.Attrib[objt].SpeedLimit
 	return &w3d_obj.Act{
 		Act: actt,
 		Vt:  dsto.VelVt.NormalizedTo(maxv),
@@ -100,7 +101,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 			break
 		}
 		_, estpos, _ := stg.calcAims(me, dstteam.Ball,
-			Attrib[objt].SpeedLimit)
+			gameobjtype.Attrib[objt].SpeedLimit)
 		vt := stg.AimAdjedIntoCube(me, estpos, dstteam.Ball, objt)
 		return &w3d_obj.Act{
 			Act: actt,
@@ -132,7 +133,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 			break
 		}
 		_, estpos, _ := stg.calcAims(me, dstteam.Ball,
-			Attrib[objt].SpeedLimit)
+			gameobjtype.Attrib[objt].SpeedLimit)
 		vt := stg.AimAdjedIntoCube(me, estpos, dstteam.Ball, objt)
 		return &w3d_obj.Act{
 			Act: actt,
@@ -151,7 +152,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		if dstteam == nil {
 			break
 		}
-		maxv := Attrib[objt].SpeedLimit
+		maxv := gameobjtype.Attrib[objt].SpeedLimit
 		if dstteam != me && dstteam.IsAlive {
 			return &w3d_obj.Act{
 				Act:      actt,
@@ -172,7 +173,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		if !dstteam.IsAlive {
 			break
 		}
-		maxv := Attrib[objt].SpeedLimit
+		maxv := gameobjtype.Attrib[objt].SpeedLimit
 		return &w3d_obj.Act{
 			Act: actt,
 			Vt:  me.Ball.VelVt.NormalizedTo(maxv).Neg(),
@@ -185,13 +186,24 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 			break
 		}
 		// maxv := Attrib[objt].SpeedLimit
+		var vt vector3f.Vector3f
+		switch stg.StageType {
+		case stagetype.Stage2D:
+			vt = vector3f.Vector3f{
+				me.rnd.Float64() * gameconst.StageSize / 10,
+				me.rnd.Float64() * gameconst.StageSize / 10,
+				0,
+			}
+		case stagetype.Stage3D:
+			vt = vector3f.Vector3f{
+				me.rnd.Float64() * gameconst.StageSize / 10,
+				me.rnd.Float64() * gameconst.StageSize / 10,
+				me.rnd.Float64() * gameconst.StageSize / 10,
+			}
+		}
 		return &w3d_obj.Act{
 			Act: actt,
-			Vt: vector3f.Vector3f{
-				me.rnd.Float64() * gameconst.StageSize / 10,
-				me.rnd.Float64() * gameconst.StageSize / 10,
-				me.rnd.Float64() * gameconst.StageSize / 10,
-			},
+			Vt:  vt,
 		}
 	case 6:
 		actt := acttype.Shield
@@ -202,10 +214,20 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		if !me.CanHave(objt) {
 			break
 		}
-		vt := vector3f.Vector3f{
-			me.rnd.Float64() * gameconst.StageSize,
-			me.rnd.Float64() * gameconst.StageSize,
-			me.rnd.Float64() * gameconst.StageSize,
+		var vt vector3f.Vector3f
+		switch stg.StageType {
+		case stagetype.Stage2D:
+			vt = vector3f.Vector3f{
+				me.rnd.Float64() * gameconst.StageSize,
+				me.rnd.Float64() * gameconst.StageSize,
+				0,
+			}
+		case stagetype.Stage3D:
+			vt = vector3f.Vector3f{
+				me.rnd.Float64() * gameconst.StageSize,
+				me.rnd.Float64() * gameconst.StageSize,
+				me.rnd.Float64() * gameconst.StageSize,
+			}
 		}
 		return &w3d_obj.Act{
 			Act: actt,
@@ -237,7 +259,7 @@ func (stg *Stage) AimAdjedIntoCube(
 	lennew := tm.Ball.PosVt.LenTo(estpos)
 	lenrate := lennew / lenori
 	vt := estpos.Sub(tm.Ball.PosVt).NormalizedTo(
-		Attrib[bulletType].SpeedLimit).MulF(lenrate)
+		gameobjtype.Attrib[bulletType].SpeedLimit).MulF(lenrate)
 	return vt
 }
 

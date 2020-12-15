@@ -18,6 +18,7 @@ import (
 
 	"github.com/kasworld/gowasm3dgame/config/authdata"
 	"github.com/kasworld/gowasm3dgame/config/dataversion"
+	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
 	"github.com/kasworld/gowasm3dgame/lib/conndata"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_authorize"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_error"
@@ -122,7 +123,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 			SessionKey:      recvBody.SessionKey,
 			StageUUID:       ss.StageID,
 			StageType:       stg.(stageApiI).GetStageType(),
-			Type2Radius:     stg.(stageApiI).MakeType2Radius(),
+			Type2Radius:     gameobjtype.MakeType2Radius(),
 			NickName:        recvBody.NickName,
 			CmdList:         *w3d_authorize.NewAllSet(),
 		}
