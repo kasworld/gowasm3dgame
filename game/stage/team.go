@@ -109,64 +109,36 @@ func (bt *Team) RandPosVt() vector3f.Vector3f {
 	return bt.BorderBounce.RandVector(bt.rnd.Float64)
 }
 
-func (bt *Team) RandVelVt(maxv float64) vector3f.Vector3f {
+func (bt *Team) RandBaseVt() vector3f.Vector3f {
 	switch bt.StageType {
 	default:
 		bt.log.Fatal("invalid stagetype %v", bt.StageType)
 		return vector3f.Vector3f{}
 	case stagetype.Stage2D:
 		return vector3f.Vector3f{
-			bt.rnd.Float64() * maxv,
-			bt.rnd.Float64() * maxv,
+			bt.rnd.Float64(),
+			bt.rnd.Float64(),
 			0,
-		}.NormalizedTo(maxv)
+		}
 	case stagetype.Stage3D:
 		return vector3f.Vector3f{
-			bt.rnd.Float64() * maxv,
-			bt.rnd.Float64() * maxv,
-			bt.rnd.Float64() * maxv,
-		}.NormalizedTo(maxv)
+			bt.rnd.Float64(),
+			bt.rnd.Float64(),
+			bt.rnd.Float64(),
+		}
 	}
+}
+
+func (bt *Team) RandVelVt(maxv float64) vector3f.Vector3f {
+	return bt.RandBaseVt().MulF(maxv).NormalizedTo(maxv)
 }
 
 func (bt *Team) RandAccelVt() vector3f.Vector3f {
-	switch bt.StageType {
-	default:
-		bt.log.Fatal("invalid stagetype %v", bt.StageType)
-		return vector3f.Vector3f{}
-	case stagetype.Stage2D:
-		return vector3f.Vector3f{
-			bt.rnd.Float64() * gameconst.StageSize / 10,
-			bt.rnd.Float64() * gameconst.StageSize / 10,
-			0,
-		}
-	case stagetype.Stage3D:
-		return vector3f.Vector3f{
-			bt.rnd.Float64() * gameconst.StageSize / 10,
-			bt.rnd.Float64() * gameconst.StageSize / 10,
-			bt.rnd.Float64() * gameconst.StageSize / 10,
-		}
-	}
+	return bt.RandBaseVt().MulF(gameconst.StageSize / 10)
 }
 
 func (bt *Team) RandShielVelVt() vector3f.Vector3f {
-	switch bt.StageType {
-	default:
-		bt.log.Fatal("invalid stagetype %v", bt.StageType)
-		return vector3f.Vector3f{}
-	case stagetype.Stage2D:
-		return vector3f.Vector3f{
-			bt.rnd.Float64() * gameconst.StageSize,
-			bt.rnd.Float64() * gameconst.StageSize,
-			0,
-		}
-	case stagetype.Stage3D:
-		return vector3f.Vector3f{
-			bt.rnd.Float64() * gameconst.StageSize,
-			bt.rnd.Float64() * gameconst.StageSize,
-			bt.rnd.Float64() * gameconst.StageSize,
-		}
-	}
+	return bt.RandBaseVt().MulF(gameconst.StageSize)
 }
 
 func (bt *Team) CountByGOType(ot gameobjtype.GameObjType) int {
