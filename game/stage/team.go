@@ -72,53 +72,18 @@ func NewTeam(
 		Objs:         make([]*GameObj, 0),
 	}
 
-	switch bt.StageType {
-	case stagetype.Stage2D:
-		maxv := gameobjtype.Attrib[gameobjtype.HomeMark].SpeedLimit
-		bt.HomeMark = bt.NewGameObj(
-			gameobjtype.HomeMark,
-			bt.RandPosVt(),
-			vector3f.Vector3f{
-				bt.rnd.Float64() * maxv,
-				bt.rnd.Float64() * maxv,
-				0,
-			}.NormalizedTo(maxv),
-		)
-
-		maxv = gameobjtype.Attrib[gameobjtype.Ball].SpeedLimit
-		bt.Ball = bt.NewGameObj(
-			gameobjtype.Ball,
-			bt.RandPosVt(),
-			vector3f.Vector3f{
-				bt.rnd.Float64() * maxv,
-				bt.rnd.Float64() * maxv,
-				0,
-			}.NormalizedTo(maxv),
-		)
-	case stagetype.Stage3D:
-		maxv := gameobjtype.Attrib[gameobjtype.HomeMark].SpeedLimit
-		bt.HomeMark = bt.NewGameObj(
-			gameobjtype.HomeMark,
-			bt.RandPosVt(),
-			vector3f.Vector3f{
-				bt.rnd.Float64() * maxv,
-				bt.rnd.Float64() * maxv,
-				bt.rnd.Float64() * maxv,
-			}.NormalizedTo(maxv),
-		)
-
-		maxv = gameobjtype.Attrib[gameobjtype.Ball].SpeedLimit
-		bt.Ball = bt.NewGameObj(
-			gameobjtype.Ball,
-			bt.RandPosVt(),
-			vector3f.Vector3f{
-				bt.rnd.Float64() * maxv,
-				bt.rnd.Float64() * maxv,
-				bt.rnd.Float64() * maxv,
-			}.NormalizedTo(maxv),
-		)
-	}
-
+	maxv := gameobjtype.Attrib[gameobjtype.HomeMark].SpeedLimit
+	bt.HomeMark = bt.NewGameObj(
+		gameobjtype.HomeMark,
+		bt.RandPosVt(),
+		bt.RandVelVt(maxv),
+	)
+	maxv = gameobjtype.Attrib[gameobjtype.Ball].SpeedLimit
+	bt.Ball = bt.NewGameObj(
+		gameobjtype.Ball,
+		bt.RandPosVt(),
+		bt.RandVelVt(maxv),
+	)
 	return bt
 }
 
@@ -141,11 +106,66 @@ func (bt *Team) RandRotVt() vector3f.Vector3f {
 }
 
 func (bt *Team) RandPosVt() vector3f.Vector3f {
-	svt := bt.BorderBounce.SizeVector()
-	return vector3f.Vector3f{
-		bt.rnd.Float64()*svt[0] + bt.BorderBounce.Min[0],
-		bt.rnd.Float64()*svt[1] + bt.BorderBounce.Min[1],
-		bt.rnd.Float64()*svt[2] + bt.BorderBounce.Min[2],
+	return bt.BorderBounce.RandVector(bt.rnd.Float64)
+}
+
+func (bt *Team) RandVelVt(maxv float64) vector3f.Vector3f {
+	switch bt.StageType {
+	default:
+		bt.log.Fatal("invalid stagetype %v", bt.StageType)
+		return vector3f.Vector3f{}
+	case stagetype.Stage2D:
+		return vector3f.Vector3f{
+			bt.rnd.Float64() * maxv,
+			bt.rnd.Float64() * maxv,
+			0,
+		}.NormalizedTo(maxv)
+	case stagetype.Stage3D:
+		return vector3f.Vector3f{
+			bt.rnd.Float64() * maxv,
+			bt.rnd.Float64() * maxv,
+			bt.rnd.Float64() * maxv,
+		}.NormalizedTo(maxv)
+	}
+}
+
+func (bt *Team) RandAccelVt() vector3f.Vector3f {
+	switch bt.StageType {
+	default:
+		bt.log.Fatal("invalid stagetype %v", bt.StageType)
+		return vector3f.Vector3f{}
+	case stagetype.Stage2D:
+		return vector3f.Vector3f{
+			bt.rnd.Float64() * gameconst.StageSize / 10,
+			bt.rnd.Float64() * gameconst.StageSize / 10,
+			0,
+		}
+	case stagetype.Stage3D:
+		return vector3f.Vector3f{
+			bt.rnd.Float64() * gameconst.StageSize / 10,
+			bt.rnd.Float64() * gameconst.StageSize / 10,
+			bt.rnd.Float64() * gameconst.StageSize / 10,
+		}
+	}
+}
+
+func (bt *Team) RandShielVelVt() vector3f.Vector3f {
+	switch bt.StageType {
+	default:
+		bt.log.Fatal("invalid stagetype %v", bt.StageType)
+		return vector3f.Vector3f{}
+	case stagetype.Stage2D:
+		return vector3f.Vector3f{
+			bt.rnd.Float64() * gameconst.StageSize,
+			bt.rnd.Float64() * gameconst.StageSize,
+			0,
+		}
+	case stagetype.Stage3D:
+		return vector3f.Vector3f{
+			bt.rnd.Float64() * gameconst.StageSize,
+			bt.rnd.Float64() * gameconst.StageSize,
+			bt.rnd.Float64() * gameconst.StageSize,
+		}
 	}
 }
 

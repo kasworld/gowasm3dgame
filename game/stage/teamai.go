@@ -17,7 +17,6 @@ import (
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
 	"github.com/kasworld/gowasm3dgame/enum/acttype"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
-	"github.com/kasworld/gowasm3dgame/enum/stagetype"
 	"github.com/kasworld/gowasm3dgame/lib/octree"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
@@ -84,7 +83,6 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		}
 	}
 	switch me.rnd.Intn(10) {
-	// switch 4 {
 	default:
 		//pass
 	case 0:
@@ -185,22 +183,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		if !me.CanAct(actt) {
 			break
 		}
-		// maxv := Attrib[objt].SpeedLimit
-		var vt vector3f.Vector3f
-		switch stg.StageType {
-		case stagetype.Stage2D:
-			vt = vector3f.Vector3f{
-				me.rnd.Float64() * gameconst.StageSize / 10,
-				me.rnd.Float64() * gameconst.StageSize / 10,
-				0,
-			}
-		case stagetype.Stage3D:
-			vt = vector3f.Vector3f{
-				me.rnd.Float64() * gameconst.StageSize / 10,
-				me.rnd.Float64() * gameconst.StageSize / 10,
-				me.rnd.Float64() * gameconst.StageSize / 10,
-			}
-		}
+		vt := me.RandAccelVt()
 		return &w3d_obj.Act{
 			Act: actt,
 			Vt:  vt,
@@ -214,21 +197,7 @@ func (stg *Stage) AI(me *Team, now int64, aienv *octree.Octree) *w3d_obj.Act {
 		if !me.CanHave(objt) {
 			break
 		}
-		var vt vector3f.Vector3f
-		switch stg.StageType {
-		case stagetype.Stage2D:
-			vt = vector3f.Vector3f{
-				me.rnd.Float64() * gameconst.StageSize,
-				me.rnd.Float64() * gameconst.StageSize,
-				0,
-			}
-		case stagetype.Stage3D:
-			vt = vector3f.Vector3f{
-				me.rnd.Float64() * gameconst.StageSize,
-				me.rnd.Float64() * gameconst.StageSize,
-				me.rnd.Float64() * gameconst.StageSize,
-			}
-		}
+		vt := me.RandShielVelVt()
 		return &w3d_obj.Act{
 			Act: actt,
 			Vt:  vt,
