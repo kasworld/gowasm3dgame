@@ -11,8 +11,6 @@
 
 package vector3f
 
-import "math/rand"
-
 type Cube struct {
 	Min Vector3f
 	Max Vector3f
@@ -57,11 +55,11 @@ func (h Cube) IsContact(c Vector3f, r float64) bool {
 	return hl/2+r >= hc.LenTo(c)
 }
 
-func (h Cube) RandVector() Vector3f {
+func (h Cube) RandVector(rndfn func() float64) Vector3f {
 	return Vector3f{
-		rand.Float64()*(h.Max[0]-h.Min[0]) + h.Min[0],
-		rand.Float64()*(h.Max[1]-h.Min[1]) + h.Min[1],
-		rand.Float64()*(h.Max[2]-h.Min[2]) + h.Min[2],
+		rndfn()*(h.Max[0]-h.Min[0]) + h.Min[0],
+		rndfn()*(h.Max[1]-h.Min[1]) + h.Min[1],
+		rndfn()*(h.Max[2]-h.Min[2]) + h.Min[2],
 	}
 }
 

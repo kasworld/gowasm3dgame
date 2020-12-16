@@ -81,59 +81,8 @@ func New(l *w3dlog.LogBase, config serverconfig.Config, seed int64, st stagetype
 		Conns:     w3d_connbytemanager.New(),
 	}
 
-	switch stg.StageType {
-	case stagetype.Stage2D:
-		stg.BorderBounce = vector3f.Cube{
-			Min: vector3f.Vector3f{
-				0,
-				0,
-				0,
-			},
-			Max: vector3f.Vector3f{
-				gameconst.StageSize,
-				gameconst.StageSize,
-				gameconst.MaxRadius,
-			},
-		}
-		stg.BorderOctree = vector3f.Cube{
-			Min: vector3f.Vector3f{
-				-gameconst.MaxRadius,
-				-gameconst.MaxRadius,
-				-gameconst.MaxRadius,
-			},
-			Max: vector3f.Vector3f{
-				gameconst.StageSize + gameconst.MaxRadius,
-				gameconst.StageSize + gameconst.MaxRadius,
-				gameconst.MaxRadius + gameconst.MaxRadius,
-			},
-		}
-
-	case stagetype.Stage3D:
-		stg.BorderBounce = vector3f.Cube{
-			Min: vector3f.Vector3f{
-				0,
-				0,
-				0,
-			},
-			Max: vector3f.Vector3f{
-				gameconst.StageSize,
-				gameconst.StageSize,
-				gameconst.StageSize,
-			},
-		}
-		stg.BorderOctree = vector3f.Cube{
-			Min: vector3f.Vector3f{
-				-gameconst.MaxRadius,
-				-gameconst.MaxRadius,
-				-gameconst.MaxRadius,
-			},
-			Max: vector3f.Vector3f{
-				gameconst.StageSize + gameconst.MaxRadius,
-				gameconst.StageSize + gameconst.MaxRadius,
-				gameconst.StageSize + gameconst.MaxRadius,
-			},
-		}
-	}
+	stg.BorderBounce = BoundCube[stg.StageType]
+	stg.BorderOctree = OctTreeCube[stg.StageType]
 	teamcolor := make([]htmlcolors.Color24, 0)
 	for i := 0; i < gameconst.TeamPerStage; i++ {
 		co := htmlcolors.NewColor24(
@@ -274,26 +223,9 @@ func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 
 	bt.HomeMark.Move_straight(now)
 	bt.HomeMark.BounceNormalize(bt.BorderBounce)
-	switch stg.StageType {
-	case stagetype.Stage2D:
-		if stg.rnd.Intn(100) == 0 {
-			randvt := vector3f.Vector3f{
-				stg.rnd.Float64() * gameconst.StageSize,
-				stg.rnd.Float64() * gameconst.StageSize,
-				gameconst.MaxRadius,
-			}
-			bt.HomeMark.AccelTo(randvt)
-		}
-	case stagetype.Stage3D:
-		if stg.rnd.Intn(100) == 0 {
-			randvt := vector3f.Vector3f{
-				stg.rnd.Float64() * gameconst.StageSize,
-				stg.rnd.Float64() * gameconst.StageSize,
-				stg.rnd.Float64() * gameconst.StageSize,
-			}
-			bt.HomeMark.AccelTo(randvt)
-		}
-	}
+
+	rndvt := stg.BorderBounce.RandVector(stg.rnd.Float64)
+	bt.HomeMark.AccelTo(rndvt)
 
 	for _, v := range bt.Objs {
 		if v.toDelete {
