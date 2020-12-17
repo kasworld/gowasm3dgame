@@ -81,8 +81,8 @@ func New(l *w3dlog.LogBase, config serverconfig.Config, seed int64, st stagetype
 		Conns:     w3d_connbytemanager.New(),
 	}
 
-	stg.BorderBounce = BoundCube[stg.StageType]
-	stg.BorderOctree = OctTreeCube[stg.StageType]
+	stg.BorderBounce = stagetype.BoundCube[stg.StageType]
+	stg.BorderOctree = stagetype.OctTreeCube[stg.StageType]
 	teamcolor := make([]htmlcolors.Color24, 0)
 	for i := 0; i < gameconst.TeamPerStage; i++ {
 		co := htmlcolors.NewColor24(

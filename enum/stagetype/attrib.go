@@ -9,16 +9,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package stage
+package stagetype
 
 import (
 	"github.com/kasworld/gowasm3dgame/config/gameconst"
-	"github.com/kasworld/gowasm3dgame/enum/stagetype"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 )
 
-var BoundCube = [stagetype.StageType_Count]vector3f.Cube{
-	stagetype.Stage2D: {
+var BoundCube = [StageType_Count]vector3f.Cube{
+	Stage2D: {
 		Min: vector3f.Vector3f{
 			0,
 			0,
@@ -30,7 +29,7 @@ var BoundCube = [stagetype.StageType_Count]vector3f.Cube{
 			gameconst.MaxRadius,
 		},
 	},
-	stagetype.Stage3D: {
+	Stage3D: {
 		Min: vector3f.Vector3f{
 			0,
 			0,
@@ -44,8 +43,8 @@ var BoundCube = [stagetype.StageType_Count]vector3f.Cube{
 	},
 }
 
-var OctTreeCube = [stagetype.StageType_Count]vector3f.Cube{
-	stagetype.Stage2D: {
+var OctTreeCube = [StageType_Count]vector3f.Cube{
+	Stage2D: {
 		Min: vector3f.Vector3f{
 			-gameconst.MaxRadius,
 			-gameconst.MaxRadius,
@@ -57,7 +56,7 @@ var OctTreeCube = [stagetype.StageType_Count]vector3f.Cube{
 			gameconst.MaxRadius + gameconst.MaxRadius,
 		},
 	},
-	stagetype.Stage3D: {
+	Stage3D: {
 		Min: vector3f.Vector3f{
 			-gameconst.MaxRadius,
 			-gameconst.MaxRadius,
