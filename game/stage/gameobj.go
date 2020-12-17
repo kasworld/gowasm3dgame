@@ -17,16 +17,14 @@ import (
 
 	"github.com/kasworld/go-abs"
 	"github.com/kasworld/gowasm3dgame/enum/gameobjtype"
-	"github.com/kasworld/gowasm3dgame/enum/stagetype"
 	"github.com/kasworld/gowasm3dgame/lib/vector3f"
 	"github.com/kasworld/gowasm3dgame/protocol_w3d/w3d_obj"
 )
 
 type GameObj struct {
-	StageType stagetype.StageType
-	GOType    gameobjtype.GameObjType
-	UUID      string
-	TeamUUID  string
+	GOType   gameobjtype.GameObjType
+	UUID     string
+	TeamUUID string
 
 	PosVt vector3f.Vector3f
 	RotVt vector3f.Vector3f
@@ -39,6 +37,9 @@ type GameObj struct {
 	toDelete     bool
 
 	DstUUID string
+
+	// 2d,3d mode fn
+	Move_circularFn func(now int64, dstObj *GameObj)
 }
 
 func (o *GameObj) String() string {
@@ -132,21 +133,22 @@ func (o *GameObj) Move_straight(now int64) {
 	o.PosVt = o.PosVt.Add(o.VelVt.MulF(dur))
 }
 
-func (o *GameObj) Move_circular(now int64, dstObj *GameObj) {
+func (o *GameObj) Move_circular3D(now int64, dstObj *GameObj) {
 	lifedur := float64(now-o.BirthTick) / float64(time.Second)
 	orbitR := gameobjtype.Attrib[gameobjtype.Ball].Radius * 4
 
-	switch o.StageType {
-	case stagetype.Stage2D:
-		o.PosVt = vector3f.VtUnitX.MulF(orbitR).RotateAround(vector3f.VtUnitZ, lifedur).Add(dstObj.PosVt)
+	rotAxis := dstObj.VelVt.NormalizedTo(1).Add(o.RotVt.NormalizedTo(1))
+	o.RotVt = rotAxis
+	refPos := rotAxis.Cross(o.VelVt).NormalizedTo(orbitR)
+	shieldPosDiff := refPos.RotateAround(rotAxis, lifedur)
+	o.PosVt = shieldPosDiff.Add(dstObj.PosVt)
+}
 
-	case stagetype.Stage3D:
-		rotAxis := dstObj.VelVt.NormalizedTo(1).Add(o.RotVt.NormalizedTo(1))
-		o.RotVt = rotAxis
-		refPos := rotAxis.Cross(o.VelVt).NormalizedTo(orbitR)
-		shieldPosDiff := refPos.RotateAround(rotAxis, lifedur)
-		o.PosVt = shieldPosDiff.Add(dstObj.PosVt)
-	}
+func (o *GameObj) Move_circular2D(now int64, dstObj *GameObj) {
+	lifedur := float64(now-o.BirthTick) / float64(time.Second)
+	orbitR := gameobjtype.Attrib[gameobjtype.Ball].Radius * 4
+
+	o.PosVt = vector3f.VtUnitX.MulF(orbitR).RotateAround(vector3f.VtUnitZ, lifedur).Add(dstObj.PosVt)
 }
 
 func (o *GameObj) Move_hommingshield(now int64, dstObj *GameObj) {

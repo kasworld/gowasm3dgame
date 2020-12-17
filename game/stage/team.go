@@ -52,6 +52,9 @@ type Team struct {
 	Score    float64
 	Kill     int
 	Death    int
+
+	// 2d,3d mode fn
+	RandBaseVtFn func() vector3f.Vector3f
 }
 
 func NewTeam(
@@ -70,6 +73,15 @@ func NewTeam(
 		IsAlive:      true,
 		Color24:      color,
 		Objs:         make([]*GameObj, 0),
+	}
+
+	switch bt.StageType {
+	default:
+		bt.log.Fatal("invalid stagetype %v", bt.StageType)
+	case stagetype.Stage2D:
+		bt.RandBaseVtFn = bt.RandBaseVt2D
+	case stagetype.Stage3D:
+		bt.RandBaseVtFn = bt.RandBaseVt3D
 	}
 
 	maxv := gameobjtype.Attrib[gameobjtype.HomeMark].SpeedLimit
@@ -109,36 +121,31 @@ func (bt *Team) RandPosVt() vector3f.Vector3f {
 	return bt.BorderBounce.RandVector(bt.rnd.Float64)
 }
 
-func (bt *Team) RandBaseVt() vector3f.Vector3f {
-	switch bt.StageType {
-	default:
-		bt.log.Fatal("invalid stagetype %v", bt.StageType)
-		return vector3f.Vector3f{}
-	case stagetype.Stage2D:
-		return vector3f.Vector3f{
-			bt.rnd.Float64(),
-			bt.rnd.Float64(),
-			0,
-		}
-	case stagetype.Stage3D:
-		return vector3f.Vector3f{
-			bt.rnd.Float64(),
-			bt.rnd.Float64(),
-			bt.rnd.Float64(),
-		}
+func (bt *Team) RandBaseVt2D() vector3f.Vector3f {
+	return vector3f.Vector3f{
+		bt.rnd.Float64(),
+		bt.rnd.Float64(),
+		0,
+	}
+}
+func (bt *Team) RandBaseVt3D() vector3f.Vector3f {
+	return vector3f.Vector3f{
+		bt.rnd.Float64(),
+		bt.rnd.Float64(),
+		bt.rnd.Float64(),
 	}
 }
 
 func (bt *Team) RandVelVt(maxv float64) vector3f.Vector3f {
-	return bt.RandBaseVt().MulF(maxv).NormalizedTo(maxv)
+	return bt.RandBaseVtFn().MulF(maxv).NormalizedTo(maxv)
 }
 
 func (bt *Team) RandAccelVt() vector3f.Vector3f {
-	return bt.RandBaseVt().MulF(gameconst.StageSize / 10)
+	return bt.RandBaseVtFn().MulF(gameconst.StageSize / 10)
 }
 
 func (bt *Team) RandShielVelVt() vector3f.Vector3f {
-	return bt.RandBaseVt().MulF(gameconst.StageSize)
+	return bt.RandBaseVtFn().MulF(gameconst.StageSize)
 }
 
 func (bt *Team) CountByGOType(ot gameobjtype.GameObjType) int {
@@ -241,7 +248,6 @@ func (bt *Team) NewGameObj(
 ) *GameObj {
 	nowtick := time.Now().UnixNano()
 	o := &GameObj{
-		StageType:    bt.StageType,
 		TeamUUID:     bt.UUID,
 		GOType:       gotype,
 		UUID:         G_GameObjID.New(),
@@ -251,6 +257,15 @@ func (bt *Team) NewGameObj(
 		VelVt:        velvt,
 		RotVelVt:     bt.RandRotVt(),
 	}
+	switch bt.StageType {
+	default:
+		bt.log.Fatal("invalid stagetype %v", bt.StageType)
+	case stagetype.Stage2D:
+		o.Move_circularFn = o.Move_circular2D
+	case stagetype.Stage3D:
+		o.Move_circularFn = o.Move_circular3D
+	}
+
 	return o
 }
 

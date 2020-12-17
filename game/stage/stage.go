@@ -240,7 +240,7 @@ func (stg *Stage) MoveTeam(bt *Team, now int64) []*GameObj {
 				toDeleteList = append(toDeleteList, v)
 			}
 		case gameobjtype.Shield:
-			v.Move_circular(now, bt.Ball)
+			v.Move_circularFn(now, bt.Ball)
 
 		case gameobjtype.HommingShield:
 			v.Move_hommingshield(now, bt.Ball)
