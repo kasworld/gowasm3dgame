@@ -12,6 +12,7 @@
 package stage
 
 import (
+	"fmt"
 	"math"
 	"time"
 
@@ -55,6 +56,10 @@ type Team struct {
 
 	// 2d,3d mode fn
 	RandBaseVtFn func() vector3f.Vector3f
+}
+
+func (bt *Team) String() string {
+	return fmt.Sprintf("Team[%v %v %v]", bt.StageType, bt.Color24, bt.UUID)
 }
 
 func NewTeam(

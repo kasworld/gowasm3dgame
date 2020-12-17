@@ -112,6 +112,10 @@ func New(config serverconfig.Config) *Server {
 	return svr
 }
 
+func (svr *Server) String() string {
+	return fmt.Sprintf("gowasm3dgame[]")
+}
+
 // called from signal handler
 func (svr *Server) GetServiceLockFilename() string {
 	return svr.config.MakePIDFileFullpath()
